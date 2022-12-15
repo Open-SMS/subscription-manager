@@ -10,6 +10,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.SequenceGenerator;
+import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
 import uk.co.zodiac2000.subscriptionmanager.transfer.subscriber.OidcIdentifierCommandDto;
 import uk.co.zodiac2000.subscriptionmanager.transfer.subscriber.SamlIdentifierCommandDto;
@@ -31,10 +32,12 @@ public class Subscriber implements Serializable {
     @NotEmpty
     private String subscriberName;
 
+    @Valid
     @ElementCollection
     @CollectionTable(name = "saml_identifier")
     private Set<SamlIdentifier> samlIdentifiers = new HashSet<>();
 
+    @Valid
     @ElementCollection
     @CollectionTable(name = "oidc_identifier")
     private Set<OidcIdentifier> oidcIdentifiers = new HashSet<>();

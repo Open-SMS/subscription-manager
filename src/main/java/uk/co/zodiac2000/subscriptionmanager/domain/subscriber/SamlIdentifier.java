@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.Comparator;
 import java.util.Objects;
 import javax.persistence.Embeddable;
+import javax.validation.constraints.NotEmpty;
 
 /**
  * Value object representing a SAML authentication identifier. Initially this will be composed of the entityID of the
@@ -15,8 +16,10 @@ public class SamlIdentifier implements Serializable, Comparable<SamlIdentifier> 
 
     private static final long serialVersionUID = 1L;
 
+    @NotEmpty
     private String entityId;
 
+    @NotEmpty
     private String scopedAffiliation;
 
     /**
