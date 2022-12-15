@@ -1,0 +1,10 @@
+[
+ {
+  "entityId": "http://saml.example.com",
+  "scopedAffiliation": "student@example.com"
+ },
+ {
+  "entityId": "http://saml-server.example.com/ident",
+  "scopedAffiliation": "staff@example.com"
+ }
+]
