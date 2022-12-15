@@ -25,6 +25,22 @@ public class SamlIdentifierTest {
     }
 
     /**
+     * Test constructor when entityId is null.
+     */
+    @Test(expectedExceptions = {NullPointerException.class})
+    public void testConstructorEntityIdNull() {
+        SamlIdentifier identifier = new SamlIdentifier(null, SCOPED_AFFILIATION_ONE);
+    }
+
+    /**
+     * Test constructor when scopedAffiliation is null.
+     */
+    @Test(expectedExceptions = {NullPointerException.class})
+    public void testConstructorScopedAffiliationNull() {
+        SamlIdentifier identifier = new SamlIdentifier(ENTITY_ID_ONE, null);
+    }
+
+    /**
      * Test equals when argument is null.
      */
     @Test

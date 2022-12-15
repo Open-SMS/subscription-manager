@@ -25,6 +25,22 @@ public class OidcIdentifierTest {
     }
 
     /**
+     * Test constructor when issuer is null.
+     */
+    @Test(expectedExceptions = {NullPointerException.class})
+    public void testConstructorIssuerNull() {
+        OidcIdentifier identifier = new OidcIdentifier(null, SUBJECT_ONE);
+    }
+
+    /**
+     * Test constructor when subject is null.
+     */
+    @Test(expectedExceptions = {NullPointerException.class})
+    public void testConstructorSubjectNull() {
+        OidcIdentifier identifier = new OidcIdentifier(ISSUER_ONE, null);
+    }
+
+    /**
      * Test equals when argument is null.
      */
     @Test

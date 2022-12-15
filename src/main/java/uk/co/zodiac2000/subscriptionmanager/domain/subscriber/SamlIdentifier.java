@@ -32,8 +32,8 @@ public class SamlIdentifier implements Serializable, Comparable<SamlIdentifier> 
      * @param scopedAffiliation the value of the eduPersonScopedAffiliation attribute released by the issuer
      */
     public SamlIdentifier(String entityId, String scopedAffiliation) {
-        this.entityId = entityId;
-        this.scopedAffiliation = scopedAffiliation;
+        this.entityId = Objects.requireNonNull(entityId);
+        this.scopedAffiliation = Objects.requireNonNull(scopedAffiliation);
     }
 
     /**

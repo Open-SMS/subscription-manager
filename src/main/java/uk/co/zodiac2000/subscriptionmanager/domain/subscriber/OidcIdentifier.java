@@ -32,8 +32,8 @@ public class OidcIdentifier implements Serializable, Comparable<OidcIdentifier> 
      * @param subject the sub claim
      */
     public OidcIdentifier(String issuer, String subject) {
-        this.issuer = issuer;
-        this.subject = subject;
+        this.issuer = Objects.requireNonNull(issuer);
+        this.subject = Objects.requireNonNull(subject);
     }
 
     /**
