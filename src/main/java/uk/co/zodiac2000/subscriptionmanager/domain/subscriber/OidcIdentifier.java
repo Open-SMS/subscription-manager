@@ -6,8 +6,9 @@ import java.util.Objects;
 import javax.persistence.Embeddable;
 
 /**
- * Value object representing OpenID Connect claims. The claims that identifier a unique user are iss (issuer) and
- * sub (subject). See https://openid.net/specs/openid-connect-core-1_0.html#ClaimStability
+ * Value object representing an OpenID Connect sub claim and the issuer. This will initially be how OIDC users are identified
+ * because this claim will uniquely identify a user. In future more claims may be supported.
+ * See https://openid.net/specs/openid-connect-core-1_0.html#ClaimStability
  */
 @Embeddable
 public class OidcIdentifier implements Serializable, Comparable<OidcIdentifier> {
