@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.Comparator;
 import java.util.Objects;
 import javax.persistence.Embeddable;
+import javax.validation.constraints.NotEmpty;
 
 /**
  * Value object representing an OpenID Connect sub claim and the issuer. This will initially be how OIDC users are identified
@@ -15,8 +16,10 @@ public class OidcIdentifier implements Serializable, Comparable<OidcIdentifier> 
 
     private static final long serialVersionUID = 1L;
 
+    @NotEmpty
     private String issuer;
 
+    @NotEmpty
     private String subject;
 
     /**
@@ -29,8 +32,8 @@ public class OidcIdentifier implements Serializable, Comparable<OidcIdentifier> 
      * @param subject the sub claim
      */
     public OidcIdentifier(String issuer, String subject) {
-        this.issuer = issuer;
-        this.subject = subject;
+        this.issuer = Objects.requireNonNull(issuer);
+        this.subject = Objects.requireNonNull(subject);
     }
 
     /**

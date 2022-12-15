@@ -7,6 +7,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.SequenceGenerator;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import uk.co.zodiac2000.subscriptionmanager.transfer.subscription.SubscriptionContentIdentifierCommandDto;
 import uk.co.zodiac2000.subscriptionmanager.transfer.subscription.SubscriptionDatesCommandDto;
 
@@ -29,8 +31,10 @@ public class Subscription implements Serializable {
 
     private boolean terminated;
 
+    @NotEmpty
     private String contentIdentifier;
 
+    @NotNull
     private Long subscriberId;
 
     /**
