@@ -97,7 +97,7 @@ public class SubscriberService {
      */
     @Transactional(readOnly = false)
     public void deleteSubscriber(long id) {
-        this.subscriberRepository.deleteById(id);
+        this.subscriberRepository.findById(id).ifPresent(this.subscriberRepository::delete);
     }
 
     /**

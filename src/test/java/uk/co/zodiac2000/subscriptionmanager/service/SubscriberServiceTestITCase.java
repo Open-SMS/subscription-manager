@@ -178,6 +178,15 @@ public class SubscriberServiceTestITCase extends AbstractTransactionalTestNGSpri
     }
 
     /**
+     * Test deleteSubscriber when the identified subscriber does not exist. No exception should be thrown in this
+     * situation.
+     */
+    @Test
+    public void testDeleteSubscriberNotFound() {
+        this.subscriberService.deleteSubscriber(4321L);
+    }
+
+    /**
      * Test setSamlIdentifiers when the subscriber is already associated with some SAML identifiers but not OIDC identifiers.
      * The existing SAML identifier collection should be replaced.
      */
