@@ -1,10 +1,13 @@
 package uk.co.zodiac2000.subscriptionmanager.transfer.subscriber;
 
+import javax.validation.constraints.NotEmpty;
+
 /**
  * Command DTO representing a request to create a new Subscriber aggregate root.
  */
 public class NewSubscriberCommandDto {
 
+    @NotEmpty
     private String subscriberName;
 
     /**

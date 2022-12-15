@@ -1,6 +1,7 @@
 package uk.co.zodiac2000.subscriptionmanager.api;
 
 import java.util.Set;
+import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -47,7 +48,7 @@ public class SubscriberController {
      * @return a SubscriberResponseDto
      */
     @PostMapping
-    public ResponseEntity<SubscriberResponseDto> createSubscriber(@RequestBody NewSubscriberCommandDto commandDto) {
+    public ResponseEntity<SubscriberResponseDto> createSubscriber(@Valid @RequestBody NewSubscriberCommandDto commandDto) {
         return new ResponseEntity(this.subscriberService.createSubscriber(commandDto).get(), HttpStatus.CREATED);
     }
 
