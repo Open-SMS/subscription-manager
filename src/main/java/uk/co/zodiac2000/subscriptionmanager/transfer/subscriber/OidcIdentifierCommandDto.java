@@ -1,12 +1,16 @@
 package uk.co.zodiac2000.subscriptionmanager.transfer.subscriber;
 
+import javax.validation.constraints.NotEmpty;
+
 /**
  * Command DTO representing an OIDC identifier.
  */
 public class OidcIdentifierCommandDto {
 
+    @NotEmpty
     private final String issuer;
 
+    @NotEmpty
     private final String subject;
 
     /**

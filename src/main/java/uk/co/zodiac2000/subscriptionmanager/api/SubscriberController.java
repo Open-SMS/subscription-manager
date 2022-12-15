@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import uk.co.zodiac2000.subscriptionmanager.service.SubscriberService;
 import uk.co.zodiac2000.subscriptionmanager.transfer.subscriber.NewSubscriberCommandDto;
 import uk.co.zodiac2000.subscriptionmanager.transfer.subscriber.OidcIdentifierCommandDto;
+import uk.co.zodiac2000.subscriptionmanager.transfer.subscriber.OidcIdentifiersCommandDto;
 import uk.co.zodiac2000.subscriptionmanager.transfer.subscriber.SamlIdentifierCommandDto;
 import uk.co.zodiac2000.subscriptionmanager.transfer.subscriber.SubscriberNameCommandDto;
 import uk.co.zodiac2000.subscriptionmanager.transfer.subscriber.SubscriberResponseDto;
@@ -92,12 +93,12 @@ public class SubscriberController {
      * Replaces the set of OIDC identifiers associated with the subscriber identified by id with the OIDC identifiers
      * specified by the commandDtos
      * @param id the subscriber identifier
-     * @param commandDtos a set of OidcIdentifierCommandDto objects
+     * @param commandDto a OidcIdentifiersCommandDto containing a set of OidcIdentifierCommandDto objects
      * @return the modified subscriber
      */
     @PutMapping("/{id}/oidc-identifiers")
     public ResponseEntity<SubscriberResponseDto> setOidcIdentifiers(@PathVariable("id") Integer id,
-            @RequestBody Set<OidcIdentifierCommandDto> commandDtos) {
-        return ResponseEntity.of(this.subscriberService.setOidcIdentifiers(id, commandDtos));
+            @Valid @RequestBody OidcIdentifiersCommandDto commandDto) {
+        return ResponseEntity.of(this.subscriberService.setOidcIdentifiers(id, commandDto.getOidcIdentifiers()));
     }
 }
