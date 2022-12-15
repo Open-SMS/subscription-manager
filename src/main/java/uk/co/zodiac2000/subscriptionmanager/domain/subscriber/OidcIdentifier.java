@@ -1,0 +1,68 @@
+package uk.co.zodiac2000.subscriptionmanager.domain.subscriber;
+
+import java.io.Serializable;
+import java.util.Comparator;
+import java.util.Objects;
+import javax.persistence.Embeddable;
+
+/**
+ * Value object representing OpenID Connect claims. The claims that identifier a unique user are iss (issuer) and
+ * sub (subject). See https://openid.net/specs/openid-connect-core-1_0.html#ClaimStability
+ */
+@Embeddable
+public class OidcIdentifier implements Serializable, Comparable<OidcIdentifier> {
+
+    private static final long serialVersionUID = 1L;
+
+    private String issuer;
+
+    private String subject;
+
+    /**
+     * Zero-args constructor for JPA.
+     */
+    public OidcIdentifier() { }
+
+    /**
+     * @param issuer the iss claim
+     * @param subject the sub claim
+     */
+    public OidcIdentifier(String issuer, String subject) {
+        this.issuer = issuer;
+        this.subject = subject;
+    }
+
+    /**
+     * @return the iss claim
+     */
+    public String getIssuer() {
+        return issuer;
+    }
+
+    /**
+     * @return the sub claim
+     */
+    public String getSubject() {
+        return subject;
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        return other != null
+                && this.getClass() == other.getClass()
+                && Objects.equals(this.getIssuer(), ((OidcIdentifier) other).getIssuer())
+                && Objects.equals(this.getSubject(), ((OidcIdentifier) other).getSubject());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.getIssuer(), this.getSubject());
+    }
+
+    @Override
+    public int compareTo(OidcIdentifier other) {
+        return Comparator.comparing(OidcIdentifier::getIssuer)
+                .thenComparing(OidcIdentifier::getSubject)
+                .compare(this, other);
+    }
+}
