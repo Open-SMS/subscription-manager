@@ -44,6 +44,15 @@ public class SubscriberService {
     }
 
     /**
+     * Returns the id of the Subscriber identified by subscriberName or an empty optional if not found.
+     * @param subscriberName
+     * @return the subscriber identifier
+     */
+    public Optional<Long> getSubscriberIdBySubscriberName(String subscriberName) {
+        return this.subscriberRepository.findBySubscriberName(subscriberName).map(Subscriber::getId);
+    }
+
+    /**
      * Returns subscribers associated with at least one OidcIdentifier matching the arguments.
      * @param requestDto the OIDC claims being authorized
      * @return a set of SubscriberResponseDto objects

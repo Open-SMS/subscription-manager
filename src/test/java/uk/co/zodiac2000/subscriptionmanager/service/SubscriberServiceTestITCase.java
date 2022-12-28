@@ -485,4 +485,24 @@ public class SubscriberServiceTestITCase extends AbstractTransactionalTestNGSpri
 
         Assert.assertTrue(responseDtos.isEmpty());
     }
+
+    /**
+     * Test getSubscriberIdBySubscriberName when a subscriber is found.
+     */
+    @Test
+    public void testGetSubscriberIdBySubscriberName() {
+        Optional<Long> subscriberId = this.subscriberService.getSubscriberIdBySubscriberName("Vince Clarke");
+
+        Assert.assertEquals(subscriberId, Optional.of(100000010L));
+    }
+
+    /**
+     * Test getSubscriberIdBySubscriberName when a subscriber is not found.
+     */
+    @Test
+    public void testGetSubscriberIdBySubscriberNameNotFound() {
+        Optional<Long> subscriberId = this.subscriberService.getSubscriberIdBySubscriberName("Robert Dobbs");
+
+        Assert.assertTrue(subscriberId.isEmpty());
+    }
 }
