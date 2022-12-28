@@ -104,7 +104,7 @@ public class SubscriberController {
 
     /**
      * Replaces the set of OIDC identifiers associated with the subscriber identified by id with the OIDC identifiers
-     * specified by the commandDtos
+     * specified by {@code commandDto}.
      * @param id the subscriber identifier
      * @param commandDto a OidcIdentifiersCommandDto containing a set of OidcIdentifierCommandDto objects
      * @return the modified subscriber
@@ -112,6 +112,6 @@ public class SubscriberController {
     @PutMapping("/{id}/oidc-identifiers")
     public ResponseEntity<SubscriberResponseDto> setOidcIdentifiers(@PathVariable("id") Integer id,
             @Valid @RequestBody OidcIdentifiersCommandDto commandDto) {
-        return ResponseEntity.of(this.subscriberService.setOidcIdentifiers(id, commandDto.getOidcIdentifiers()));
+        return ResponseEntity.of(this.subscriberService.setOidcIdentifiers(id, Set.copyOf(commandDto.getOidcIdentifiers())));
     }
 }

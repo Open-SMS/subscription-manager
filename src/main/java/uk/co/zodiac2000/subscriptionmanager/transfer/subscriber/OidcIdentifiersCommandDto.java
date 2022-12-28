@@ -1,6 +1,6 @@
 package uk.co.zodiac2000.subscriptionmanager.transfer.subscriber;
 
-import java.util.Set;
+import java.util.List;
 import javax.validation.Valid;
 
 /**
@@ -10,7 +10,7 @@ import javax.validation.Valid;
 public class OidcIdentifiersCommandDto {
 
     @Valid
-    private Set<OidcIdentifierCommandDto> oidcIdentifiers;
+    private List<OidcIdentifierCommandDto> oidcIdentifiers;
 
     public OidcIdentifiersCommandDto() { }
 
@@ -18,14 +18,14 @@ public class OidcIdentifiersCommandDto {
      *
      * @param oidcIdentifiers
      */
-    public OidcIdentifiersCommandDto(Set<OidcIdentifierCommandDto> oidcIdentifiers) {
+    public OidcIdentifiersCommandDto(List<OidcIdentifierCommandDto> oidcIdentifiers) {
         this.oidcIdentifiers = oidcIdentifiers;
     }
 
     /**
      * @return the oidcIdentifiers
      */
-    public Set<OidcIdentifierCommandDto> getOidcIdentifiers() {
+    public List<OidcIdentifierCommandDto> getOidcIdentifiers() {
         return oidcIdentifiers;
     }
 }

@@ -1,6 +1,6 @@
 package uk.co.zodiac2000.subscriptionmanager.transfer.subscriber;
 
-import java.util.Set;
+import java.util.List;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -9,7 +9,7 @@ import org.testng.annotations.Test;
  */
 public class OidcIdentifiersCommandDtoTest {
 
-    private static final Set<OidcIdentifierCommandDto> IDENTIFIERS = Set.of();
+    private static final List<OidcIdentifierCommandDto> IDENTIFIERS = List.of();
 
     /**
      * Test constructor and accessor.
