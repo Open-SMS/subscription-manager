@@ -21,6 +21,7 @@ import uk.co.zodiac2000.subscriptionmanager.service.SubscriberService;
 import uk.co.zodiac2000.subscriptionmanager.transfer.subscriber.NewSubscriberCommandDto;
 import uk.co.zodiac2000.subscriptionmanager.transfer.subscriber.OidcIdentifiersCommandDto;
 import uk.co.zodiac2000.subscriptionmanager.transfer.subscriber.SamlIdentifierCommandDto;
+import uk.co.zodiac2000.subscriptionmanager.transfer.subscriber.SamlIdentifiersCommandDto;
 import uk.co.zodiac2000.subscriptionmanager.transfer.subscriber.SubscriberNameCommandDto;
 import uk.co.zodiac2000.subscriptionmanager.transfer.subscriber.SubscriberResponseDto;
 
@@ -90,23 +91,23 @@ public class SubscriberController {
     }
 
     /**
-     * Replaces the set of SAML identifiers associated with the subscriber identified by id with the SAML identifiers
-     * specified by the commandDtos
+     * Replaces the set of SAML identifiers associated with the subscriber identified by {@code id} with the SAML identifiers
+     * specified by {@code commandDto}.
      * @param id the subscriber identifier
-     * @param commandDtos a set of SamlIdentifierCommandDto objects
+     * @param commandDto an SamlIdentifiersCommandDto containing a list of SamlIdentifierCommandDto objects
      * @return the modified subscriber
      */
     @PutMapping("/{id}/saml-identifiers")
     public ResponseEntity<SubscriberResponseDto> setSamlIdentifiers(@PathVariable("id") Integer id,
-            @RequestBody Set<SamlIdentifierCommandDto> commandDtos) {
-        return ResponseEntity.of(this.subscriberService.setSamlIdentifiers(id, commandDtos));
+            @Valid @RequestBody SamlIdentifiersCommandDto commandDto) {
+        return ResponseEntity.of(this.subscriberService.setSamlIdentifiers(id, Set.copyOf(commandDto.getSamlIdentifiers())));
     }
 
     /**
-     * Replaces the set of OIDC identifiers associated with the subscriber identified by id with the OIDC identifiers
+     * Replaces the set of OIDC identifiers associated with the subscriber identified by {@code id} with the OIDC identifiers
      * specified by {@code commandDto}.
      * @param id the subscriber identifier
-     * @param commandDto a OidcIdentifiersCommandDto containing a set of OidcIdentifierCommandDto objects
+     * @param commandDto an OidcIdentifiersCommandDto containing a list of OidcIdentifierCommandDto objects
      * @return the modified subscriber
      */
     @PutMapping("/{id}/oidc-identifiers")
