@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.RestController;
 import uk.co.zodiac2000.subscriptionmanager.service.SubscriberService;
 import uk.co.zodiac2000.subscriptionmanager.transfer.subscriber.NewSubscriberCommandDto;
 import uk.co.zodiac2000.subscriptionmanager.transfer.subscriber.OidcIdentifiersCommandDto;
-import uk.co.zodiac2000.subscriptionmanager.transfer.subscriber.SamlIdentifierCommandDto;
 import uk.co.zodiac2000.subscriptionmanager.transfer.subscriber.SamlIdentifiersCommandDto;
 import uk.co.zodiac2000.subscriptionmanager.transfer.subscriber.SubscriberNameCommandDto;
 import uk.co.zodiac2000.subscriptionmanager.transfer.subscriber.SubscriberResponseDto;
