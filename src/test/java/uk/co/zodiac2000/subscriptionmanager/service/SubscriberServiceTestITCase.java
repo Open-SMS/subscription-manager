@@ -133,7 +133,7 @@ public class SubscriberServiceTestITCase extends AbstractTransactionalTestNGSpri
     @Test
     public void testUpdateSubscriberName() {
         Optional<SubscriberResponseDto> responseDto
-                = this.subscriberService.updateSubscriberName(100000003L, new SubscriberNameCommandDto(UPDATED_SUBSCRIBER_NAME));
+                = this.subscriberService.updateSubscriberName(new SubscriberNameCommandDto(100000003L, UPDATED_SUBSCRIBER_NAME));
 
         Assert.assertTrue(responseDto.isPresent());
         Assert.assertEquals(responseDto.get().getSubscriberName(), UPDATED_SUBSCRIBER_NAME);
@@ -149,7 +149,7 @@ public class SubscriberServiceTestITCase extends AbstractTransactionalTestNGSpri
     @Test
     public void testUpdateSubscriberNameNotFound() {
         Optional<SubscriberResponseDto> responseDto
-                = this.subscriberService.updateSubscriberName(42, new SubscriberNameCommandDto(UPDATED_SUBSCRIBER_NAME));
+                = this.subscriberService.updateSubscriberName(new SubscriberNameCommandDto(42L, UPDATED_SUBSCRIBER_NAME));
 
         Assert.assertTrue(responseDto.isEmpty());
     }
