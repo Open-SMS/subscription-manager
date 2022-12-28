@@ -1,5 +1,6 @@
 package uk.co.zodiac2000.subscriptionmanager.repository;
 
+import java.util.Optional;
 import java.util.Set;
 import org.springframework.data.jpa.repository.JpaRepository;
 import uk.co.zodiac2000.subscriptionmanager.domain.subscriber.Subscriber;
@@ -24,4 +25,13 @@ public interface SubscriberRepository extends JpaRepository<Subscriber, Long> {
      * @return a set of identified subscribers
      */
     Set<Subscriber> findBySamlIdentifiersEntityIdAndSamlIdentifiersScopedAffiliation(String entityId, String scopedAffiliation);
+
+    /**
+     * Returns an Optional containing a Subscriber with subscriberName matching the argument, or an empty Optional if
+     * none found.
+     * @param subscriberName the subscriber name to locate
+     * @return an Optional containing a Subscriber with subscriberName matching the argument, or an empty Optional if
+     * none found
+     */
+    Optional<Subscriber> findBySubscriberName(String subscriberName);
 }
