@@ -87,15 +87,15 @@ public class SubscriberService {
     }
 
     /**
-     * Updates the subscriber name of the subscriber identified by id. If the subscriber doesn't exist then an empty optional
-     * is returned and no change is made to the state of the system.
-     * @param id the subscriber id
-     * @param subscriberNameCommandDto the new subscriber name
+     * Updates the subscriber name of the subscriber identified by the {@code id} property of the command DTO to the
+     * value set in the command DTO. If the subscriber doesn't exist then an empty optional is returned and no change
+     * is made to the state of the system.
+     * @param subscriberNameCommandDto command DTO representing the subscriber and new subscriber name
      * @return an Optional that contains a SubscriberResponseDto representing the new state of the subscriber
      */
     @Transactional(readOnly = false)
-    public Optional<SubscriberResponseDto> updateSubscriberName(long id, SubscriberNameCommandDto subscriberNameCommandDto) {
-        Optional<Subscriber> subscriber = this.subscriberRepository.findById(id);
+    public Optional<SubscriberResponseDto> updateSubscriberName(SubscriberNameCommandDto subscriberNameCommandDto) {
+        Optional<Subscriber> subscriber = this.subscriberRepository.findById(subscriberNameCommandDto.getId());
         subscriber.ifPresent(p -> p.setSubscriberName(subscriberNameCommandDto));
         return this.subscriberResponseDtoFactory.subscriberToSubscriberResponseDto(subscriber);
     }
