@@ -1,10 +1,13 @@
 package uk.co.zodiac2000.subscriptionmanager.transfer.subscriber;
 
 import javax.validation.constraints.NotEmpty;
+import uk.co.zodiac2000.subscriptionmanager.constraint.DoesNotExist;
 
 /**
  * Command DTO representing a request to create a new Subscriber aggregate root.
  */
+@DoesNotExist(expression = "@subscriberService.getSubscriberIdBySubscriberName(#this.subscriberName)",
+        propertyName = "subscriberName")
 public class NewSubscriberCommandDto {
 
     @NotEmpty
