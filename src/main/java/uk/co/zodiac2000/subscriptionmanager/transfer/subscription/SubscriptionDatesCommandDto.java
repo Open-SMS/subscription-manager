@@ -1,14 +1,17 @@
 package uk.co.zodiac2000.subscriptionmanager.transfer.subscription;
 
 import java.util.Optional;
+import uk.co.zodiac2000.subscriptionmanager.constraint.ValidDateString;
 
 /**
  * Represents a new state for subscription start and end dates.
  */
 public class SubscriptionDatesCommandDto {
 
+    @ValidDateString
     private Optional<String> startDate;
 
+    @ValidDateString
     private Optional<String> endDate;
 
     /**

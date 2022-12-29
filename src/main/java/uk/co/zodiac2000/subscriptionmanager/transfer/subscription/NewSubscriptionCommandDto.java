@@ -1,6 +1,7 @@
 package uk.co.zodiac2000.subscriptionmanager.transfer.subscription;
 
 import java.util.Optional;
+import uk.co.zodiac2000.subscriptionmanager.constraint.ValidDateString;
 
 /**
  * Command DTO representing a new subscription. Dates are represented as an string formatted as
@@ -8,8 +9,10 @@ import java.util.Optional;
  */
 public class NewSubscriptionCommandDto {
 
+    @ValidDateString
     private Optional<String> startDate;
 
+    @ValidDateString
     private Optional<String> endDate;
 
     private String contentIdentifier;
