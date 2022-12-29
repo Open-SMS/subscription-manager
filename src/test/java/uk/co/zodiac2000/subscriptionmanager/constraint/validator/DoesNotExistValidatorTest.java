@@ -133,7 +133,7 @@ public class DoesNotExistValidatorTest {
      * Test isValid when the verificationExpression returns null.
      */
     @Test(expectedExceptions = {ValidationException.class},
-            expectedExceptionsMessageRegExp = "^Unexpected null return from expression evaluation$")
+            expectedExceptionsMessageRegExp = "^Unexpected null value returned by expression evaluation$")
     public void testIsValidExpressionReturnsNull() {
         this.validator.isValid(this.nullReturnTargetObject, this.validatorContext);
     }
