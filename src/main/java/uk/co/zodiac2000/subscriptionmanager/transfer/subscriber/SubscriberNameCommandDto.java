@@ -1,5 +1,6 @@
 package uk.co.zodiac2000.subscriptionmanager.transfer.subscriber;
 
+import javax.validation.constraints.NotEmpty;
 import uk.co.zodiac2000.subscriptionmanager.constraint.DoesNotExist;
 
 /**
@@ -11,6 +12,7 @@ public class SubscriberNameCommandDto {
 
     private long id;
 
+    @NotEmpty
     private String subscriberName;
 
     /**
