@@ -16,9 +16,9 @@ import uk.co.zodiac2000.subscriptionmanager.constraint.validator.DoesNotExistVal
  * a SPeL expression defined by the {@code expression} property. This method should return an {@code Optional} which should
  * contain the identifier of the existing object if found, otherwise an empty optional. Arguments to the method can be
  * properties of the DTO specified by the SPeL expression. If the object exists then the DTO is considered invalid.
- * In the case of an update the identfierPropertyName (which defaults to
+ * In the case of an update the {@code identfierPropertyName} property (which defaults to
  * {@code id}) specifies the identifier property in the DTO. If the value of this property is equal to to value returned
- * by the SPeL expression that the DTO is considered valid because the object that was found is the object being updated.
+ * by the SPeL expression then the DTO is considered valid because the object that was found is the object being updated.
  * <br><br>
  * For example:
  * <pre>

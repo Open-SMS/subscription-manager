@@ -87,7 +87,7 @@ public class SubscriberService {
     }
 
     /**
-     * Updates the subscriber name of the subscriber identified by the {@code id} property of the command DTO to the
+     * Update the subscriber name of the subscriber identified by the {@code id} property of the command DTO to the
      * value set in the command DTO. If the subscriber doesn't exist then an empty optional is returned and no change
      * is made to the state of the system.
      * @param subscriberNameCommandDto command DTO representing the subscriber and new subscriber name
@@ -110,7 +110,7 @@ public class SubscriberService {
     }
 
     /**
-     * Sets the SAML Identifiers associated with the subscriber identified by id. If the subscriber doesn't exist then an
+     * Set the SAML Identifiers associated with the subscriber identified by id. If the subscriber doesn't exist then an
      * empty optional is returned and no change is made to the state of the system.
      * @param id the subscriber id
      * @param samlIdentifierCommandDtos the new set of SAML identifiers
@@ -124,7 +124,7 @@ public class SubscriberService {
     }
 
     /**
-     * Sets the OIDC Identifiers associated with the subscriber identified by id. If the subscriber doesn't exist then an
+     * Set the OIDC Identifiers associated with the subscriber identified by id. If the subscriber doesn't exist then an
      * empty optional is returned and no change is made to the state of the system.
      * @param id the subscriber id
      * @param oidcIdentifierCommandDtos the new set of OIDC identifiers
