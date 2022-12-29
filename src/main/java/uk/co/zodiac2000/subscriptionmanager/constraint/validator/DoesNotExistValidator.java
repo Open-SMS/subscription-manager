@@ -60,7 +60,7 @@ public class DoesNotExistValidator implements ConstraintValidator<DoesNotExist, 
     public boolean isValid(Object value, ConstraintValidatorContext context) {
         Optional<Object> id = this.verificationExpression.getValue(this.evaluationContext, value, Optional.class);
         if (id == null) {
-            throw new ValidationException("Unexpected null return from expression evaluation");
+            throw new ValidationException("Unexpected null value returned by expression evaluation");
         }
 
         boolean isValid = id.isEmpty()
