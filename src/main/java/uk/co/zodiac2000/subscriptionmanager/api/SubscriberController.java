@@ -25,7 +25,7 @@ import uk.co.zodiac2000.subscriptionmanager.transfer.subscriber.SubscriberNameCo
 import uk.co.zodiac2000.subscriptionmanager.transfer.subscriber.SubscriberResponseDto;
 
 /**
- * Subscriber aggregate REST API.
+ * REST API for accessing the subscriber aggregate.
  */
 @RestController
 @RequestMapping(path = "/subscriber", produces = "application/json")
