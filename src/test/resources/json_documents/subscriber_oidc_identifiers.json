@@ -1,11 +1,13 @@
-[
- {
-  "issuer":"https://accounts.google.com",
-  "subject":"3204823904"
- },
- {
-  "issuer":"https://www.facebook.com",
-  "subject":"d2liYmxlCg=="
- }
-]
+{
+ "oidcIdentifiers": [
+  {
+   "issuer":"https://accounts.google.com",
+   "subject":""
+  },
+  {
+   "issuer":"https://www.facebook.com",
+   "subject":"d2liYmxlCg=="
+  }
+ ]
+}
 

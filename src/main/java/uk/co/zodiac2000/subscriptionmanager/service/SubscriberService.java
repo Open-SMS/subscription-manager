@@ -44,6 +44,15 @@ public class SubscriberService {
     }
 
     /**
+     * Returns the id of the Subscriber identified by subscriberName or an empty optional if not found.
+     * @param subscriberName
+     * @return the subscriber identifier
+     */
+    public Optional<Long> getSubscriberIdBySubscriberName(String subscriberName) {
+        return this.subscriberRepository.findBySubscriberName(subscriberName).map(Subscriber::getId);
+    }
+
+    /**
      * Returns subscribers associated with at least one OidcIdentifier matching the arguments.
      * @param requestDto the OIDC claims being authorized
      * @return a set of SubscriberResponseDto objects
@@ -78,15 +87,15 @@ public class SubscriberService {
     }
 
     /**
-     * Updates the subscriber name of the subscriber identified by id. If the subscriber doesn't exist then an empty optional
-     * is returned and no change is made to the state of the system.
-     * @param id the subscriber id
-     * @param subscriberNameCommandDto the new subscriber name
+     * Update the subscriber name of the subscriber identified by the {@code id} property of the command DTO to the
+     * value set in the command DTO. If the subscriber doesn't exist then an empty optional is returned and no change
+     * is made to the state of the system.
+     * @param subscriberNameCommandDto command DTO representing the subscriber and new subscriber name
      * @return an Optional that contains a SubscriberResponseDto representing the new state of the subscriber
      */
     @Transactional(readOnly = false)
-    public Optional<SubscriberResponseDto> updateSubscriberName(long id, SubscriberNameCommandDto subscriberNameCommandDto) {
-        Optional<Subscriber> subscriber = this.subscriberRepository.findById(id);
+    public Optional<SubscriberResponseDto> updateSubscriberName(SubscriberNameCommandDto subscriberNameCommandDto) {
+        Optional<Subscriber> subscriber = this.subscriberRepository.findById(subscriberNameCommandDto.getId());
         subscriber.ifPresent(p -> p.setSubscriberName(subscriberNameCommandDto));
         return this.subscriberResponseDtoFactory.subscriberToSubscriberResponseDto(subscriber);
     }
@@ -101,7 +110,7 @@ public class SubscriberService {
     }
 
     /**
-     * Sets the SAML Identifiers associated with the subscriber identified by id. If the subscriber doesn't exist then an
+     * Set the SAML Identifiers associated with the subscriber identified by id. If the subscriber doesn't exist then an
      * empty optional is returned and no change is made to the state of the system.
      * @param id the subscriber id
      * @param samlIdentifierCommandDtos the new set of SAML identifiers
@@ -115,7 +124,7 @@ public class SubscriberService {
     }
 
     /**
-     * Sets the OIDC Identifiers associated with the subscriber identified by id. If the subscriber doesn't exist then an
+     * Set the OIDC Identifiers associated with the subscriber identified by id. If the subscriber doesn't exist then an
      * empty optional is returned and no change is made to the state of the system.
      * @param id the subscriber id
      * @param oidcIdentifierCommandDtos the new set of OIDC identifiers

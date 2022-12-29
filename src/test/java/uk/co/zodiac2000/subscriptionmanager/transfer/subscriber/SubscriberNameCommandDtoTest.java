@@ -8,6 +8,7 @@ import org.testng.annotations.Test;
  */
 public class SubscriberNameCommandDtoTest {
 
+    private static final Long SUBSCRIBER_ID = 65L;
     private static final String SUBSCRIBER_NAME = "Alan Davey";
 
     /**
@@ -15,8 +16,9 @@ public class SubscriberNameCommandDtoTest {
      */
     @Test
     public void testAccessors() {
-        SubscriberNameCommandDto commandDto = new SubscriberNameCommandDto(SUBSCRIBER_NAME);
+        SubscriberNameCommandDto commandDto = new SubscriberNameCommandDto(SUBSCRIBER_ID, SUBSCRIBER_NAME);
 
+        Assert.assertEquals(commandDto.getId(), SUBSCRIBER_ID);
         Assert.assertEquals(commandDto.getSubscriberName(), SUBSCRIBER_NAME);
     }
 

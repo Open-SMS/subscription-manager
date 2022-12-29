@@ -44,7 +44,7 @@ public class SubscriberTest {
     @Test
     public void testSetSubscriberName() {
         Subscriber subscriber = new Subscriber();
-        subscriber.setSubscriberName(new SubscriberNameCommandDto(SUBSCRIBER_NAME));
+        subscriber.setSubscriberName(new SubscriberNameCommandDto(SUBSCRIBER_ID, SUBSCRIBER_NAME));
 
         Assert.assertEquals(subscriber.getSubscriberName(), SUBSCRIBER_NAME);
     }

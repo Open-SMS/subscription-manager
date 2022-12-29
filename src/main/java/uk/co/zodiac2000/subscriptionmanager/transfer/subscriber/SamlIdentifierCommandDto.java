@@ -1,12 +1,16 @@
 package uk.co.zodiac2000.subscriptionmanager.transfer.subscriber;
 
+import javax.validation.constraints.NotEmpty;
+
 /**
  * Command DTO representing a SAML Identifier.
  */
 public class SamlIdentifierCommandDto {
 
+    @NotEmpty
     private final String entityId;
 
+    @NotEmpty
     private final String scopedAffiliation;
 
     /**

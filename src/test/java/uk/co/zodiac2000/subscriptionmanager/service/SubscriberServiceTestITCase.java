@@ -133,7 +133,7 @@ public class SubscriberServiceTestITCase extends AbstractTransactionalTestNGSpri
     @Test
     public void testUpdateSubscriberName() {
         Optional<SubscriberResponseDto> responseDto
-                = this.subscriberService.updateSubscriberName(100000003L, new SubscriberNameCommandDto(UPDATED_SUBSCRIBER_NAME));
+                = this.subscriberService.updateSubscriberName(new SubscriberNameCommandDto(100000003L, UPDATED_SUBSCRIBER_NAME));
 
         Assert.assertTrue(responseDto.isPresent());
         Assert.assertEquals(responseDto.get().getSubscriberName(), UPDATED_SUBSCRIBER_NAME);
@@ -149,7 +149,7 @@ public class SubscriberServiceTestITCase extends AbstractTransactionalTestNGSpri
     @Test
     public void testUpdateSubscriberNameNotFound() {
         Optional<SubscriberResponseDto> responseDto
-                = this.subscriberService.updateSubscriberName(42, new SubscriberNameCommandDto(UPDATED_SUBSCRIBER_NAME));
+                = this.subscriberService.updateSubscriberName(new SubscriberNameCommandDto(42L, UPDATED_SUBSCRIBER_NAME));
 
         Assert.assertTrue(responseDto.isEmpty());
     }
@@ -484,5 +484,25 @@ public class SubscriberServiceTestITCase extends AbstractTransactionalTestNGSpri
         Set<SubscriberResponseDto> responseDtos = this.subscriberService.getSubscriberBySamlIdentifier(requestDto);
 
         Assert.assertTrue(responseDtos.isEmpty());
+    }
+
+    /**
+     * Test getSubscriberIdBySubscriberName when a subscriber is found.
+     */
+    @Test
+    public void testGetSubscriberIdBySubscriberName() {
+        Optional<Long> subscriberId = this.subscriberService.getSubscriberIdBySubscriberName("Vince Clarke");
+
+        Assert.assertEquals(subscriberId, Optional.of(100000010L));
+    }
+
+    /**
+     * Test getSubscriberIdBySubscriberName when a subscriber is not found.
+     */
+    @Test
+    public void testGetSubscriberIdBySubscriberNameNotFound() {
+        Optional<Long> subscriberId = this.subscriberService.getSubscriberIdBySubscriberName("Robert Dobbs");
+
+        Assert.assertTrue(subscriberId.isEmpty());
     }
 }

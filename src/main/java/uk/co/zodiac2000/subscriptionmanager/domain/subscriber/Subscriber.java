@@ -96,16 +96,16 @@ public class Subscriber implements Serializable {
 
     /**
      * Sets the OIDC identifiers associated with this subscriber.
-     * @param samlIdentifiers the SAML identifiers
+     * @param oidcIdentifiers the OIDC identifiers
      */
-    public void setOidcIdentifiers(Set<OidcIdentifierCommandDto> samlIdentifiers) {
-        this.oidcIdentifiers = samlIdentifiers.stream()
+    public void setOidcIdentifiers(Set<OidcIdentifierCommandDto> oidcIdentifiers) {
+        this.oidcIdentifiers = oidcIdentifiers.stream()
                 .map(i -> new OidcIdentifier(i.getIssuer(), i.getSubject()))
                 .collect(Collectors.toSet());
     }
 
     /**
-     * @return the SAML identifiers associated with this subscriber
+     * @return the OIDC identifiers associated with this subscriber
      */
     public Set<OidcIdentifier> getOidcIdentifiers() {
         return Set.copyOf(this.oidcIdentifiers);
