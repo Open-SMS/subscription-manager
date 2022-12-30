@@ -1,12 +1,14 @@
 package uk.co.zodiac2000.subscriptionmanager.transfer.subscription;
 
 import java.util.Optional;
+import uk.co.zodiac2000.subscriptionmanager.constraint.ValidDateRange;
 import uk.co.zodiac2000.subscriptionmanager.constraint.ValidDateString;
 
 /**
  * Command DTO representing a new subscription. Dates are represented as an string formatted as
  * {@link java.time.format.DateTimeFormatter#ISO_LOCAL_DATE}, or an empty string if not set.
  */
+@ValidDateRange(firstDatePropertyName = "startDate", secondDatePropertyName = "endDate")
 public class NewSubscriptionCommandDto {
 
     @ValidDateString
