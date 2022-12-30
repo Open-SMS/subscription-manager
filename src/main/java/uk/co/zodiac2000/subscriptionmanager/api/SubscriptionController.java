@@ -1,5 +1,6 @@
 package uk.co.zodiac2000.subscriptionmanager.api;
 
+import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -44,7 +45,7 @@ public class SubscriptionController {
      * @return a SubscriptionResponseDto
      */
     @PostMapping
-    public ResponseEntity<SubscriptionResponseDto> createSubscription(@RequestBody NewSubscriptionCommandDto commandDto) {
+    public ResponseEntity<SubscriptionResponseDto> createSubscription(@RequestBody @Valid NewSubscriptionCommandDto commandDto) {
         return new ResponseEntity(this.subscriptionService.createSubscription(commandDto).get(), HttpStatus.CREATED);
     }
 
@@ -67,7 +68,7 @@ public class SubscriptionController {
      */
     @PutMapping("/{id}/dates")
     public ResponseEntity<SubscriptionResponseDto> updateSubscriptionDates(@PathVariable("id") long id,
-            @RequestBody SubscriptionDatesCommandDto commandDto) {
+            @RequestBody @Valid SubscriptionDatesCommandDto commandDto) {
         return ResponseEntity.of(this.subscriptionService.updateSubscriptionDates(id, commandDto));
     }
 
@@ -80,7 +81,7 @@ public class SubscriptionController {
      */
     @PutMapping("/{id}/content-identifier")
     public ResponseEntity<SubscriptionResponseDto> updateSubscriptionContentIdentifier(@PathVariable("id") long id,
-            @RequestBody SubscriptionContentIdentifierCommandDto commandDto) {
+            @RequestBody @Valid SubscriptionContentIdentifierCommandDto commandDto) {
         return ResponseEntity.of(this.subscriptionService.updateSubscriptionContentIdentifier(id, commandDto));
     }
 }

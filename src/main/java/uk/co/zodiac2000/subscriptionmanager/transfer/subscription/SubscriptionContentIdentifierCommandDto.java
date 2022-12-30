@@ -1,10 +1,13 @@
 package uk.co.zodiac2000.subscriptionmanager.transfer.subscription;
 
+import javax.validation.constraints.NotEmpty;
+
 /**
  * Command DTO representing a subscription content identifier.
  */
 public class SubscriptionContentIdentifierCommandDto {
 
+    @NotEmpty
     private String contentIdentifier;
 
     /**
