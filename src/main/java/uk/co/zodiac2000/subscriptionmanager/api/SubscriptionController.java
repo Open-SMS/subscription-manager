@@ -81,7 +81,7 @@ public class SubscriptionController {
      */
     @PutMapping("/{id}/content-identifier")
     public ResponseEntity<SubscriptionResponseDto> updateSubscriptionContentIdentifier(@PathVariable("id") long id,
-            @RequestBody SubscriptionContentIdentifierCommandDto commandDto) {
+            @RequestBody @Valid SubscriptionContentIdentifierCommandDto commandDto) {
         return ResponseEntity.of(this.subscriptionService.updateSubscriptionContentIdentifier(id, commandDto));
     }
 }

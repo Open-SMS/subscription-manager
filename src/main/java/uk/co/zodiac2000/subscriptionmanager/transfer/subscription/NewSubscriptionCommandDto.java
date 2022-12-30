@@ -1,6 +1,7 @@
 package uk.co.zodiac2000.subscriptionmanager.transfer.subscription;
 
 import java.util.Optional;
+import javax.validation.constraints.NotEmpty;
 import uk.co.zodiac2000.subscriptionmanager.constraint.ValidDateRange;
 import uk.co.zodiac2000.subscriptionmanager.constraint.ValidDateString;
 
@@ -17,6 +18,7 @@ public class NewSubscriptionCommandDto {
     @ValidDateString
     private Optional<String> endDate;
 
+    @NotEmpty
     private String contentIdentifier;
 
     private String subscriberId;
