@@ -35,17 +35,19 @@ public class SubscriptionController {
      * @return the subscription
      */
     @GetMapping(path = "/{id}")
-    public ResponseEntity<SubscriptionResponseDto> getSubscription(@PathVariable("id") long id) {
+    public ResponseEntity<SubscriptionResponseDto> getSubscription(@PathVariable("id") final long id) {
         return ResponseEntity.of(this.subscriptionService.getSubscription(id));
     }
 
     /**
-     * Creates a new Subscription aggregate root and persists it. Returns a response document representing the new subscription.
+     * Creates a new Subscription aggregate root and persists it. Returns a response document representing the new
+     * subscription.
      * @param commandDto command DTO representing the new subscription
      * @return a SubscriptionResponseDto
      */
     @PostMapping
-    public ResponseEntity<SubscriptionResponseDto> createSubscription(@RequestBody @Valid NewSubscriptionCommandDto commandDto) {
+    public ResponseEntity<SubscriptionResponseDto> createSubscription(
+            @RequestBody @Valid final NewSubscriptionCommandDto commandDto) {
         return new ResponseEntity(this.subscriptionService.createSubscription(commandDto).get(), HttpStatus.CREATED);
     }
 
@@ -54,21 +56,21 @@ public class SubscriptionController {
      * @param id the subscription identifier
      */
     @DeleteMapping("/{id}")
-    @ResponseStatus(code=HttpStatus.NO_CONTENT)
-    public void deleteSubscription(@PathVariable("id") long id) {
+    @ResponseStatus(code = HttpStatus.NO_CONTENT)
+    public void deleteSubscription(@PathVariable("id") final long id) {
         this.subscriptionService.deleteSubscription(id);
     }
 
     /**
-     * Updates the start and end dates associated with the subscription identified by id. Returns the modified subscription
-     * or Not Found if the subscription didn't exist.
+     * Updates the start and end dates associated with the subscription identified by id. Returns the modified
+     * subscription or Not Found if the subscription didn't exist.
      * @param id the subscription identifier
      * @param commandDto command DTO representing the new subscription dates
      * @return the modified subscription
      */
     @PutMapping("/{id}/dates")
-    public ResponseEntity<SubscriptionResponseDto> updateSubscriptionDates(@PathVariable("id") long id,
-            @RequestBody @Valid SubscriptionDatesCommandDto commandDto) {
+    public ResponseEntity<SubscriptionResponseDto> updateSubscriptionDates(@PathVariable("id") final long id,
+            @RequestBody @Valid final SubscriptionDatesCommandDto commandDto) {
         return ResponseEntity.of(this.subscriptionService.updateSubscriptionDates(id, commandDto));
     }
 
@@ -80,8 +82,9 @@ public class SubscriptionController {
      * @return the modified subscription
      */
     @PutMapping("/{id}/content-identifier")
-    public ResponseEntity<SubscriptionResponseDto> updateSubscriptionContentIdentifier(@PathVariable("id") long id,
-            @RequestBody @Valid SubscriptionContentIdentifierCommandDto commandDto) {
+    public ResponseEntity<SubscriptionResponseDto> updateSubscriptionContentIdentifier(
+            @PathVariable("id") final long id,
+            @RequestBody @Valid final SubscriptionContentIdentifierCommandDto commandDto) {
         return ResponseEntity.of(this.subscriptionService.updateSubscriptionContentIdentifier(id, commandDto));
     }
 }

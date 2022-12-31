@@ -17,7 +17,7 @@ public class SamlIdentifierCommandDto {
      * @param entityId the issuer's entityId
      * @param scopedAffiliation the value of the eduPersonScopedAffiliation attribute released by the issuer
      */
-    public SamlIdentifierCommandDto(String entityId, String scopedAffiliation) {
+    public SamlIdentifierCommandDto(final String entityId, final String scopedAffiliation) {
         this.entityId = entityId;
         this.scopedAffiliation = scopedAffiliation;
     }

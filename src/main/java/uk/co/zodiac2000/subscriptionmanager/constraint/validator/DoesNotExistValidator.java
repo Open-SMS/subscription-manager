@@ -32,12 +32,12 @@ public class DoesNotExistValidator implements ConstraintValidator<DoesNotExist, 
 
     private String identfierPropertyName;
 
-    /** 
+    /**
      * Initializes the validator.
      * @param constraintAnnotation the constraint annotation
      */
     @Override
-    public void initialize(DoesNotExist constraintAnnotation) {
+    public void initialize(final DoesNotExist constraintAnnotation) {
         ExpressionParser parser = new SpelExpressionParser();
         this.evaluationContext = new StandardEvaluationContext();
         this.evaluationContext.setBeanResolver(new BeanFactoryResolver(this.beanFactory));
@@ -57,7 +57,7 @@ public class DoesNotExistValidator implements ConstraintValidator<DoesNotExist, 
      * @return false if value does not pass the constraint
      */
     @Override
-    public boolean isValid(Object value, ConstraintValidatorContext context) {
+    public boolean isValid(final Object value, final ConstraintValidatorContext context) {
         Optional<Object> id = this.verificationExpression.getValue(this.evaluationContext, value, Optional.class);
         if (id == null) {
             throw new ValidationException("Unexpected null value returned by expression evaluation");
@@ -79,16 +79,16 @@ public class DoesNotExistValidator implements ConstraintValidator<DoesNotExist, 
     }
 
     /**
-     * Returns an {@code Optional} containing the value of the the property identified by {@code propertyName}
+     * Returns an {@code Optional} containing the value of the the property identified by {@code targetPropertyName}
      * in {@code targetObject}, or an empty {@code Optional} if the property value is null, the property does not
      * exist, or the property cannot be accessed.
      * @param targetObject the object to obtain the property value from
-     * @param propertyName the property name
+     * @param targetPropertyName the property name
      * @return an optional containing the property value
      */
-    private Optional<Object> getPropertyValue(Object targetObject, String propertyName) {
+    private Optional<Object> getPropertyValue(final Object targetObject, final String targetPropertyName) {
         try {
-            return Optional.ofNullable(PropertyUtils.getProperty(targetObject, propertyName));
+            return Optional.ofNullable(PropertyUtils.getProperty(targetObject, targetPropertyName));
         } catch (InvocationTargetException | IllegalAccessException | NoSuchMethodException e) {
             return Optional.empty();
         }
@@ -99,7 +99,7 @@ public class DoesNotExistValidator implements ConstraintValidator<DoesNotExist, 
      * @param beanFactory owning BeanFactory
      */
     @Override
-    public void setBeanFactory(BeanFactory beanFactory) {
+    public void setBeanFactory(final BeanFactory beanFactory) {
         this.beanFactory = beanFactory;
     }
 }

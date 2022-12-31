@@ -34,7 +34,7 @@ public class SubscriptionService {
      * @param id the subscription id
      * @return a response DTO representing the subscription
      */
-    public Optional<SubscriptionResponseDto> getSubscription(long id) {
+    public Optional<SubscriptionResponseDto> getSubscription(final long id) {
         Optional<Subscription> subscription = this.subscriptionRepository.findById(id);
         return this.subscriptionResponseDtoFactory.subscriptionToSubscriptionResponseDto(subscription);
     }
@@ -44,17 +44,18 @@ public class SubscriptionService {
      * @param id the subscription identifier
      */
     @Transactional(readOnly = false)
-    public void deleteSubscription(long id) {
+    public void deleteSubscription(final long id) {
         this.subscriptionRepository.findById(id).ifPresent(this.subscriptionRepository::delete);
     }
 
     /**
-     * Creates a new Subscription aggregate root and persists it. Returns a response DTO representing the new subscription.
+     * Creates a new Subscription aggregate root and persists it. Returns a response DTO representing the new
+     * subscription.
      * @param commandDto command DTO representing the new subscription
      * @return a SubscriptionResponseDto
      */
     @Transactional(readOnly = false)
-    public Optional<SubscriptionResponseDto> createSubscription(NewSubscriptionCommandDto commandDto) {
+    public Optional<SubscriptionResponseDto> createSubscription(final NewSubscriptionCommandDto commandDto) {
         Subscription subscription = this.subscriptionRepository.save(
                 this.subscriptionFactory.subscriptionCommandDtoToSubscription(commandDto)
         );
@@ -71,23 +72,24 @@ public class SubscriptionService {
      * @return a SubscriptionResponseDto
      */
     @Transactional(readOnly = false)
-    public Optional<SubscriptionResponseDto> updateSubscriptionDates(long id, SubscriptionDatesCommandDto commandDto) {
+    public Optional<SubscriptionResponseDto> updateSubscriptionDates(final long id,
+            final SubscriptionDatesCommandDto commandDto) {
         Optional<Subscription> subscription = this.subscriptionRepository.findById(id);
         subscription.ifPresent(s -> s.setDates(commandDto));
         return this.subscriptionResponseDtoFactory.subscriptionToSubscriptionResponseDto(subscription);
     }
 
     /**
-     * Updates the content identifier associated with the Subscription identified by id. Returns a response DTO representing the
-     * updated subscription. If the subscription doesn't exist then an empty optional is returned and no change is
-     * made to the state of the system.
+     * Updates the content identifier associated with the Subscription identified by id. Returns a response DTO
+     * representing the updated subscription. If the subscription doesn't exist then an empty optional is returned and
+     * no change is made to the state of the system.
      * @param id the subscription identifier
      * @param commandDto command DTO representing the updated content identifier
      * @return a SubscriptionResponseDto
      */
     @Transactional(readOnly = false)
-    public Optional<SubscriptionResponseDto> updateSubscriptionContentIdentifier(long id,
-            SubscriptionContentIdentifierCommandDto commandDto) {
+    public Optional<SubscriptionResponseDto> updateSubscriptionContentIdentifier(final long id,
+            final SubscriptionContentIdentifierCommandDto commandDto) {
         Optional<Subscription> subscription = this.subscriptionRepository.findById(id);
         subscription.ifPresent(s -> s.setContentIdentifier(commandDto));
         return this.subscriptionResponseDtoFactory.subscriptionToSubscriptionResponseDto(subscription);

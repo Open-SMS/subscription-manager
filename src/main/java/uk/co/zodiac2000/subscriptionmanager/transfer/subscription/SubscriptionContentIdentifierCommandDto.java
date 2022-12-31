@@ -19,7 +19,7 @@ public class SubscriptionContentIdentifierCommandDto {
      * Constructs a new SubscriptionContentIdentifierCommandDto using the supplied argument.
      * @param contentIdentifier a string that describes the content that is the subject of the subscription
      */
-    public SubscriptionContentIdentifierCommandDto(String contentIdentifier) {
+    public SubscriptionContentIdentifierCommandDto(final String contentIdentifier) {
         this.contentIdentifier = contentIdentifier;
     }
 

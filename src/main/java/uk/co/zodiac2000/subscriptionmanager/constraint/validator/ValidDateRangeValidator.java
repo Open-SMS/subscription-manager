@@ -23,12 +23,12 @@ public class ValidDateRangeValidator implements ConstraintValidator<ValidDateRan
 
     private String message;
 
-    /** 
+    /**
      * Initializes the validator.
      * @param constraintAnnotation the constraint annotation
      */
     @Override
-    public void initialize(ValidDateRange constraintAnnotation) {
+    public void initialize(final ValidDateRange constraintAnnotation) {
         this.firstDatePropertyName = constraintAnnotation.firstDatePropertyName();
         this.secondDatePropertyName = constraintAnnotation.secondDatePropertyName();
         this.message = constraintAnnotation.message();
@@ -38,16 +38,16 @@ public class ValidDateRangeValidator implements ConstraintValidator<ValidDateRan
      * Returns true if the property named {@code firstDatePropertyName} is an {@code Optional} containing
      * a valid date string and the property named {@code secondDatePropertyName} is an {@code Optional} containing
      * a valid date string, and the the first date occurs before or on the same date as the second date. Also returns
-     * true if either property does not exist, is empty, is not an {@code Optional}, or the date string cannot be parsed.
-     * It is assumed that other validation will handle incorrectly formatted dates. If either date is empty then the
-     * date range is valid. If not valid then the constraint violation is set on the property named
+     * true if either property does not exist, is empty, is not an {@code Optional}, or the date string cannot be
+     * parsed. It is assumed that other validation will handle incorrectly formatted dates. If either date is empty
+     * then the date range is valid. If not valid then the constraint violation is set on the property named
      * {@code firstDatePropertyName}.
      * @param value the object to verify
      * @param context context the context in which the object is validated
      * @return true if the date range is valid
      */
     @Override
-    public boolean isValid(Object value, ConstraintValidatorContext context) {
+    public boolean isValid(final Object value, final ConstraintValidatorContext context) {
         Optional<LocalDate> firstDate = getPropertyValueAsLocalDate(value, this.firstDatePropertyName);
         Optional<LocalDate> secondDate = getPropertyValueAsLocalDate(value, this.secondDatePropertyName);
         boolean valid = firstDate.map(s ->
@@ -72,7 +72,7 @@ public class ValidDateRangeValidator implements ConstraintValidator<ValidDateRan
      * @param propertyName the property name
      * @return an optional containing the property value
      */
-    private Optional<LocalDate> getPropertyValueAsLocalDate(Object targetObject, String propertyName) {
+    private Optional<LocalDate> getPropertyValueAsLocalDate(final Object targetObject, final String propertyName) {
         try {
             Optional<String> dateString = (Optional) PropertyUtils.getProperty(targetObject, propertyName);
             return dateString.map(v -> LocalDate.parse(v, FORMAT));

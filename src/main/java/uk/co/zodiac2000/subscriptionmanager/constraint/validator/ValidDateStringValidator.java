@@ -24,7 +24,7 @@ public class ValidDateStringValidator implements ConstraintValidator<ValidDateSt
      * @return true if the date string is valid
      */
     @Override
-    public boolean isValid(Optional<String> value, ConstraintValidatorContext context) {
+    public boolean isValid(final Optional<String> value, final ConstraintValidatorContext context) {
         try {
             Optional<LocalDate> date = value.map(v -> LocalDate.parse(v, FORMAT));
         } catch (DateTimeParseException e) {

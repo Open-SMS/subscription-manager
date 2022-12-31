@@ -13,7 +13,7 @@ public class OidcIdentifierRequestDto {
      * @param issuer the iss claim
      * @param subject the sub claim
      */
-    public OidcIdentifierRequestDto(String issuer, String subject) {
+    public OidcIdentifierRequestDto(final String issuer, final String subject) {
         this.issuer = issuer;
         this.subject = subject;
     }

@@ -22,8 +22,8 @@ public class SubscriberResponseDtoFactory {
      * @param subscribers a set of subscribers
      * @return the set of subscribers mapped by {@link #subscriberToSubscriberResponseDto}
      */
-    public Set<SubscriberResponseDto> subscribersToSubscriberResponseDtos(Set<Subscriber> subscribers) {
-        return subscribers.stream() // Is this a candidate for parallel? Should I think about using  streams from the repo?
+    public Set<SubscriberResponseDto> subscribersToSubscriberResponseDtos(final Set<Subscriber> subscribers) {
+        return subscribers.stream()
                 .map(p -> this.subscriberToSubscriberResponseDto(Optional.of(p)).get())
                 .collect(Collectors.toSet());
     }
@@ -34,7 +34,7 @@ public class SubscriberResponseDtoFactory {
      * @param subscriber the subscriber
      * @return response DTO representation of subscriber
      */
-    public Optional<SubscriberResponseDto> subscriberToSubscriberResponseDto(Optional<Subscriber> subscriber) {
+    public Optional<SubscriberResponseDto> subscriberToSubscriberResponseDto(final Optional<Subscriber> subscriber) {
         return subscriber
                 .map(p -> {
                     return new SubscriberResponseDto(
@@ -51,7 +51,8 @@ public class SubscriberResponseDtoFactory {
      * @param samlIdentifiers a set of SAML identifiers
      * @return a set of SamlIdentifierResponseDto objects
      */
-    public List<SamlIdentifierResponseDto> samlIdentifiersToSamlIdentifierResponseDtos(Set<SamlIdentifier> samlIdentifiers) {
+    public List<SamlIdentifierResponseDto> samlIdentifiersToSamlIdentifierResponseDtos(
+            final Set<SamlIdentifier> samlIdentifiers) {
         return samlIdentifiers.stream()
                 .sorted()
                 .map(i -> {
@@ -68,7 +69,8 @@ public class SubscriberResponseDtoFactory {
      * @param oidcIdentifiers a set of SAML identifiers
      * @return a set of OidcIdentifierResponseDto objects
      */
-    public List<OidcIdentifierResponseDto> oidcIdentifiersToOidcIdentifierResponseDtos(Set<OidcIdentifier> oidcIdentifiers) {
+    public List<OidcIdentifierResponseDto> oidcIdentifiersToOidcIdentifierResponseDtos(
+            final Set<OidcIdentifier> oidcIdentifiers) {
         return oidcIdentifiers.stream()
                 .sorted()
                 .map(i -> {

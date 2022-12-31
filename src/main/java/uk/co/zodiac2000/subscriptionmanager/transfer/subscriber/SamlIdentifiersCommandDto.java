@@ -8,7 +8,7 @@ import javax.validation.Valid;
  * class is to allow the members of the {@code samlIdentifiers} collection to be validated.
  */
 public class SamlIdentifiersCommandDto {
-    
+
     @Valid
     private List<SamlIdentifierCommandDto> samlIdentifiers;
 
@@ -20,7 +20,7 @@ public class SamlIdentifiersCommandDto {
     /**
      * @param samlIdentifierCommandDtos a list of SamlIdentifierCommandDto objects
      */
-    public SamlIdentifiersCommandDto(List<SamlIdentifierCommandDto> samlIdentifierCommandDtos) {
+    public SamlIdentifiersCommandDto(final List<SamlIdentifierCommandDto> samlIdentifierCommandDtos) {
         this.samlIdentifiers = samlIdentifierCommandDtos;
     }
 

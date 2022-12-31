@@ -50,9 +50,9 @@ public class Subscription implements Serializable {
      * @param contentIdentifier a string that describes the content that is the subject of this subscription
      * @param subscriberId the identifier of the subscriber that is the beneficiary of this subscription
      */
-    public Subscription(Optional<LocalDate> optionalStartDate, Optional<LocalDate> optionalEndDate,
-            String contentIdentifier, Long subscriberId) {
-        if (!startDateBeforeEndDate(optionalStartDate, optionalEndDate)) {
+    public Subscription(final Optional<LocalDate> optionalStartDate, final Optional<LocalDate> optionalEndDate,
+            final String contentIdentifier, final long subscriberId) {
+        if (!firstDateBeforeSecondDate(optionalStartDate, optionalEndDate)) {
             throw new IllegalArgumentException("startDate must be before or equal to endDate");
         }
         this.startDate = optionalStartDate.orElse(null);
@@ -113,12 +113,12 @@ public class Subscription implements Serializable {
 
     /**
      * Returns true if this subscription is active. A subscription is active if atDate is between startDate and
-     * endDate (inclusive), and the subscription is not terminated. If startDate or endDate is empty then the subscription
-     * is active when atDate is before or equal to endDate, or after or equal to startDate respectively.
+     * endDate (inclusive), and the subscription is not terminated. If startDate or endDate is empty then the
+     * subscription is active when atDate is before or equal to endDate, or after or equal to startDate respectively.
      * @param atDate the date at which the active state should be determined
      * @return true if the subscription is active
      */
-    public boolean isActive(LocalDate atDate) {
+    public boolean isActive(final LocalDate atDate) {
         return !this.terminated
                 && this.getStartDate().map(d -> !atDate.isBefore(d)).orElse(true)
                 && this.getEndDate().map(d -> !atDate.isAfter(d)).orElse(true);
@@ -129,10 +129,10 @@ public class Subscription implements Serializable {
      * must be before or equal to the end date.
      * @param commandDto command DTO representing the new start and end dates
      */
-    public void setDates(SubscriptionDatesCommandDto commandDto) {
+    public void setDates(final SubscriptionDatesCommandDto commandDto) {
         Optional<LocalDate> optionalStartDate = commandDto.getStartDate().map(LocalDate::parse);
         Optional<LocalDate> optionalEndDate = commandDto.getEndDate().map(LocalDate::parse);
-        if (!startDateBeforeEndDate(optionalStartDate, optionalEndDate)) {
+        if (!firstDateBeforeSecondDate(optionalStartDate, optionalEndDate)) {
             throw new IllegalArgumentException("startDate must be before or equal to endDate");
         }
         this.startDate = optionalStartDate.orElse(null);
@@ -140,13 +140,14 @@ public class Subscription implements Serializable {
     }
 
     /**
-     * @param startDate
-     * @param endDate
-     * @return true if startDate or endDate are empty, or if startDate is before or equal to endDate
+     * @param firstDate the first date
+     * @param secondDate the second date
+     * @return true if firstDate or secondDate are empty, or if firstDate is before or equal to secondDate
      */
-    private boolean startDateBeforeEndDate(Optional<LocalDate> startDate, Optional<LocalDate> endDate) {
-        return startDate.map(s ->
-                endDate.map(e -> e.isAfter(s) || e.equals(s)).orElse(true)
+    private boolean firstDateBeforeSecondDate(final Optional<LocalDate> firstDate,
+            final Optional<LocalDate> secondDate) {
+        return firstDate.map(s ->
+                secondDate.map(e -> e.isAfter(s) || e.equals(s)).orElse(true)
         ).orElse(true);
     }
 
@@ -154,7 +155,7 @@ public class Subscription implements Serializable {
      * Sets the content identifier associated with this subscription.
      * @param commandDto command DTO representing the new content identifier
      */
-    public void setContentIdentifier(SubscriptionContentIdentifierCommandDto commandDto) {
+    public void setContentIdentifier(final SubscriptionContentIdentifierCommandDto commandDto) {
         this.contentIdentifier = commandDto.getContentIdentifier();
     }
 }

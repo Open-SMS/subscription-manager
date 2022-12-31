@@ -20,9 +20,9 @@ public class SubscriberResponseDto implements Serializable {
      * @param samlIdentifierResponseDtos set of SAML identifiers associated with this subscriber
      * @param oidcIdentifierResponseDtos set of OIDC identifiers associated with this subscriber
      */
-    public SubscriberResponseDto(Long id, String subscriberName,
-            List<SamlIdentifierResponseDto> samlIdentifierResponseDtos,
-            List<OidcIdentifierResponseDto> oidcIdentifierResponseDtos) {
+    public SubscriberResponseDto(final Long id, final String subscriberName,
+            final List<SamlIdentifierResponseDto> samlIdentifierResponseDtos,
+            final List<OidcIdentifierResponseDto> oidcIdentifierResponseDtos) {
         this.id = id;
         this.subscriberName = subscriberName;
         this.samlIdentifierResponseDtos = samlIdentifierResponseDtos;
