@@ -16,11 +16,11 @@ public class SubscriptionFactory {
      * @param commandDto command DTO representing the state of the new subscription
      * @return a new Subscription
      */
-    public Subscription subscriptionCommandDtoToSubscription(NewSubscriptionCommandDto commandDto) {
+    public Subscription subscriptionCommandDtoToSubscription(final NewSubscriptionCommandDto commandDto) {
         return new Subscription(
                 commandDto.getStartDate().map(LocalDate::parse),
                 commandDto.getEndDate().map(LocalDate::parse),
-                commandDto.getContentIdentifier(), Long.valueOf(commandDto.getSubscriberId())
+                commandDto.getContentIdentifier(), Long.parseLong(commandDto.getSubscriberId())
         );
     }
 }

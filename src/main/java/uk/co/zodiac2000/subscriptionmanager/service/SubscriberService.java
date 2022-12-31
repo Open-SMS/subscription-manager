@@ -38,7 +38,7 @@ public class SubscriberService {
      * @param id the subscriber id
      * @return an Optional that contains a SubscriberResponseDto, if found
      */
-    public Optional<SubscriberResponseDto> getSubscriberById(Long id) {
+    public Optional<SubscriberResponseDto> getSubscriberById(final Long id) {
         Optional<Subscriber> subscriber = this.subscriberRepository.findById(id);
         return this.subscriberResponseDtoFactory.subscriberToSubscriberResponseDto(subscriber);
     }
@@ -48,7 +48,7 @@ public class SubscriberService {
      * @param subscriberName
      * @return the subscriber identifier
      */
-    public Optional<Long> getSubscriberIdBySubscriberName(String subscriberName) {
+    public Optional<Long> getSubscriberIdBySubscriberName(final String subscriberName) {
         return this.subscriberRepository.findBySubscriberName(subscriberName).map(Subscriber::getId);
     }
 
@@ -57,7 +57,7 @@ public class SubscriberService {
      * @param requestDto the OIDC claims being authorized
      * @return a set of SubscriberResponseDto objects
      */
-    public Set<SubscriberResponseDto> getSubscriberByOidcIdentifier(OidcIdentifierRequestDto requestDto) {
+    public Set<SubscriberResponseDto> getSubscriberByOidcIdentifier(final OidcIdentifierRequestDto requestDto) {
         Set<Subscriber> subscribers = this.subscriberRepository.findByOidcIdentifiersIssuerAndOidcIdentifiersSubject(
                 requestDto.getIssuer(), requestDto.getSubject());
         return this.subscriberResponseDtoFactory.subscribersToSubscriberResponseDtos(subscribers);
@@ -68,9 +68,10 @@ public class SubscriberService {
      * @param requestDto the SAML assertions being authorized
      * @return a set of SubscriberResponseDto objects
      */
-    public Set<SubscriberResponseDto> getSubscriberBySamlIdentifier(SamlIdentifierRequestDto requestDto) {
-        Set<Subscriber> subscribers = this.subscriberRepository.findBySamlIdentifiersEntityIdAndSamlIdentifiersScopedAffiliation(
-                requestDto.getEntityId(), requestDto.getScopedAffiliation());
+    public Set<SubscriberResponseDto> getSubscriberBySamlIdentifier(final SamlIdentifierRequestDto requestDto) {
+        Set<Subscriber> subscribers
+                = this.subscriberRepository.findBySamlIdentifiersEntityIdAndSamlIdentifiersScopedAffiliation(
+                        requestDto.getEntityId(), requestDto.getScopedAffiliation());
         return this.subscriberResponseDtoFactory.subscribersToSubscriberResponseDtos(subscribers);
     }
 
@@ -80,9 +81,9 @@ public class SubscriberService {
      * @return a SubscriberResponseDto
      */
     @Transactional(readOnly = false)
-    public Optional<SubscriberResponseDto> createSubscriber(NewSubscriberCommandDto newSubscriberCommandDto) {
-        Subscriber subscriber
-                = this.subscriberRepository.save(this.subscriberFactory.newSubscriberCommandDtoToSubscriber(newSubscriberCommandDto));
+    public Optional<SubscriberResponseDto> createSubscriber(final NewSubscriberCommandDto newSubscriberCommandDto) {
+        Subscriber subscriber = this.subscriberRepository.save(
+                this.subscriberFactory.newSubscriberCommandDtoToSubscriber(newSubscriberCommandDto));
         return this.subscriberResponseDtoFactory.subscriberToSubscriberResponseDto(Optional.of(subscriber));
     }
 
@@ -94,7 +95,8 @@ public class SubscriberService {
      * @return an Optional that contains a SubscriberResponseDto representing the new state of the subscriber
      */
     @Transactional(readOnly = false)
-    public Optional<SubscriberResponseDto> updateSubscriberName(SubscriberNameCommandDto subscriberNameCommandDto) {
+    public Optional<SubscriberResponseDto> updateSubscriberName(
+            final SubscriberNameCommandDto subscriberNameCommandDto) {
         Optional<Subscriber> subscriber = this.subscriberRepository.findById(subscriberNameCommandDto.getId());
         subscriber.ifPresent(p -> p.setSubscriberName(subscriberNameCommandDto));
         return this.subscriberResponseDtoFactory.subscriberToSubscriberResponseDto(subscriber);
@@ -105,7 +107,7 @@ public class SubscriberService {
      * @param id the subscriber identifier
      */
     @Transactional(readOnly = false)
-    public void deleteSubscriber(long id) {
+    public void deleteSubscriber(final long id) {
         this.subscriberRepository.findById(id).ifPresent(this.subscriberRepository::delete);
     }
 
@@ -117,7 +119,8 @@ public class SubscriberService {
      * @return an Optional that contains a SubscriberResponseDto representing the new state of the subscriber
      */
     @Transactional(readOnly = false)
-    public Optional<SubscriberResponseDto> setSamlIdentifiers(long id, Set<SamlIdentifierCommandDto> samlIdentifierCommandDtos) {
+    public Optional<SubscriberResponseDto> setSamlIdentifiers(final long id,
+            final Set<SamlIdentifierCommandDto> samlIdentifierCommandDtos) {
         Optional<Subscriber> subscriber = this.subscriberRepository.findById(id);
         subscriber.ifPresent(p -> p.setSamlIdentifiers(samlIdentifierCommandDtos));
         return this.subscriberResponseDtoFactory.subscriberToSubscriberResponseDto(subscriber);
@@ -131,7 +134,8 @@ public class SubscriberService {
      * @return an Optional that contains a SubscriberResponseDto representing the new state of the subscriber
      */
     @Transactional(readOnly = false)
-    public Optional<SubscriberResponseDto> setOidcIdentifiers(long id, Set<OidcIdentifierCommandDto> oidcIdentifierCommandDtos ) {
+    public Optional<SubscriberResponseDto> setOidcIdentifiers(final long id,
+            final Set<OidcIdentifierCommandDto> oidcIdentifierCommandDtos) {
         Optional<Subscriber> subscriber = this.subscriberRepository.findById(id);
         subscriber.ifPresent(p -> p.setOidcIdentifiers(oidcIdentifierCommandDtos));
         return this.subscriberResponseDtoFactory.subscriberToSubscriberResponseDto(subscriber);

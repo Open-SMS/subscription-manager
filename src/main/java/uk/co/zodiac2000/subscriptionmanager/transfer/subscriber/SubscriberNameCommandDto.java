@@ -25,7 +25,7 @@ public class SubscriberNameCommandDto {
      * @param id the subscriber identifier
      * @param subscriberName the subscriber name
      */
-    public SubscriberNameCommandDto(long id, String subscriberName) {
+    public SubscriberNameCommandDto(final long id, final String subscriberName) {
         this.id = id;
         this.subscriberName = subscriberName;
     }
@@ -33,7 +33,7 @@ public class SubscriberNameCommandDto {
     /**
      * @param id the subscriber identifier
      */
-    public void setId(long id) {
+    public void setId(final long id) {
         this.id = id;
     }
 

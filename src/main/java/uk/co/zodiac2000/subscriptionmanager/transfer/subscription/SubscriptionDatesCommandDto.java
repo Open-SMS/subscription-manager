@@ -28,7 +28,7 @@ public class SubscriptionDatesCommandDto {
      * @param startDate the date from which the subscription is active
      * @param endDate the date until which the subscription is active
      */
-    public SubscriptionDatesCommandDto(Optional<String> startDate, Optional<String> endDate) {
+    public SubscriptionDatesCommandDto(final Optional<String> startDate, final Optional<String> endDate) {
         this.startDate = startDate;
         this.endDate = endDate;
     }

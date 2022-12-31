@@ -51,7 +51,7 @@ public class Subscriber implements Serializable {
      * Constructs a new Subscriber using the supplied arguments.
      * @param subscriberName the subscriber's name
      */
-    public Subscriber(String subscriberName) {
+    public Subscriber(final String subscriberName) {
         this.subscriberName = subscriberName;
     }
 
@@ -59,7 +59,7 @@ public class Subscriber implements Serializable {
      * Allows the subscriber name to be changed.
      * @param subscriberNameCommandDto the subscriber's name
      */
-    public void setSubscriberName(SubscriberNameCommandDto subscriberNameCommandDto) {
+    public void setSubscriberName(final SubscriberNameCommandDto subscriberNameCommandDto) {
         this.subscriberName = subscriberNameCommandDto.getSubscriberName();
     }
 
@@ -81,7 +81,7 @@ public class Subscriber implements Serializable {
      * Sets the SAML identifiers associated with this subscriber.
      * @param samlIdentifiers the SAML identifiers
      */
-    public void setSamlIdentifiers(Set<SamlIdentifierCommandDto> samlIdentifiers) {
+    public void setSamlIdentifiers(final Set<SamlIdentifierCommandDto> samlIdentifiers) {
         this.samlIdentifiers = samlIdentifiers.stream()
                 .map(i -> new SamlIdentifier(i.getEntityId(), i.getScopedAffiliation()))
                 .collect(Collectors.toSet());
@@ -98,7 +98,7 @@ public class Subscriber implements Serializable {
      * Sets the OIDC identifiers associated with this subscriber.
      * @param oidcIdentifiers the OIDC identifiers
      */
-    public void setOidcIdentifiers(Set<OidcIdentifierCommandDto> oidcIdentifiers) {
+    public void setOidcIdentifiers(final Set<OidcIdentifierCommandDto> oidcIdentifiers) {
         this.oidcIdentifiers = oidcIdentifiers.stream()
                 .map(i -> new OidcIdentifier(i.getIssuer(), i.getSubject()))
                 .collect(Collectors.toSet());

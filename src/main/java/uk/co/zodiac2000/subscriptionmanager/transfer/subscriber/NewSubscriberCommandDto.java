@@ -22,7 +22,7 @@ public class NewSubscriberCommandDto {
      * Constructs a new NewSubscriberCommandDto using the supplied arguments.
      * @param subscriberName this subscriber's name
      */
-    public NewSubscriberCommandDto(String subscriberName) {
+    public NewSubscriberCommandDto(final String subscriberName) {
         this.subscriberName = subscriberName;
     }
 

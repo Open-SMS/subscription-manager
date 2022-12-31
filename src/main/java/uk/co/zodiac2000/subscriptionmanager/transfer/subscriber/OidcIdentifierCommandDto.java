@@ -17,7 +17,7 @@ public class OidcIdentifierCommandDto {
      * @param issuer the iss claim
      * @param subject the sub claim
      */
-    public OidcIdentifierCommandDto(String issuer, String subject) {
+    public OidcIdentifierCommandDto(final String issuer, final String subject) {
         this.issuer = issuer;
         this.subject = subject;
     }

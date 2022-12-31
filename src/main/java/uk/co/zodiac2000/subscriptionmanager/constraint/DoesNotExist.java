@@ -12,13 +12,14 @@ import uk.co.zodiac2000.subscriptionmanager.constraint.validator.DoesNotExistVal
 
 /**
  * Type constraint that is used to verify whether an object already exists in the system with unique properties matching
- * those used in a DTO being used to create a new object or update an existing object. The check is performed by evaluating
- * a SPeL expression defined by the {@code expression} property. This method should return an {@code Optional} which should
- * contain the identifier of the existing object if found, otherwise an empty optional. Arguments to the method can be
- * properties of the DTO specified by the SPeL expression. If the object exists then the DTO is considered invalid.
- * In the case of an update the {@code identfierPropertyName} property (which defaults to
- * {@code id}) specifies the identifier property in the DTO. If the value of this property is equal to to value returned
- * by the SPeL expression then the DTO is considered valid because the object that was found is the object being updated.
+ * those used in a DTO being used to create a new object or update an existing object. The check is performed by
+ * evaluating a SPeL expression defined by the {@code expression} property. This method should return an
+ * {@code Optional} which should contain the identifier of the existing object if found, otherwise an empty optional.
+ * Arguments to the method can be properties of the DTO specified by the SPeL expression. If the object exists then
+ * the DTO is considered invalid. In the case of an update the {@code identfierPropertyName} property (which defaults
+ * to {@code id}) specifies the identifier property in the DTO. If the value of this property is equal to to value
+ * returned by the SPeL expression then the DTO is considered valid because the object that was found is the object
+ * being updated.
  * <br><br>
  * For example:
  * <pre>
@@ -29,13 +30,13 @@ import uk.co.zodiac2000.subscriptionmanager.constraint.validator.DoesNotExistVal
  *         return this.subscriberRepository.findBySubscriberName(subscriberName).map(Subscriber::getId);
  *     }
  * }
- * 
+ *
  * @DoesNotExist(expression = "@subscriberService.getSubscriberIdBySubscriberName(#this.subscriberName)",
  *     propertyName = "subscriberName")
  * public class NewSubscriberCommandDto {
  *     private String subscriberName;
  * }
- * 
+ *
  * @DoesNotExist(expression = "@subscriberService.getSubscriberIdBySubscriberName(#this.subscriberName)",
  *     propertyName = "subscriberName", identfierPropertyName = "ident")
  * public class UpdateSubscriberCommandDto {
@@ -59,7 +60,7 @@ public @interface DoesNotExist {
 
     /**
      * Returns the default validation groups. There are no default validation groups for this constraint.
-     * @return default validation groups. 
+     * @return default validation groups.
      */
     Class<?>[] groups() default {};
 

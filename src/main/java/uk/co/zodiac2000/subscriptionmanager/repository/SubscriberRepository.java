@@ -24,7 +24,8 @@ public interface SubscriberRepository extends JpaRepository<Subscriber, Long> {
      * @param scopedAffiliation the value of the eduPersonScopedAffiliation attribute released by the issuer
      * @return a set of identified subscribers
      */
-    Set<Subscriber> findBySamlIdentifiersEntityIdAndSamlIdentifiersScopedAffiliation(String entityId, String scopedAffiliation);
+    Set<Subscriber> findBySamlIdentifiersEntityIdAndSamlIdentifiersScopedAffiliation(String entityId,
+            String scopedAffiliation);
 
     /**
      * Returns an Optional containing a Subscriber with subscriberName matching the argument, or an empty Optional if

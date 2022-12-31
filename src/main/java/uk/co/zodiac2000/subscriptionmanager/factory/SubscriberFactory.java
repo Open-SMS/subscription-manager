@@ -15,7 +15,7 @@ public class SubscriberFactory {
      * @param newSubscriberCommandDto command DTO representing the state of the new subscriber
      * @return a Subscriber
      */
-    public Subscriber newSubscriberCommandDtoToSubscriber(NewSubscriberCommandDto newSubscriberCommandDto) {
+    public Subscriber newSubscriberCommandDtoToSubscriber(final NewSubscriberCommandDto newSubscriberCommandDto) {
         return new Subscriber(newSubscriberCommandDto.getSubscriberName());
     }
 }

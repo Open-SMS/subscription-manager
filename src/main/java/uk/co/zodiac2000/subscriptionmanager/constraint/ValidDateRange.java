@@ -30,7 +30,7 @@ public @interface ValidDateRange {
 
     /**
      * Returns the default validation groups. There are no default validation groups for this constraint.
-     * @return default validation groups. 
+     * @return default validation groups.
      */
     Class<?>[] groups() default {};
 

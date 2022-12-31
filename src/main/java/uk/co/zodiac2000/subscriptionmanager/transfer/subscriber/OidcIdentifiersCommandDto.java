@@ -20,7 +20,7 @@ public class OidcIdentifiersCommandDto {
     /**
      * @param oidcIdentifiers a list of OidcIdentifierCommandDto objects
      */
-    public OidcIdentifiersCommandDto(List<OidcIdentifierCommandDto> oidcIdentifiers) {
+    public OidcIdentifiersCommandDto(final List<OidcIdentifierCommandDto> oidcIdentifiers) {
         this.oidcIdentifiers = oidcIdentifiers;
     }
 

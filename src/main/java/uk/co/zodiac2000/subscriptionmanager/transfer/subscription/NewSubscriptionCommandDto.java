@@ -35,8 +35,8 @@ public class NewSubscriptionCommandDto {
      * @param contentIdentifier a string that describes the content that is the subject of the subscription
      * @param subscriberId the subscriber that is the beneficiary of this subscription
      */
-    public NewSubscriptionCommandDto(Optional<String> startDate, Optional<String> endDate, String contentIdentifier,
-            String subscriberId) {
+    public NewSubscriptionCommandDto(final Optional<String> startDate, final Optional<String> endDate,
+            final String contentIdentifier, final String subscriberId) {
         this.startDate = startDate;
         this.endDate = endDate;
         this.contentIdentifier = contentIdentifier;

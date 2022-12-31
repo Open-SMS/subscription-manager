@@ -32,8 +32,9 @@ public class SubscriptionResponseDto {
      * @param subscriberId the identifier of the subscriber that is the beneficiary of this subscription
      * @param active true if this subscription is active
      */
-    public SubscriptionResponseDto(Long id, Optional<LocalDate> startDate, Optional<LocalDate> endDate, boolean terminated,
-            String contentIdentifier, Long subscriberId, boolean active) {
+    public SubscriptionResponseDto(final Long id, final Optional<LocalDate> startDate,
+            final Optional<LocalDate> endDate, final boolean terminated, final String contentIdentifier,
+            final Long subscriberId, final boolean active) {
         this.id = id;
         this.startDate = startDate;
         this.endDate = endDate;

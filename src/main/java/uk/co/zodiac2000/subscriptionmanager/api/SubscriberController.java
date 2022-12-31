@@ -43,17 +43,19 @@ public class SubscriberController {
      * @return the subscriber
      */
     @GetMapping(path = "/{id}")
-    public ResponseEntity<SubscriberResponseDto> getSubscriber(@PathVariable("id") long id) {
+    public ResponseEntity<SubscriberResponseDto> getSubscriber(@PathVariable("id") final long id) {
         return ResponseEntity.of(this.subscriberService.getSubscriberById(id));
     }
-    
+
     /**
-     * Creates a new Subscriber aggregate root and persists it. Returns a response document representing the new subscriber.
+     * Creates a new Subscriber aggregate root and persists it. Returns a response document representing the new
+     * subscriber.
      * @param commandDto command DTO representing the new subscriber
      * @return a SubscriberResponseDto
      */
     @PostMapping
-    public ResponseEntity<SubscriberResponseDto> createSubscriber(@RequestBody @Valid NewSubscriberCommandDto commandDto) {
+    public ResponseEntity<SubscriberResponseDto> createSubscriber(
+            @RequestBody @Valid final NewSubscriberCommandDto commandDto) {
         return new ResponseEntity(this.subscriberService.createSubscriber(commandDto).get(), HttpStatus.CREATED);
     }
 
@@ -62,14 +64,14 @@ public class SubscriberController {
      * @param id the subscriber identifier
      */
     @DeleteMapping("/{id}")
-    @ResponseStatus(code=HttpStatus.NO_CONTENT)
-    public void deleteSubscriber(@PathVariable("id") long id) {
+    @ResponseStatus(code = HttpStatus.NO_CONTENT)
+    public void deleteSubscriber(@PathVariable("id") final long id) {
         this.subscriberService.deleteSubscriber(id);
     }
 
     /**
-     * Updates the subscriber name of the subscriber identified by id. If the subscriber doesn't exist then Not Found is returned
-     * and no change is made to the state of the system.
+     * Updates the subscriber name of the subscriber identified by id. If the subscriber doesn't exist then Not Found
+     * is returned and no change is made to the state of the system.
      * @param id the subscriber id
      * @param commandDto the new subscriber name
      * @param errors data binding and validation errors
@@ -77,8 +79,8 @@ public class SubscriberController {
      * @throws org.springframework.validation.BindException if a validation failure occurs
      */
     @PutMapping("/{id}/subscriber-name")
-    public ResponseEntity<SubscriberResponseDto> updateSubscriberName(@PathVariable("id") long id,
-            @RequestBody SubscriberNameCommandDto commandDto, BindingResult errors) throws BindException {
+    public ResponseEntity<SubscriberResponseDto> updateSubscriberName(@PathVariable("id") final long id,
+            @RequestBody final SubscriberNameCommandDto commandDto, final BindingResult errors) throws BindException {
 
         commandDto.setId(id);
         this.validator.validate(commandDto, errors);
@@ -90,28 +92,30 @@ public class SubscriberController {
     }
 
     /**
-     * Replaces the set of SAML identifiers associated with the subscriber identified by {@code id} with the SAML identifiers
-     * specified by {@code commandDto}.
+     * Replaces the set of SAML identifiers associated with the subscriber identified by {@code id} with the SAML
+     * identifiers specified by {@code commandDto}.
      * @param id the subscriber identifier
      * @param commandDto an SamlIdentifiersCommandDto containing a list of SamlIdentifierCommandDto objects
      * @return the modified subscriber
      */
     @PutMapping("/{id}/saml-identifiers")
-    public ResponseEntity<SubscriberResponseDto> setSamlIdentifiers(@PathVariable("id") long id,
-            @RequestBody @Valid SamlIdentifiersCommandDto commandDto) {
-        return ResponseEntity.of(this.subscriberService.setSamlIdentifiers(id, Set.copyOf(commandDto.getSamlIdentifiers())));
+    public ResponseEntity<SubscriberResponseDto> setSamlIdentifiers(@PathVariable("id") final long id,
+            @RequestBody @Valid final SamlIdentifiersCommandDto commandDto) {
+        return ResponseEntity.of(this.subscriberService.setSamlIdentifiers(id,
+                Set.copyOf(commandDto.getSamlIdentifiers())));
     }
 
     /**
-     * Replaces the set of OIDC identifiers associated with the subscriber identified by {@code id} with the OIDC identifiers
-     * specified by {@code commandDto}.
+     * Replaces the set of OIDC identifiers associated with the subscriber identified by {@code id} with the OIDC
+     * identifiers specified by {@code commandDto}.
      * @param id the subscriber identifier
      * @param commandDto an OidcIdentifiersCommandDto containing a list of OidcIdentifierCommandDto objects
      * @return the modified subscriber
      */
     @PutMapping("/{id}/oidc-identifiers")
-    public ResponseEntity<SubscriberResponseDto> setOidcIdentifiers(@PathVariable("id") long id,
-            @RequestBody @Valid OidcIdentifiersCommandDto commandDto) {
-        return ResponseEntity.of(this.subscriberService.setOidcIdentifiers(id, Set.copyOf(commandDto.getOidcIdentifiers())));
+    public ResponseEntity<SubscriberResponseDto> setOidcIdentifiers(@PathVariable("id") final long id,
+            @RequestBody @Valid final OidcIdentifiersCommandDto commandDto) {
+        return ResponseEntity.of(this.subscriberService.setOidcIdentifiers(id,
+                Set.copyOf(commandDto.getOidcIdentifiers())));
     }
 }
