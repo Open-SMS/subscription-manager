@@ -24,3 +24,6 @@ of people that can be identified.
 
 A means of identifying an subscriber. Initially this will depend on OIDC claims and SAML assertions.
 
+# Project Reports
+
+[Maven project reports](https://open-sms.github.io/subscription-manager/)
