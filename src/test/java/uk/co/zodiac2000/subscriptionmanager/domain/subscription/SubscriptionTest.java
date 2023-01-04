@@ -65,6 +65,17 @@ public class SubscriptionTest {
     }
 
     /**
+     * Test terminate.
+     */
+    @Test
+    public void testTerminate() {
+        Subscription subscription = new Subscription(START_DATE, END_DATE, CONTENT_IDENTIFIER, SUBSCRIBER_ID);
+        subscription.terminate();
+
+        Assert.assertTrue(subscription.isTerminated());
+    }
+
+    /**
      * Test isActive when the subscription is terminated.
      */
     @Test
