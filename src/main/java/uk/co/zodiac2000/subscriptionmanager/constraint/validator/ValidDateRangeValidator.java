@@ -76,18 +76,18 @@ public class ValidDateRangeValidator implements ConstraintValidator<ValidDateRan
      * @return an optional containing the property value
      */
     private Optional<LocalDate> getPropertyValueAsLocalDate(final Object targetObject, final String propertyName) {
-        Optional<String> dateString = Optional.empty();
+        Optional<?> dateString = Optional.empty();
         try {
             dateString = (Optional) PropertyUtils.getProperty(targetObject, propertyName);
-            return dateString.map(v -> LocalDate.parse(v, FORMAT));
+            return dateString.map(v -> LocalDate.parse((String) v, FORMAT));
         } catch (InvocationTargetException | IllegalAccessException | NoSuchMethodException e) {
             LOG.info("Failed to access property named: {}", propertyName);
             return Optional.empty();
         } catch (DateTimeParseException e) {
-            LOG.info("Failed to parse date: {}", dateString.orElse(""));
+            LOG.info("Failed to parse date: {}", dateString.map(Object::toString));
             return Optional.empty();
         } catch (ClassCastException e) {
-            LOG.info("Property named {} not an Optional", propertyName);
+            LOG.info("Property named {} not an Optional<String>", propertyName);
             return Optional.empty();
         }
     }
