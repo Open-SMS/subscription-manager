@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <logger name="root" level="INFO"/>
+
+    <!-- Uncomment the following line to see all queries executed by Hibernate.
+         This has the same effect as setting spring.jpa.show-sql=true -->
+    <!--<logger name="org.hibernate.SQL" level="DEBUG" />-->
+    <!-- Uncomment the following line to see more information about what hibernate is doing including the
+         bind values used in queries -->
+    <!--<logger name="org.hibernate.type" level="TRACE" />-->
+    <root level="INFO">
+        <appender-ref ref="STDOUT" />
+    </root>
+
+</configuration>

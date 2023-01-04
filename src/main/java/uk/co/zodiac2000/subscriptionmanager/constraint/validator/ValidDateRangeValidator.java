@@ -8,6 +8,8 @@ import java.util.Optional;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 import org.apache.commons.beanutils.PropertyUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import uk.co.zodiac2000.subscriptionmanager.constraint.ValidDateRange;
 
 /**
@@ -15,6 +17,7 @@ import uk.co.zodiac2000.subscriptionmanager.constraint.ValidDateRange;
  */
 public class ValidDateRangeValidator implements ConstraintValidator<ValidDateRange, Object> {
 
+    private static final Logger LOG = LoggerFactory.getLogger(ValidDateRangeValidator.class);
     private static final DateTimeFormatter FORMAT = DateTimeFormatter.ISO_LOCAL_DATE;
 
     private String firstDatePropertyName;
@@ -73,11 +76,18 @@ public class ValidDateRangeValidator implements ConstraintValidator<ValidDateRan
      * @return an optional containing the property value
      */
     private Optional<LocalDate> getPropertyValueAsLocalDate(final Object targetObject, final String propertyName) {
+        Optional<String> dateString = Optional.empty();
         try {
-            Optional<String> dateString = (Optional) PropertyUtils.getProperty(targetObject, propertyName);
+            dateString = (Optional) PropertyUtils.getProperty(targetObject, propertyName);
             return dateString.map(v -> LocalDate.parse(v, FORMAT));
-        } catch (InvocationTargetException | IllegalAccessException | NoSuchMethodException
-                | DateTimeParseException | ClassCastException e) {
+        } catch (InvocationTargetException | IllegalAccessException | NoSuchMethodException e) {
+            LOG.info("Failed to access property named: {}", propertyName);
+            return Optional.empty();
+        } catch (DateTimeParseException e) {
+            LOG.info("Failed to parse date: {}", dateString.orElse(""));
+            return Optional.empty();
+        } catch (ClassCastException e) {
+            LOG.info("Property named {} not an Optional", propertyName);
             return Optional.empty();
         }
     }

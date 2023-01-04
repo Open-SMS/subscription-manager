@@ -6,6 +6,8 @@ import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 import javax.validation.ValidationException;
 import org.apache.commons.beanutils.PropertyUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.context.expression.BeanFactoryResolver;
@@ -19,6 +21,8 @@ import uk.co.zodiac2000.subscriptionmanager.constraint.DoesNotExist;
  * Validator used by {@link uk.co.zodiac2000.subscriptionmanager.constraint.DoesNotExist} constraint.
  */
 public class DoesNotExistValidator implements ConstraintValidator<DoesNotExist, Object>, BeanFactoryAware {
+
+    private static final Logger LOG = LoggerFactory.getLogger(DoesNotExistValidator.class);
 
     private BeanFactory beanFactory;
 
@@ -90,6 +94,7 @@ public class DoesNotExistValidator implements ConstraintValidator<DoesNotExist, 
         try {
             return Optional.ofNullable(PropertyUtils.getProperty(targetObject, targetPropertyName));
         } catch (InvocationTargetException | IllegalAccessException | NoSuchMethodException e) {
+            LOG.info("Failed to access property named: {}", targetPropertyName);
             return Optional.empty();
         }
     }
