@@ -6,6 +6,8 @@ import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 import javax.validation.ValidationException;
 import org.apache.commons.beanutils.PropertyUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.context.expression.BeanFactoryResolver;
@@ -18,7 +20,9 @@ import uk.co.zodiac2000.subscriptionmanager.constraint.DoesNotExist;
 /**
  * Validator used by {@link uk.co.zodiac2000.subscriptionmanager.constraint.DoesNotExist} constraint.
  */
-<span class="nc" id="L21">public class DoesNotExistValidator implements ConstraintValidator&lt;DoesNotExist, Object&gt;, BeanFactoryAware {</span>
+<span class="nc" id="L23">public class DoesNotExistValidator implements ConstraintValidator&lt;DoesNotExist, Object&gt;, BeanFactoryAware {</span>
+
+<span class="nc" id="L25">    private static final Logger LOG = LoggerFactory.getLogger(DoesNotExistValidator.class);</span>
 
     private BeanFactory beanFactory;
 
@@ -38,15 +42,15 @@ import uk.co.zodiac2000.subscriptionmanager.constraint.DoesNotExist;
      */
     @Override
     public void initialize(final DoesNotExist constraintAnnotation) {
-<span class="nc" id="L41">        ExpressionParser parser = new SpelExpressionParser();</span>
-<span class="nc" id="L42">        this.evaluationContext = new StandardEvaluationContext();</span>
-<span class="nc" id="L43">        this.evaluationContext.setBeanResolver(new BeanFactoryResolver(this.beanFactory));</span>
-<span class="nc" id="L44">        this.verificationExpression = parser.parseExpression(constraintAnnotation.expression());</span>
+<span class="nc" id="L45">        ExpressionParser parser = new SpelExpressionParser();</span>
+<span class="nc" id="L46">        this.evaluationContext = new StandardEvaluationContext();</span>
+<span class="nc" id="L47">        this.evaluationContext.setBeanResolver(new BeanFactoryResolver(this.beanFactory));</span>
+<span class="nc" id="L48">        this.verificationExpression = parser.parseExpression(constraintAnnotation.expression());</span>
 
-<span class="nc" id="L46">        this.propertyName = constraintAnnotation.propertyName();</span>
-<span class="nc" id="L47">        this.identfierPropertyName = constraintAnnotation.identfierPropertyName();</span>
-<span class="nc" id="L48">        this.message = constraintAnnotation.message();</span>
-<span class="nc" id="L49">    }</span>
+<span class="nc" id="L50">        this.propertyName = constraintAnnotation.propertyName();</span>
+<span class="nc" id="L51">        this.identfierPropertyName = constraintAnnotation.identfierPropertyName();</span>
+<span class="nc" id="L52">        this.message = constraintAnnotation.message();</span>
+<span class="nc" id="L53">    }</span>
 
     /**
      * Returns true if the SpEL expression returns an empty optional, or the operation is an update and the identified
@@ -58,24 +62,25 @@ import uk.co.zodiac2000.subscriptionmanager.constraint.DoesNotExist;
      */
     @Override
     public boolean isValid(final Object value, final ConstraintValidatorContext context) {
-<span class="nc" id="L61">        Optional&lt;Object&gt; id = this.verificationExpression.getValue(this.evaluationContext, value, Optional.class);</span>
-<span class="nc bnc" id="L62" title="All 2 branches missed.">        if (id == null) {</span>
-<span class="nc" id="L63">            throw new ValidationException(&quot;Unexpected null value returned by expression evaluation&quot;);</span>
+<span class="nc" id="L65">        Optional&lt;?&gt; id</span>
+<span class="nc" id="L66">                = this.verificationExpression.getValue(this.evaluationContext, value, Optional.class);</span>
+<span class="nc bnc" id="L67" title="All 2 branches missed.">        if (id == null) {</span>
+<span class="nc" id="L68">            throw new ValidationException(&quot;Unexpected null value returned by expression evaluation&quot;);</span>
         }
 
-<span class="nc bnc" id="L66" title="All 2 branches missed.">        boolean isValid = id.isEmpty()</span>
-<span class="nc" id="L67">                || getPropertyValue(value, this.identfierPropertyName)</span>
-<span class="nc" id="L68">                        .map(v -&gt; id.get().equals(v))</span>
-<span class="nc bnc" id="L69" title="All 2 branches missed.">                        .orElse(false);</span>
+<span class="nc bnc" id="L71" title="All 2 branches missed.">        boolean isValid = id.isEmpty()</span>
+<span class="nc" id="L72">                || getPropertyValue(value, this.identfierPropertyName)</span>
+<span class="nc" id="L73">                        .map(v -&gt; id.get().equals(v))</span>
+<span class="nc bnc" id="L74" title="All 2 branches missed.">                        .orElse(false);</span>
 
-<span class="nc bnc" id="L71" title="All 2 branches missed.">        if (!isValid) {</span>
-<span class="nc" id="L72">            context.disableDefaultConstraintViolation();</span>
-<span class="nc" id="L73">            context.buildConstraintViolationWithTemplate(this.message)</span>
-<span class="nc" id="L74">                    .addPropertyNode(this.propertyName)</span>
-<span class="nc" id="L75">                    .addConstraintViolation();</span>
+<span class="nc bnc" id="L76" title="All 2 branches missed.">        if (!isValid) {</span>
+<span class="nc" id="L77">            context.disableDefaultConstraintViolation();</span>
+<span class="nc" id="L78">            context.buildConstraintViolationWithTemplate(this.message)</span>
+<span class="nc" id="L79">                    .addPropertyNode(this.propertyName)</span>
+<span class="nc" id="L80">                    .addConstraintViolation();</span>
         }
 
-<span class="nc" id="L78">        return isValid;</span>
+<span class="nc" id="L83">        return isValid;</span>
     }
 
     /**
@@ -88,9 +93,10 @@ import uk.co.zodiac2000.subscriptionmanager.constraint.DoesNotExist;
      */
     private Optional&lt;Object&gt; getPropertyValue(final Object targetObject, final String targetPropertyName) {
         try {
-<span class="nc" id="L91">            return Optional.ofNullable(PropertyUtils.getProperty(targetObject, targetPropertyName));</span>
-<span class="nc" id="L92">        } catch (InvocationTargetException | IllegalAccessException | NoSuchMethodException e) {</span>
-<span class="nc" id="L93">            return Optional.empty();</span>
+<span class="nc" id="L96">            return Optional.ofNullable(PropertyUtils.getProperty(targetObject, targetPropertyName));</span>
+<span class="nc" id="L97">        } catch (InvocationTargetException | IllegalAccessException | NoSuchMethodException e) {</span>
+<span class="nc" id="L98">            LOG.info(&quot;Failed to access property named: {}&quot;, targetPropertyName);</span>
+<span class="nc" id="L99">            return Optional.empty();</span>
         }
     }
 
@@ -100,7 +106,7 @@ import uk.co.zodiac2000.subscriptionmanager.constraint.DoesNotExist;
      */
     @Override
     public void setBeanFactory(final BeanFactory beanFactory) {
-<span class="nc" id="L103">        this.beanFactory = beanFactory;</span>
-<span class="nc" id="L104">    }</span>
+<span class="nc" id="L109">        this.beanFactory = beanFactory;</span>
+<span class="nc" id="L110">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

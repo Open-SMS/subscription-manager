@@ -10,7 +10,7 @@ Subscription Manager,uk.co.zodiac2000.subscriptionmanager.transfer.subscription,
 Subscription Manager,uk.co.zodiac2000.subscriptionmanager.transfer.subscription,SubscriptionContentIdentifierCommandDto,0,12,0,0,0,5,0,3,0,3
 Subscription Manager,uk.co.zodiac2000.subscriptionmanager.transfer.subscription,NewSubscriptionCommandDto,0,30,0,0,0,11,0,6,0,6
 Subscription Manager,uk.co.zodiac2000.subscriptionmanager,SubscriptionManagerApplication,5,3,0,0,2,1,1,1,1,1
-Subscription Manager,uk.co.zodiac2000.subscriptionmanager.transfer.subscriber,SubscriberNameCommandDto,4,19,0,0,2,7,1,4,1,4
+Subscription Manager,uk.co.zodiac2000.subscriptionmanager.transfer.subscriber,SubscriberNameCommandDto,0,23,0,0,0,9,0,5,0,5
 Subscription Manager,uk.co.zodiac2000.subscriptionmanager.transfer.subscriber,NewSubscriberCommandDto,0,12,0,0,0,5,0,3,0,3
 Subscription Manager,uk.co.zodiac2000.subscriptionmanager.transfer.subscriber,SamlIdentifierRequestDto,0,15,0,0,0,6,0,3,0,3
 Subscription Manager,uk.co.zodiac2000.subscriptionmanager.transfer.subscriber,SubscriberResponseDto,0,27,0,0,0,10,0,5,0,5
@@ -23,11 +23,11 @@ Subscription Manager,uk.co.zodiac2000.subscriptionmanager.transfer.subscriber,Oi
 Subscription Manager,uk.co.zodiac2000.subscriptionmanager.transfer.subscriber,SamlIdentifierCommandDto,0,15,0,0,0,6,0,3,0,3
 Subscription Manager,uk.co.zodiac2000.subscriptionmanager.configuration,ClockConfiguration,0,5,0,0,0,2,0,2,0,2
 Subscription Manager,uk.co.zodiac2000.subscriptionmanager.constraint.validator,ValidDateStringValidator,0,20,0,0,0,7,0,4,0,4
-Subscription Manager,uk.co.zodiac2000.subscriptionmanager.constraint.validator,DoesNotExistValidator,0,109,0,8,0,27,0,10,0,6
-Subscription Manager,uk.co.zodiac2000.subscriptionmanager.constraint.validator,ValidDateRangeValidator,0,94,0,6,0,21,0,11,0,8
-Subscription Manager,uk.co.zodiac2000.subscriptionmanager.api,SubscriptionController,35,3,0,0,6,1,5,1,5,1
-Subscription Manager,uk.co.zodiac2000.subscriptionmanager.api,SubscriberController,62,3,2,0,13,1,7,1,6,1
-Subscription Manager,uk.co.zodiac2000.subscriptionmanager.domain.subscription,Subscription,4,175,0,18,2,31,1,25,1,16
+Subscription Manager,uk.co.zodiac2000.subscriptionmanager.constraint.validator,DoesNotExistValidator,0,117,0,8,0,30,0,11,0,7
+Subscription Manager,uk.co.zodiac2000.subscriptionmanager.constraint.validator,ValidDateRangeValidator,0,120,0,6,0,30,0,11,0,8
+Subscription Manager,uk.co.zodiac2000.subscriptionmanager.api,SubscriptionController,36,3,0,0,6,1,5,1,5,1
+Subscription Manager,uk.co.zodiac2000.subscriptionmanager.api,SubscriberController,63,3,2,0,13,1,7,1,6,1
+Subscription Manager,uk.co.zodiac2000.subscriptionmanager.domain.subscription,Subscription,0,179,0,18,0,33,0,26,0,17
 Subscription Manager,uk.co.zodiac2000.subscriptionmanager.domain.subscriber,OidcIdentifier,0,69,0,8,0,15,0,11,0,7
 Subscription Manager,uk.co.zodiac2000.subscriptionmanager.domain.subscriber,Subscriber,0,84,0,0,0,20,0,11,0,11
 Subscription Manager,uk.co.zodiac2000.subscriptionmanager.domain.subscriber,SamlIdentifier,0,69,0,8,0,15,0,11,0,7

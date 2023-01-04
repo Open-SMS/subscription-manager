@@ -8,14 +8,17 @@ import java.util.Optional;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 import org.apache.commons.beanutils.PropertyUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import uk.co.zodiac2000.subscriptionmanager.constraint.ValidDateRange;
 
 /**
  * Validator for {@code ValidDateRange}.
  */
-<span class="fc" id="L16">public class ValidDateRangeValidator implements ConstraintValidator&lt;ValidDateRange, Object&gt; {</span>
+<span class="fc" id="L18">public class ValidDateRangeValidator implements ConstraintValidator&lt;ValidDateRange, Object&gt; {</span>
 
-<span class="fc" id="L18">    private static final DateTimeFormatter FORMAT = DateTimeFormatter.ISO_LOCAL_DATE;</span>
+<span class="fc" id="L20">    private static final Logger LOG = LoggerFactory.getLogger(ValidDateRangeValidator.class);</span>
+<span class="fc" id="L21">    private static final DateTimeFormatter FORMAT = DateTimeFormatter.ISO_LOCAL_DATE;</span>
 
     private String firstDatePropertyName;
 
@@ -29,10 +32,10 @@ import uk.co.zodiac2000.subscriptionmanager.constraint.ValidDateRange;
      */
     @Override
     public void initialize(final ValidDateRange constraintAnnotation) {
-<span class="fc" id="L32">        this.firstDatePropertyName = constraintAnnotation.firstDatePropertyName();</span>
-<span class="fc" id="L33">        this.secondDatePropertyName = constraintAnnotation.secondDatePropertyName();</span>
-<span class="fc" id="L34">        this.message = constraintAnnotation.message();</span>
-<span class="fc" id="L35">    }</span>
+<span class="fc" id="L35">        this.firstDatePropertyName = constraintAnnotation.firstDatePropertyName();</span>
+<span class="fc" id="L36">        this.secondDatePropertyName = constraintAnnotation.secondDatePropertyName();</span>
+<span class="fc" id="L37">        this.message = constraintAnnotation.message();</span>
+<span class="fc" id="L38">    }</span>
 
     /**
      * Returns true if the property named {@code firstDatePropertyName} is an {@code Optional} containing
@@ -48,20 +51,20 @@ import uk.co.zodiac2000.subscriptionmanager.constraint.ValidDateRange;
      */
     @Override
     public boolean isValid(final Object value, final ConstraintValidatorContext context) {
-<span class="fc" id="L51">        Optional&lt;LocalDate&gt; firstDate = getPropertyValueAsLocalDate(value, this.firstDatePropertyName);</span>
-<span class="fc" id="L52">        Optional&lt;LocalDate&gt; secondDate = getPropertyValueAsLocalDate(value, this.secondDatePropertyName);</span>
-<span class="fc" id="L53">        boolean valid = firstDate.map(s -&gt;</span>
-<span class="fc bfc" id="L54" title="All 4 branches covered.">                secondDate.map(e -&gt; e.isAfter(s) || e.equals(s)).orElse(true)</span>
-<span class="fc" id="L55">        ).orElse(true);</span>
+<span class="fc" id="L54">        Optional&lt;LocalDate&gt; firstDate = getPropertyValueAsLocalDate(value, this.firstDatePropertyName);</span>
+<span class="fc" id="L55">        Optional&lt;LocalDate&gt; secondDate = getPropertyValueAsLocalDate(value, this.secondDatePropertyName);</span>
+<span class="fc" id="L56">        boolean valid = firstDate.map(s -&gt;</span>
+<span class="fc bfc" id="L57" title="All 4 branches covered.">                secondDate.map(e -&gt; e.isAfter(s) || e.equals(s)).orElse(true)</span>
+<span class="fc" id="L58">        ).orElse(true);</span>
 
-<span class="fc bfc" id="L57" title="All 2 branches covered.">        if (!valid) {</span>
-<span class="fc" id="L58">            context.disableDefaultConstraintViolation();</span>
-<span class="fc" id="L59">            context.buildConstraintViolationWithTemplate(this.message)</span>
-<span class="fc" id="L60">                    .addPropertyNode(this.firstDatePropertyName)</span>
-<span class="fc" id="L61">                    .addConstraintViolation();</span>
+<span class="fc bfc" id="L60" title="All 2 branches covered.">        if (!valid) {</span>
+<span class="fc" id="L61">            context.disableDefaultConstraintViolation();</span>
+<span class="fc" id="L62">            context.buildConstraintViolationWithTemplate(this.message)</span>
+<span class="fc" id="L63">                    .addPropertyNode(this.firstDatePropertyName)</span>
+<span class="fc" id="L64">                    .addConstraintViolation();</span>
         }
 
-<span class="fc" id="L64">        return valid;</span>
+<span class="fc" id="L67">        return valid;</span>
     }
 
     /**
@@ -73,12 +76,19 @@ import uk.co.zodiac2000.subscriptionmanager.constraint.ValidDateRange;
      * @return an optional containing the property value
      */
     private Optional&lt;LocalDate&gt; getPropertyValueAsLocalDate(final Object targetObject, final String propertyName) {
+<span class="fc" id="L79">        Optional&lt;?&gt; dateString = Optional.empty();</span>
         try {
-<span class="fc" id="L77">            Optional&lt;String&gt; dateString = (Optional) PropertyUtils.getProperty(targetObject, propertyName);</span>
-<span class="fc" id="L78">            return dateString.map(v -&gt; LocalDate.parse(v, FORMAT));</span>
-<span class="fc" id="L79">        } catch (InvocationTargetException | IllegalAccessException | NoSuchMethodException</span>
-                | DateTimeParseException | ClassCastException e) {
-<span class="fc" id="L81">            return Optional.empty();</span>
+<span class="fc" id="L81">            dateString = (Optional) PropertyUtils.getProperty(targetObject, propertyName);</span>
+<span class="fc" id="L82">            return dateString.map(v -&gt; LocalDate.parse((String) v, FORMAT));</span>
+<span class="fc" id="L83">        } catch (InvocationTargetException | IllegalAccessException | NoSuchMethodException e) {</span>
+<span class="fc" id="L84">            LOG.info(&quot;Failed to access property named: {}&quot;, propertyName);</span>
+<span class="fc" id="L85">            return Optional.empty();</span>
+<span class="fc" id="L86">        } catch (DateTimeParseException e) {</span>
+<span class="fc" id="L87">            LOG.info(&quot;Failed to parse date: {}&quot;, dateString.map(Object::toString));</span>
+<span class="fc" id="L88">            return Optional.empty();</span>
+<span class="fc" id="L89">        } catch (ClassCastException e) {</span>
+<span class="fc" id="L90">            LOG.info(&quot;Property named {} not an Optional&lt;String&gt;&quot;, propertyName);</span>
+<span class="fc" id="L91">            return Optional.empty();</span>
         }
     }
 }

@@ -48,7 +48,7 @@ import uk.co.zodiac2000.subscriptionmanager.transfer.subscription.SubscriptionRe
     @PostMapping
     public ResponseEntity&lt;SubscriptionResponseDto&gt; createSubscription(
             @RequestBody @Valid final NewSubscriptionCommandDto commandDto) {
-<span class="nc" id="L51">        return new ResponseEntity(this.subscriptionService.createSubscription(commandDto).get(), HttpStatus.CREATED);</span>
+<span class="nc" id="L51">        return new ResponseEntity&lt;&gt;(this.subscriptionService.createSubscription(commandDto).get(), HttpStatus.CREATED);</span>
     }
 
     /**
