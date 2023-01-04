@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>DoesNotExistValidator.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Subscription Manager</a> &gt; <a href="index.source.html" class="el_package">uk.co.zodiac2000.subscriptionmanager.constraint.validator</a> &gt; <span class="el_source">DoesNotExistValidator.java</span></div><h1>DoesNotExistValidator.java</h1><pre class="source lang-java linenums">package uk.co.zodiac2000.subscriptionmanager.constraint.validator;
+
+import java.lang.reflect.InvocationTargetException;
+import java.util.Optional;
+import javax.validation.ConstraintValidator;
+import javax.validation.ConstraintValidatorContext;
+import javax.validation.ValidationException;
+import org.apache.commons.beanutils.PropertyUtils;
+import org.springframework.beans.factory.BeanFactory;
+import org.springframework.beans.factory.BeanFactoryAware;
+import org.springframework.context.expression.BeanFactoryResolver;
+import org.springframework.expression.Expression;
+import org.springframework.expression.ExpressionParser;
+import org.springframework.expression.spel.standard.SpelExpressionParser;
+import org.springframework.expression.spel.support.StandardEvaluationContext;
+import uk.co.zodiac2000.subscriptionmanager.constraint.DoesNotExist;
+
+/**
+ * Validator used by {@link uk.co.zodiac2000.subscriptionmanager.constraint.DoesNotExist} constraint.
+ */
+<span class="fc" id="L21">public class DoesNotExistValidator implements ConstraintValidator&lt;DoesNotExist, Object&gt;, BeanFactoryAware {</span>
+
+    private BeanFactory beanFactory;
+
+    private Expression verificationExpression;
+
+    private StandardEvaluationContext evaluationContext;
+
+    private String propertyName;
+
+    private String message;
+
+    private String identfierPropertyName;
+
+    /**
+     * Initializes the validator.
+     * @param constraintAnnotation the constraint annotation
+     */
+    @Override
+    public void initialize(final DoesNotExist constraintAnnotation) {
+<span class="fc" id="L41">        ExpressionParser parser = new SpelExpressionParser();</span>
+<span class="fc" id="L42">        this.evaluationContext = new StandardEvaluationContext();</span>
+<span class="fc" id="L43">        this.evaluationContext.setBeanResolver(new BeanFactoryResolver(this.beanFactory));</span>
+<span class="fc" id="L44">        this.verificationExpression = parser.parseExpression(constraintAnnotation.expression());</span>
+
+<span class="fc" id="L46">        this.propertyName = constraintAnnotation.propertyName();</span>
+<span class="fc" id="L47">        this.identfierPropertyName = constraintAnnotation.identfierPropertyName();</span>
+<span class="fc" id="L48">        this.message = constraintAnnotation.message();</span>
+<span class="fc" id="L49">    }</span>
+
+    /**
+     * Returns true if the SpEL expression returns an empty optional, or the operation is an update and the identified
+     * object is the object being updated. See {@link uk.co.zodiac2000.subscriptionmanager.constraint.DoesNotExist}
+     * for details. If {@code value} is not valid then problem is recorded in {@code context}.
+     * @param value the object being validated
+     * @param context the context in which the object is validated
+     * @return false if value does not pass the constraint
+     */
+    @Override
+    public boolean isValid(final Object value, final ConstraintValidatorContext context) {
+<span class="fc" id="L61">        Optional&lt;Object&gt; id = this.verificationExpression.getValue(this.evaluationContext, value, Optional.class);</span>
+<span class="fc bfc" id="L62" title="All 2 branches covered.">        if (id == null) {</span>
+<span class="fc" id="L63">            throw new ValidationException(&quot;Unexpected null value returned by expression evaluation&quot;);</span>
+        }
+
+<span class="fc bfc" id="L66" title="All 2 branches covered.">        boolean isValid = id.isEmpty()</span>
+<span class="fc" id="L67">                || getPropertyValue(value, this.identfierPropertyName)</span>
+<span class="fc" id="L68">                        .map(v -&gt; id.get().equals(v))</span>
+<span class="fc bfc" id="L69" title="All 2 branches covered.">                        .orElse(false);</span>
+
+<span class="fc bfc" id="L71" title="All 2 branches covered.">        if (!isValid) {</span>
+<span class="fc" id="L72">            context.disableDefaultConstraintViolation();</span>
+<span class="fc" id="L73">            context.buildConstraintViolationWithTemplate(this.message)</span>
+<span class="fc" id="L74">                    .addPropertyNode(this.propertyName)</span>
+<span class="fc" id="L75">                    .addConstraintViolation();</span>
+        }
+
+<span class="fc" id="L78">        return isValid;</span>
+    }
+
+    /**
+     * Returns an {@code Optional} containing the value of the the property identified by {@code targetPropertyName}
+     * in {@code targetObject}, or an empty {@code Optional} if the property value is null, the property does not
+     * exist, or the property cannot be accessed.
+     * @param targetObject the object to obtain the property value from
+     * @param targetPropertyName the property name
+     * @return an optional containing the property value
+     */
+    private Optional&lt;Object&gt; getPropertyValue(final Object targetObject, final String targetPropertyName) {
+        try {
+<span class="fc" id="L91">            return Optional.ofNullable(PropertyUtils.getProperty(targetObject, targetPropertyName));</span>
+<span class="fc" id="L92">        } catch (InvocationTargetException | IllegalAccessException | NoSuchMethodException e) {</span>
+<span class="fc" id="L93">            return Optional.empty();</span>
+        }
+    }
+
+    /**
+     * Callback that supplies the owning factory to a bean instance.
+     * @param beanFactory owning BeanFactory
+     */
+    @Override
+    public void setBeanFactory(final BeanFactory beanFactory) {
+<span class="fc" id="L103">        this.beanFactory = beanFactory;</span>
+<span class="fc" id="L104">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

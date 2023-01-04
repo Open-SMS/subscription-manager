@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ValidDateStringValidator.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Subscription Manager</a> &gt; <a href="index.source.html" class="el_package">uk.co.zodiac2000.subscriptionmanager.constraint.validator</a> &gt; <span class="el_source">ValidDateStringValidator.java</span></div><h1>ValidDateStringValidator.java</h1><pre class="source lang-java linenums">package uk.co.zodiac2000.subscriptionmanager.constraint.validator;
+
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.util.Optional;
+import javax.validation.ConstraintValidator;
+import javax.validation.ConstraintValidatorContext;
+import uk.co.zodiac2000.subscriptionmanager.constraint.ValidDateString;
+
+/**
+ * Validator for ValidDateString.
+ */
+<span class="nc" id="L14">public class ValidDateStringValidator implements ConstraintValidator&lt;ValidDateString, Optional&lt;String&gt;&gt; {</span>
+
+<span class="nc" id="L16">    private static final DateTimeFormatter FORMAT = DateTimeFormatter.ISO_LOCAL_DATE;</span>
+
+    /**
+     * Verifies a date string is valid. If the {@code Optional} contains a value then it must be a valid date string
+     * in {@link java.time.format.DateTimeFormatter#ISO_LOCAL_DATE} format. An empty {@code Optional} is also considered
+     * valid.
+     * @param value the date string to validate
+     * @param context the context in which the object is validated
+     * @return true if the date string is valid
+     */
+    @Override
+    public boolean isValid(final Optional&lt;String&gt; value, final ConstraintValidatorContext context) {
+        try {
+<span class="nc" id="L29">            Optional&lt;LocalDate&gt; date = value.map(v -&gt; LocalDate.parse(v, FORMAT));</span>
+<span class="nc" id="L30">        } catch (DateTimeParseException e) {</span>
+<span class="nc" id="L31">            return false;</span>
+<span class="nc" id="L32">        }</span>
+<span class="nc" id="L33">        return true;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

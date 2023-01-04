@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SubscriberService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Subscription Manager</a> &gt; <a href="index.source.html" class="el_package">uk.co.zodiac2000.subscriptionmanager.service</a> &gt; <span class="el_source">SubscriberService.java</span></div><h1>SubscriberService.java</h1><pre class="source lang-java linenums">package uk.co.zodiac2000.subscriptionmanager.service;
+
+import java.util.Optional;
+import java.util.Set;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import uk.co.zodiac2000.subscriptionmanager.domain.subscriber.Subscriber;
+import uk.co.zodiac2000.subscriptionmanager.factory.SubscriberFactory;
+import uk.co.zodiac2000.subscriptionmanager.factory.SubscriberResponseDtoFactory;
+import uk.co.zodiac2000.subscriptionmanager.repository.SubscriberRepository;
+import uk.co.zodiac2000.subscriptionmanager.transfer.subscriber.NewSubscriberCommandDto;
+import uk.co.zodiac2000.subscriptionmanager.transfer.subscriber.OidcIdentifierCommandDto;
+import uk.co.zodiac2000.subscriptionmanager.transfer.subscriber.OidcIdentifierRequestDto;
+import uk.co.zodiac2000.subscriptionmanager.transfer.subscriber.SamlIdentifierCommandDto;
+import uk.co.zodiac2000.subscriptionmanager.transfer.subscriber.SamlIdentifierRequestDto;
+import uk.co.zodiac2000.subscriptionmanager.transfer.subscriber.SubscriberNameCommandDto;
+import uk.co.zodiac2000.subscriptionmanager.transfer.subscriber.SubscriberResponseDto;
+
+/**
+ * Service facade for Subscriber aggregates.
+ */
+@Service
+@Transactional(readOnly = true)
+<span class="nc" id="L25">public class SubscriberService {</span>
+
+    @Autowired
+    private SubscriberRepository subscriberRepository;
+
+    @Autowired
+    private SubscriberResponseDtoFactory subscriberResponseDtoFactory;
+
+    @Autowired
+    private SubscriberFactory subscriberFactory;
+
+    /**
+     * Returns the Subscriber identified by id.
+     * @param id the subscriber id
+     * @return an Optional that contains a SubscriberResponseDto, if found
+     */
+    public Optional&lt;SubscriberResponseDto&gt; getSubscriberById(final Long id) {
+<span class="nc" id="L42">        Optional&lt;Subscriber&gt; subscriber = this.subscriberRepository.findById(id);</span>
+<span class="nc" id="L43">        return this.subscriberResponseDtoFactory.subscriberToSubscriberResponseDto(subscriber);</span>
+    }
+
+    /**
+     * Returns the id of the Subscriber identified by subscriberName or an empty optional if not found.
+     * @param subscriberName
+     * @return the subscriber identifier
+     */
+    public Optional&lt;Long&gt; getSubscriberIdBySubscriberName(final String subscriberName) {
+<span class="nc" id="L52">        return this.subscriberRepository.findBySubscriberName(subscriberName).map(Subscriber::getId);</span>
+    }
+
+    /**
+     * Returns subscribers associated with at least one OidcIdentifier matching the arguments.
+     * @param requestDto the OIDC claims being authorized
+     * @return a set of SubscriberResponseDto objects
+     */
+    public Set&lt;SubscriberResponseDto&gt; getSubscriberByOidcIdentifier(final OidcIdentifierRequestDto requestDto) {
+<span class="nc" id="L61">        Set&lt;Subscriber&gt; subscribers = this.subscriberRepository.findByOidcIdentifiersIssuerAndOidcIdentifiersSubject(</span>
+<span class="nc" id="L62">                requestDto.getIssuer(), requestDto.getSubject());</span>
+<span class="nc" id="L63">        return this.subscriberResponseDtoFactory.subscribersToSubscriberResponseDtos(subscribers);</span>
+    }
+
+    /**
+     * Returns subscribers associated with at least one SamlIdentifier matching the arguments.
+     * @param requestDto the SAML assertions being authorized
+     * @return a set of SubscriberResponseDto objects
+     */
+    public Set&lt;SubscriberResponseDto&gt; getSubscriberBySamlIdentifier(final SamlIdentifierRequestDto requestDto) {
+<span class="nc" id="L72">        Set&lt;Subscriber&gt; subscribers</span>
+<span class="nc" id="L73">                = this.subscriberRepository.findBySamlIdentifiersEntityIdAndSamlIdentifiersScopedAffiliation(</span>
+<span class="nc" id="L74">                        requestDto.getEntityId(), requestDto.getScopedAffiliation());</span>
+<span class="nc" id="L75">        return this.subscriberResponseDtoFactory.subscribersToSubscriberResponseDtos(subscribers);</span>
+    }
+
+    /**
+     * Creates a new Subscriber aggregate root and persists it. Returns a response DTO representing the new subscriber.
+     * @param newSubscriberCommandDto
+     * @return a SubscriberResponseDto
+     */
+    @Transactional(readOnly = false)
+    public Optional&lt;SubscriberResponseDto&gt; createSubscriber(final NewSubscriberCommandDto newSubscriberCommandDto) {
+<span class="nc" id="L85">        Subscriber subscriber = this.subscriberRepository.save(</span>
+<span class="nc" id="L86">                this.subscriberFactory.newSubscriberCommandDtoToSubscriber(newSubscriberCommandDto));</span>
+<span class="nc" id="L87">        return this.subscriberResponseDtoFactory.subscriberToSubscriberResponseDto(Optional.of(subscriber));</span>
+    }
+
+    /**
+     * Update the subscriber name of the subscriber identified by the {@code id} property of the command DTO to the
+     * value set in the command DTO. If the subscriber doesn't exist then an empty optional is returned and no change
+     * is made to the state of the system.
+     * @param subscriberNameCommandDto command DTO representing the subscriber and new subscriber name
+     * @return an Optional that contains a SubscriberResponseDto representing the new state of the subscriber
+     */
+    @Transactional(readOnly = false)
+    public Optional&lt;SubscriberResponseDto&gt; updateSubscriberName(
+            final SubscriberNameCommandDto subscriberNameCommandDto) {
+<span class="nc" id="L100">        Optional&lt;Subscriber&gt; subscriber = this.subscriberRepository.findById(subscriberNameCommandDto.getId());</span>
+<span class="nc" id="L101">        subscriber.ifPresent(p -&gt; p.setSubscriberName(subscriberNameCommandDto));</span>
+<span class="nc" id="L102">        return this.subscriberResponseDtoFactory.subscriberToSubscriberResponseDto(subscriber);</span>
+    }
+
+    /**
+     * Deletes the subscriber identified by id.
+     * @param id the subscriber identifier
+     */
+    @Transactional(readOnly = false)
+    public void deleteSubscriber(final long id) {
+<span class="nc" id="L111">        this.subscriberRepository.findById(id).ifPresent(this.subscriberRepository::delete);</span>
+<span class="nc" id="L112">    }</span>
+
+    /**
+     * Set the SAML Identifiers associated with the subscriber identified by id. If the subscriber doesn't exist then an
+     * empty optional is returned and no change is made to the state of the system.
+     * @param id the subscriber id
+     * @param samlIdentifierCommandDtos the new set of SAML identifiers
+     * @return an Optional that contains a SubscriberResponseDto representing the new state of the subscriber
+     */
+    @Transactional(readOnly = false)
+    public Optional&lt;SubscriberResponseDto&gt; setSamlIdentifiers(final long id,
+            final Set&lt;SamlIdentifierCommandDto&gt; samlIdentifierCommandDtos) {
+<span class="nc" id="L124">        Optional&lt;Subscriber&gt; subscriber = this.subscriberRepository.findById(id);</span>
+<span class="nc" id="L125">        subscriber.ifPresent(p -&gt; p.setSamlIdentifiers(samlIdentifierCommandDtos));</span>
+<span class="nc" id="L126">        return this.subscriberResponseDtoFactory.subscriberToSubscriberResponseDto(subscriber);</span>
+    }
+
+    /**
+     * Set the OIDC Identifiers associated with the subscriber identified by id. If the subscriber doesn't exist then an
+     * empty optional is returned and no change is made to the state of the system.
+     * @param id the subscriber id
+     * @param oidcIdentifierCommandDtos the new set of OIDC identifiers
+     * @return an Optional that contains a SubscriberResponseDto representing the new state of the subscriber
+     */
+    @Transactional(readOnly = false)
+    public Optional&lt;SubscriberResponseDto&gt; setOidcIdentifiers(final long id,
+            final Set&lt;OidcIdentifierCommandDto&gt; oidcIdentifierCommandDtos) {
+<span class="nc" id="L139">        Optional&lt;Subscriber&gt; subscriber = this.subscriberRepository.findById(id);</span>
+<span class="nc" id="L140">        subscriber.ifPresent(p -&gt; p.setOidcIdentifiers(oidcIdentifierCommandDtos));</span>
+<span class="nc" id="L141">        return this.subscriberResponseDtoFactory.subscriberToSubscriberResponseDto(subscriber);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

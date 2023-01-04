@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SubscriptionResponseDtoFactory.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Subscription Manager</a> &gt; <a href="index.source.html" class="el_package">uk.co.zodiac2000.subscriptionmanager.factory</a> &gt; <span class="el_source">SubscriptionResponseDtoFactory.java</span></div><h1>SubscriptionResponseDtoFactory.java</h1><pre class="source lang-java linenums">package uk.co.zodiac2000.subscriptionmanager.factory;
+
+import java.time.Clock;
+import java.time.LocalDate;
+import java.util.Optional;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import uk.co.zodiac2000.subscriptionmanager.domain.subscription.Subscription;
+import uk.co.zodiac2000.subscriptionmanager.transfer.subscription.SubscriptionResponseDto;
+
+/**
+ * Factory that produces subscription response DTOs.
+ */
+@Component
+public class SubscriptionResponseDtoFactory {
+
+    private final Clock systemClock;
+
+    /**
+     * Constructs a new SubscriptionResponseDtoFactory with systemClock argument. This clock is used in all date-time
+     * expressions that involve the current system date-time. This is autowired by Spring using a bean available from
+     * the Spring context. In unit tests a Clock needs to be supplied, possibly a fixed implementation. Integration
+     * tests can make use of the fixed clock bean produced by
+     * {@link uk.co.zodiac2000.jparevision.configuration.TestClockConfiguration#fixedClock}
+     * @param systemClock the Clock to use
+     */
+    @Autowired
+<span class="fc" id="L28">    public SubscriptionResponseDtoFactory(final Clock systemClock) {</span>
+<span class="fc" id="L29">        this.systemClock = systemClock;</span>
+<span class="fc" id="L30">    }</span>
+
+    /**
+     * Returns a SubscriptionResponseDto object with state based on the subscription argument.Dates are expressed as
+     * Strings in ISO-8601 format uuuu-MM-dd. If the optional is empty then an empty optional is returned.
+     *
+     * @param subscription an optional Subscription
+     * @return an optional response DTO
+     */
+    public Optional&lt;SubscriptionResponseDto&gt; subscriptionToSubscriptionResponseDto(
+            final Optional&lt;Subscription&gt; subscription) {
+<span class="fc" id="L41">        return subscription</span>
+<span class="fc" id="L42">                .map(s -&gt; new SubscriptionResponseDto(</span>
+<span class="fc" id="L43">                        s.getId(),</span>
+<span class="fc" id="L44">                        s.getStartDate(),</span>
+<span class="fc" id="L45">                        s.getEndDate(),</span>
+<span class="fc" id="L46">                        s.isTerminated(), s.getContentIdentifier(), s.getSubscriberId(),</span>
+<span class="fc" id="L47">                        s.isActive(LocalDate.now(this.systemClock))</span>
+                ));
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

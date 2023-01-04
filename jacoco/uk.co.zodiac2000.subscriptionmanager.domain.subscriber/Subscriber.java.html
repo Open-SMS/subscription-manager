@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Subscriber.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Subscription Manager</a> &gt; <a href="index.source.html" class="el_package">uk.co.zodiac2000.subscriptionmanager.domain.subscriber</a> &gt; <span class="el_source">Subscriber.java</span></div><h1>Subscriber.java</h1><pre class="source lang-java linenums">package uk.co.zodiac2000.subscriptionmanager.domain.subscriber;
+
+import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.stream.Collectors;
+import javax.persistence.CollectionTable;
+import javax.persistence.ElementCollection;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
+import javax.validation.Valid;
+import javax.validation.constraints.NotEmpty;
+import uk.co.zodiac2000.subscriptionmanager.transfer.subscriber.OidcIdentifierCommandDto;
+import uk.co.zodiac2000.subscriptionmanager.transfer.subscriber.SamlIdentifierCommandDto;
+import uk.co.zodiac2000.subscriptionmanager.transfer.subscriber.SubscriberNameCommandDto;
+
+/**
+ * Represents a subscriber with an identity within the subscription management system.
+ */
+@Entity
+public class Subscriber implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
+    @Id
+    @SequenceGenerator(name = &quot;subscriber_id_gen&quot;, sequenceName = &quot;subscriber_id_seq&quot;, allocationSize = 1)
+    @GeneratedValue(generator = &quot;subscriber_id_gen&quot;)
+    private Long id;
+
+    @NotEmpty
+    private String subscriberName;
+
+<span class="fc" id="L35">    @Valid</span>
+    @ElementCollection
+    @CollectionTable(name = &quot;saml_identifier&quot;)
+    private Set&lt;SamlIdentifier&gt; samlIdentifiers = new HashSet&lt;&gt;();
+
+<span class="fc" id="L40">    @Valid</span>
+    @ElementCollection
+    @CollectionTable(name = &quot;oidc_identifier&quot;)
+    private Set&lt;OidcIdentifier&gt; oidcIdentifiers = new HashSet&lt;&gt;();
+
+    /**
+     * Zero-args constructor for JPA.
+     */
+<span class="fc" id="L48">    public Subscriber() { }</span>
+
+    /**
+     * Constructs a new Subscriber using the supplied arguments.
+     * @param subscriberName the subscriber's name
+     */
+<span class="fc" id="L54">    public Subscriber(final String subscriberName) {</span>
+<span class="fc" id="L55">        this.subscriberName = subscriberName;</span>
+<span class="fc" id="L56">    }</span>
+
+    /**
+     * Allows the subscriber name to be changed.
+     * @param subscriberNameCommandDto the subscriber's name
+     */
+    public void setSubscriberName(final SubscriberNameCommandDto subscriberNameCommandDto) {
+<span class="fc" id="L63">        this.subscriberName = subscriberNameCommandDto.getSubscriberName();</span>
+<span class="fc" id="L64">    }</span>
+
+    /**
+     * @return the subscriber identifier
+     */
+    public Long getId() {
+<span class="fc" id="L70">        return this.id;</span>
+    }
+
+    /**
+     * @return the subscriber's name
+     */
+    public String getSubscriberName() {
+<span class="fc" id="L77">        return this.subscriberName;</span>
+    }
+
+    /**
+     * Sets the SAML identifiers associated with this subscriber.
+     * @param samlIdentifiers the SAML identifiers
+     */
+    public void setSamlIdentifiers(final Set&lt;SamlIdentifierCommandDto&gt; samlIdentifiers) {
+<span class="fc" id="L85">        this.samlIdentifiers = samlIdentifiers.stream()</span>
+<span class="fc" id="L86">                .map(i -&gt; new SamlIdentifier(i.getEntityId(), i.getScopedAffiliation()))</span>
+<span class="fc" id="L87">                .collect(Collectors.toSet());</span>
+<span class="fc" id="L88">    }</span>
+
+    /**
+     * @return the SAML identifiers associated with this subscriber
+     */
+    public Set&lt;SamlIdentifier&gt; getSamlIdentifiers() {
+<span class="fc" id="L94">        return Set.copyOf(this.samlIdentifiers);</span>
+    }
+
+    /**
+     * Sets the OIDC identifiers associated with this subscriber.
+     * @param oidcIdentifiers the OIDC identifiers
+     */
+    public void setOidcIdentifiers(final Set&lt;OidcIdentifierCommandDto&gt; oidcIdentifiers) {
+<span class="fc" id="L102">        this.oidcIdentifiers = oidcIdentifiers.stream()</span>
+<span class="fc" id="L103">                .map(i -&gt; new OidcIdentifier(i.getIssuer(), i.getSubject()))</span>
+<span class="fc" id="L104">                .collect(Collectors.toSet());</span>
+<span class="fc" id="L105">    }</span>
+
+    /**
+     * @return the OIDC identifiers associated with this subscriber
+     */
+    public Set&lt;OidcIdentifier&gt; getOidcIdentifiers() {
+<span class="fc" id="L111">        return Set.copyOf(this.oidcIdentifiers);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

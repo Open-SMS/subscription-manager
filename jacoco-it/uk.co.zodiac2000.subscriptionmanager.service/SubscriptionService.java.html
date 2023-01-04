@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SubscriptionService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Subscription Manager</a> &gt; <a href="index.source.html" class="el_package">uk.co.zodiac2000.subscriptionmanager.service</a> &gt; <span class="el_source">SubscriptionService.java</span></div><h1>SubscriptionService.java</h1><pre class="source lang-java linenums">package uk.co.zodiac2000.subscriptionmanager.service;
+
+import java.util.Optional;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import uk.co.zodiac2000.subscriptionmanager.domain.subscription.Subscription;
+import uk.co.zodiac2000.subscriptionmanager.factory.SubscriptionFactory;
+import uk.co.zodiac2000.subscriptionmanager.factory.SubscriptionResponseDtoFactory;
+import uk.co.zodiac2000.subscriptionmanager.repository.SubscriptionRepository;
+import uk.co.zodiac2000.subscriptionmanager.transfer.subscription.NewSubscriptionCommandDto;
+import uk.co.zodiac2000.subscriptionmanager.transfer.subscription.SubscriptionContentIdentifierCommandDto;
+import uk.co.zodiac2000.subscriptionmanager.transfer.subscription.SubscriptionDatesCommandDto;
+import uk.co.zodiac2000.subscriptionmanager.transfer.subscription.SubscriptionResponseDto;
+
+/**
+ * Service facade for Subscription aggregates.
+ */
+@Service
+@Transactional(readOnly = true)
+<span class="fc" id="L21">public class SubscriptionService {</span>
+
+    @Autowired
+    private SubscriptionRepository subscriptionRepository;
+
+    @Autowired
+    private SubscriptionResponseDtoFactory subscriptionResponseDtoFactory;
+
+    @Autowired
+    private SubscriptionFactory subscriptionFactory;
+
+    /**
+     * Returns the subscription identified by id or an empty optional if not found.
+     * @param id the subscription id
+     * @return a response DTO representing the subscription
+     */
+    public Optional&lt;SubscriptionResponseDto&gt; getSubscription(final long id) {
+<span class="fc" id="L38">        Optional&lt;Subscription&gt; subscription = this.subscriptionRepository.findById(id);</span>
+<span class="fc" id="L39">        return this.subscriptionResponseDtoFactory.subscriptionToSubscriptionResponseDto(subscription);</span>
+    }
+
+    /**
+     * Deletes the subscription identified by id.
+     * @param id the subscription identifier
+     */
+    @Transactional(readOnly = false)
+    public void deleteSubscription(final long id) {
+<span class="fc" id="L48">        this.subscriptionRepository.findById(id).ifPresent(this.subscriptionRepository::delete);</span>
+<span class="fc" id="L49">    }</span>
+
+    /**
+     * Creates a new Subscription aggregate root and persists it. Returns a response DTO representing the new
+     * subscription.
+     * @param commandDto command DTO representing the new subscription
+     * @return a SubscriptionResponseDto
+     */
+    @Transactional(readOnly = false)
+    public Optional&lt;SubscriptionResponseDto&gt; createSubscription(final NewSubscriptionCommandDto commandDto) {
+<span class="fc" id="L59">        Subscription subscription = this.subscriptionRepository.save(</span>
+<span class="fc" id="L60">                this.subscriptionFactory.subscriptionCommandDtoToSubscription(commandDto)</span>
+        );
+
+<span class="fc" id="L63">        return this.subscriptionResponseDtoFactory.subscriptionToSubscriptionResponseDto(Optional.of(subscription));</span>
+    }
+
+    /**
+     * Updates the start and end dates of the Subscription identified by id. Returns a response DTO representing the
+     * updated subscription. If the subscription doesn't exist then an empty optional is returned and no change is
+     * made to the state of the system.
+     * @param id the subscription identifier
+     * @param commandDto command DTO representing the new subscription dates
+     * @return a SubscriptionResponseDto
+     */
+    @Transactional(readOnly = false)
+    public Optional&lt;SubscriptionResponseDto&gt; updateSubscriptionDates(final long id,
+            final SubscriptionDatesCommandDto commandDto) {
+<span class="fc" id="L77">        Optional&lt;Subscription&gt; subscription = this.subscriptionRepository.findById(id);</span>
+<span class="fc" id="L78">        subscription.ifPresent(s -&gt; s.setDates(commandDto));</span>
+<span class="fc" id="L79">        return this.subscriptionResponseDtoFactory.subscriptionToSubscriptionResponseDto(subscription);</span>
+    }
+
+    /**
+     * Updates the content identifier associated with the Subscription identified by id. Returns a response DTO
+     * representing the updated subscription. If the subscription doesn't exist then an empty optional is returned and
+     * no change is made to the state of the system.
+     * @param id the subscription identifier
+     * @param commandDto command DTO representing the updated content identifier
+     * @return a SubscriptionResponseDto
+     */
+    @Transactional(readOnly = false)
+    public Optional&lt;SubscriptionResponseDto&gt; updateSubscriptionContentIdentifier(final long id,
+            final SubscriptionContentIdentifierCommandDto commandDto) {
+<span class="fc" id="L93">        Optional&lt;Subscription&gt; subscription = this.subscriptionRepository.findById(id);</span>
+<span class="fc" id="L94">        subscription.ifPresent(s -&gt; s.setContentIdentifier(commandDto));</span>
+<span class="fc" id="L95">        return this.subscriptionResponseDtoFactory.subscriptionToSubscriptionResponseDto(subscription);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

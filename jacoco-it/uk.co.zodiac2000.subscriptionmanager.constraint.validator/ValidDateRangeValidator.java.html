@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ValidDateRangeValidator.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Subscription Manager</a> &gt; <a href="index.source.html" class="el_package">uk.co.zodiac2000.subscriptionmanager.constraint.validator</a> &gt; <span class="el_source">ValidDateRangeValidator.java</span></div><h1>ValidDateRangeValidator.java</h1><pre class="source lang-java linenums">package uk.co.zodiac2000.subscriptionmanager.constraint.validator;
+
+import java.lang.reflect.InvocationTargetException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.util.Optional;
+import javax.validation.ConstraintValidator;
+import javax.validation.ConstraintValidatorContext;
+import org.apache.commons.beanutils.PropertyUtils;
+import uk.co.zodiac2000.subscriptionmanager.constraint.ValidDateRange;
+
+/**
+ * Validator for {@code ValidDateRange}.
+ */
+<span class="nc" id="L16">public class ValidDateRangeValidator implements ConstraintValidator&lt;ValidDateRange, Object&gt; {</span>
+
+<span class="nc" id="L18">    private static final DateTimeFormatter FORMAT = DateTimeFormatter.ISO_LOCAL_DATE;</span>
+
+    private String firstDatePropertyName;
+
+    private String secondDatePropertyName;
+
+    private String message;
+
+    /**
+     * Initializes the validator.
+     * @param constraintAnnotation the constraint annotation
+     */
+    @Override
+    public void initialize(final ValidDateRange constraintAnnotation) {
+<span class="nc" id="L32">        this.firstDatePropertyName = constraintAnnotation.firstDatePropertyName();</span>
+<span class="nc" id="L33">        this.secondDatePropertyName = constraintAnnotation.secondDatePropertyName();</span>
+<span class="nc" id="L34">        this.message = constraintAnnotation.message();</span>
+<span class="nc" id="L35">    }</span>
+
+    /**
+     * Returns true if the property named {@code firstDatePropertyName} is an {@code Optional} containing
+     * a valid date string and the property named {@code secondDatePropertyName} is an {@code Optional} containing
+     * a valid date string, and the the first date occurs before or on the same date as the second date. Also returns
+     * true if either property does not exist, is empty, is not an {@code Optional}, or the date string cannot be
+     * parsed. It is assumed that other validation will handle incorrectly formatted dates. If either date is empty
+     * then the date range is valid. If not valid then the constraint violation is set on the property named
+     * {@code firstDatePropertyName}.
+     * @param value the object to verify
+     * @param context context the context in which the object is validated
+     * @return true if the date range is valid
+     */
+    @Override
+    public boolean isValid(final Object value, final ConstraintValidatorContext context) {
+<span class="nc" id="L51">        Optional&lt;LocalDate&gt; firstDate = getPropertyValueAsLocalDate(value, this.firstDatePropertyName);</span>
+<span class="nc" id="L52">        Optional&lt;LocalDate&gt; secondDate = getPropertyValueAsLocalDate(value, this.secondDatePropertyName);</span>
+<span class="nc" id="L53">        boolean valid = firstDate.map(s -&gt;</span>
+<span class="nc bnc" id="L54" title="All 4 branches missed.">                secondDate.map(e -&gt; e.isAfter(s) || e.equals(s)).orElse(true)</span>
+<span class="nc" id="L55">        ).orElse(true);</span>
+
+<span class="nc bnc" id="L57" title="All 2 branches missed.">        if (!valid) {</span>
+<span class="nc" id="L58">            context.disableDefaultConstraintViolation();</span>
+<span class="nc" id="L59">            context.buildConstraintViolationWithTemplate(this.message)</span>
+<span class="nc" id="L60">                    .addPropertyNode(this.firstDatePropertyName)</span>
+<span class="nc" id="L61">                    .addConstraintViolation();</span>
+        }
+
+<span class="nc" id="L64">        return valid;</span>
+    }
+
+    /**
+     * Returns an {@code Optional} containing a LocalDate parsed from the property of {@code targetObject}
+     * named {@code propertyName}. If the property is not accessible, is not an optional, or the date string cannot
+     * be parsed then an empty optional is returned.
+     * @param targetObject the object to obtain the property value from
+     * @param propertyName the property name
+     * @return an optional containing the property value
+     */
+    private Optional&lt;LocalDate&gt; getPropertyValueAsLocalDate(final Object targetObject, final String propertyName) {
+        try {
+<span class="nc" id="L77">            Optional&lt;String&gt; dateString = (Optional) PropertyUtils.getProperty(targetObject, propertyName);</span>
+<span class="nc" id="L78">            return dateString.map(v -&gt; LocalDate.parse(v, FORMAT));</span>
+<span class="nc" id="L79">        } catch (InvocationTargetException | IllegalAccessException | NoSuchMethodException</span>
+                | DateTimeParseException | ClassCastException e) {
+<span class="nc" id="L81">            return Optional.empty();</span>
+        }
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>OidcIdentifiersCommandDto.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Subscription Manager</a> &gt; <a href="index.source.html" class="el_package">uk.co.zodiac2000.subscriptionmanager.transfer.subscriber</a> &gt; <span class="el_source">OidcIdentifiersCommandDto.java</span></div><h1>OidcIdentifiersCommandDto.java</h1><pre class="source lang-java linenums">package uk.co.zodiac2000.subscriptionmanager.transfer.subscriber;
+
+import java.util.List;
+import javax.validation.Valid;
+
+/**
+ * Command DTO that holds a reference to a list of {@code OidcIdentifierCommandDto} objects. The main purpose of this
+ * class is to allow the members of the {@code oidcIdentifiers} collection to be validated.
+ */
+public class OidcIdentifiersCommandDto {
+
+    @Valid
+    private List&lt;OidcIdentifierCommandDto&gt; oidcIdentifiers;
+
+    /**
+     * Zero-arg constructor.
+     */
+<span class="fc" id="L18">    public OidcIdentifiersCommandDto() { }</span>
+
+    /**
+     * @param oidcIdentifiers a list of OidcIdentifierCommandDto objects
+     */
+<span class="fc" id="L23">    public OidcIdentifiersCommandDto(final List&lt;OidcIdentifierCommandDto&gt; oidcIdentifiers) {</span>
+<span class="fc" id="L24">        this.oidcIdentifiers = oidcIdentifiers;</span>
+<span class="fc" id="L25">    }</span>
+
+    /**
+     * @return a list of OidcIdentifierCommandDto objects
+     */
+    public List&lt;OidcIdentifierCommandDto&gt; getOidcIdentifiers() {
+<span class="fc" id="L31">        return oidcIdentifiers;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

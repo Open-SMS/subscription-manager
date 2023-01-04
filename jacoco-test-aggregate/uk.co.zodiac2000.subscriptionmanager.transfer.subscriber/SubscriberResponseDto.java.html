@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SubscriberResponseDto.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Subscription Manager</a> &gt; <a href="index.source.html" class="el_package">uk.co.zodiac2000.subscriptionmanager.transfer.subscriber</a> &gt; <span class="el_source">SubscriberResponseDto.java</span></div><h1>SubscriberResponseDto.java</h1><pre class="source lang-java linenums">package uk.co.zodiac2000.subscriptionmanager.transfer.subscriber;
+
+import java.io.Serializable;
+import java.util.List;
+
+/**
+ * Response DTO representing a subscriber.
+ */
+public class SubscriberResponseDto implements Serializable {
+
+    private final Long id;
+    private final String subscriberName;
+    private final List&lt;SamlIdentifierResponseDto&gt; samlIdentifierResponseDtos;
+    private final List&lt;OidcIdentifierResponseDto&gt; oidcIdentifierResponseDtos;
+
+    /**
+     * Constructs a new SubscriberResponseDto using the supplied arguments.
+     * @param id the subscriber identifier
+     * @param subscriberName the subscriber's name
+     * @param samlIdentifierResponseDtos set of SAML identifiers associated with this subscriber
+     * @param oidcIdentifierResponseDtos set of OIDC identifiers associated with this subscriber
+     */
+    public SubscriberResponseDto(final Long id, final String subscriberName,
+            final List&lt;SamlIdentifierResponseDto&gt; samlIdentifierResponseDtos,
+<span class="fc" id="L25">            final List&lt;OidcIdentifierResponseDto&gt; oidcIdentifierResponseDtos) {</span>
+<span class="fc" id="L26">        this.id = id;</span>
+<span class="fc" id="L27">        this.subscriberName = subscriberName;</span>
+<span class="fc" id="L28">        this.samlIdentifierResponseDtos = samlIdentifierResponseDtos;</span>
+<span class="fc" id="L29">        this.oidcIdentifierResponseDtos = oidcIdentifierResponseDtos;</span>
+<span class="fc" id="L30">    }</span>
+
+    /**
+     * @return the subscriber identifier
+     */
+    public Long getId() {
+<span class="fc" id="L36">        return this.id;</span>
+    }
+
+    /**
+     * @return the subscriber's name
+     */
+    public String getSubscriberName() {
+<span class="fc" id="L43">        return this.subscriberName;</span>
+    }
+
+    /**
+     * @return a list of SAML identifiers associated with this subscriber in their natural order
+     */
+    public List&lt;SamlIdentifierResponseDto&gt; getSamlIdentifiers() {
+<span class="fc" id="L50">        return this.samlIdentifierResponseDtos;</span>
+    }
+
+    /**
+     * @return a list of OIDC identifiers associated with this subscriber in their natural order
+     */
+    public List&lt;OidcIdentifierResponseDto&gt; getOidcIdentifiers() {
+<span class="fc" id="L57">        return this.oidcIdentifierResponseDtos;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>
