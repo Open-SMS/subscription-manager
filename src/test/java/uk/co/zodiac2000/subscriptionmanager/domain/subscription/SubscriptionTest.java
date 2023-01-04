@@ -20,6 +20,16 @@ public class SubscriptionTest {
     private static final Long SUBSCRIBER_ID = 98L;
 
     /**
+     * Test zero-arg constructor.
+     */
+    @Test
+    public void testZeroArgConstructor() {
+        Subscription subscription = new Subscription();
+
+        Assert.assertNotNull(subscription);
+    }
+
+    /**
      * Test parameter constructor and accessors.
      */
     @Test
@@ -52,6 +62,17 @@ public class SubscriptionTest {
     @Test(expectedExceptions = {IllegalArgumentException.class})
     public void testConstructorEndBeforeStart() {
         Subscription subscription = new Subscription(END_DATE, START_DATE, CONTENT_IDENTIFIER, SUBSCRIBER_ID);
+    }
+
+    /**
+     * Test terminate.
+     */
+    @Test
+    public void testTerminate() {
+        Subscription subscription = new Subscription(START_DATE, END_DATE, CONTENT_IDENTIFIER, SUBSCRIBER_ID);
+        subscription.terminate();
+
+        Assert.assertTrue(subscription.isTerminated());
     }
 
     /**

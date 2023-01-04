@@ -31,4 +31,15 @@ public class SubscriberNameCommandDtoTest {
 
         Assert.assertNotNull(commandDto);
     }
+
+    /**
+     * Test setId.
+     */
+    @Test
+    public void testSetId() {
+        SubscriberNameCommandDto commandDto = new SubscriberNameCommandDto();
+        commandDto.setId(SUBSCRIBER_ID);
+
+        Assert.assertEquals(commandDto.getId(), SUBSCRIBER_ID);
+    }
 }
