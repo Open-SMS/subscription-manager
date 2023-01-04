@@ -20,6 +20,16 @@ public class SubscriptionTest {
     private static final Long SUBSCRIBER_ID = 98L;
 
     /**
+     * Test zero-arg constructor.
+     */
+    @Test
+    public void testZeroArgConstructor() {
+        Subscription subscription = new Subscription();
+
+        Assert.assertNotNull(subscription);
+    }
+
+    /**
      * Test parameter constructor and accessors.
      */
     @Test
