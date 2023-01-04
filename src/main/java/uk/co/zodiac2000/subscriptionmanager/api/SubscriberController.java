@@ -56,7 +56,7 @@ public class SubscriberController {
     @PostMapping
     public ResponseEntity<SubscriberResponseDto> createSubscriber(
             @RequestBody @Valid final NewSubscriberCommandDto commandDto) {
-        return new ResponseEntity(this.subscriberService.createSubscriber(commandDto).get(), HttpStatus.CREATED);
+        return new ResponseEntity<>(this.subscriberService.createSubscriber(commandDto).get(), HttpStatus.CREATED);
     }
 
     /**

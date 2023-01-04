@@ -48,7 +48,7 @@ public class SubscriptionController {
     @PostMapping
     public ResponseEntity<SubscriptionResponseDto> createSubscription(
             @RequestBody @Valid final NewSubscriptionCommandDto commandDto) {
-        return new ResponseEntity(this.subscriptionService.createSubscription(commandDto).get(), HttpStatus.CREATED);
+        return new ResponseEntity<>(this.subscriptionService.createSubscription(commandDto).get(), HttpStatus.CREATED);
     }
 
     /**

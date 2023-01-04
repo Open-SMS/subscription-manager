@@ -62,7 +62,8 @@ public class DoesNotExistValidator implements ConstraintValidator<DoesNotExist, 
      */
     @Override
     public boolean isValid(final Object value, final ConstraintValidatorContext context) {
-        Optional<Object> id = this.verificationExpression.getValue(this.evaluationContext, value, Optional.class);
+        Optional<?> id
+                = this.verificationExpression.getValue(this.evaluationContext, value, Optional.class);
         if (id == null) {
             throw new ValidationException("Unexpected null value returned by expression evaluation");
         }
