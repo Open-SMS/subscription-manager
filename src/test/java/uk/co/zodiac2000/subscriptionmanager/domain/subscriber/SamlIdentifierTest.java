@@ -14,6 +14,16 @@ public class SamlIdentifierTest {
     private static final String SCOPED_AFFILIATION_TWO = "member@dur.ac.uk";
 
     /**
+     * Test zero-arg constructor.
+     */
+    @Test
+    public void testZeroArgConstructor() {
+        SamlIdentifier identifier = new SamlIdentifier();
+
+        Assert.assertNotNull(identifier);
+    }
+
+    /**
      * Test constructor and accessors.
      */
     @Test

@@ -14,6 +14,16 @@ public class OidcIdentifierTest {
     private static final String SUBJECT_TWO = "d2liYmxlCg==";
 
     /**
+     * Test zero-arg constructor.
+     */
+    @Test
+    public void testZeroArgConstructor() {
+        OidcIdentifier identifier = new OidcIdentifier();
+
+        Assert.assertNotNull(identifier);
+    }
+
+    /**
      * Test constructor and accessors.
      */
     @Test
