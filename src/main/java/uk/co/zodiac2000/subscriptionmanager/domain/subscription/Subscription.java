@@ -29,6 +29,8 @@ public class Subscription implements Serializable {
 
     private LocalDate endDate;
 
+    private boolean suspended;
+
     private boolean terminated;
 
     @NotEmpty
@@ -43,8 +45,8 @@ public class Subscription implements Serializable {
     public Subscription() { }
 
     /**
-     * Constructs a new Subscription using the supplied arguments. Subscriptions created by this constructor are not
-     * terminated.
+     * Constructs a new Subscription using the supplied arguments. Subscriptions created by this constructor are
+     * neither terminated nor suspended.
      * @param optionalStartDate the date from which this subscription is active
      * @param optionalEndDate the date until which this subscription is active
      * @param contentIdentifier a string that describes the content that is the subject of this subscription
@@ -59,14 +61,17 @@ public class Subscription implements Serializable {
         this.endDate = optionalEndDate.orElse(null);
         this.contentIdentifier = contentIdentifier;
         this.terminated = false;
+        this.suspended = false;
         this.subscriberId = subscriberId;
     }
 
     /**
-     * Terminates this subscription so that it is not active irrespective of the state of any other attributes.
+     * Terminates this subscription so that it is not active irrespective of the state of any other attributes. The
+     * terminated state of a subscription cannot be reversed.
      */
     public void terminate() {
         this.terminated = true;
+        this.suspended = true;
     }
 
     /**
@@ -98,6 +103,14 @@ public class Subscription implements Serializable {
     }
 
     /**
+     * Returns true is the subscription has been suspended. A terminated subscription is also considered suspended.
+     * @return true if the subscription has been suspended
+     */
+    public boolean isSuspended() {
+        return this.suspended;
+    }
+
+    /**
      * @return a string that describes the content that is the subject of this subscription
      */
     public String getContentIdentifier() {
@@ -119,7 +132,7 @@ public class Subscription implements Serializable {
      * @return true if the subscription is active
      */
     public boolean isActive(final LocalDate atDate) {
-        return !this.terminated
+        return !this.suspended
                 && this.getStartDate().map(d -> !atDate.isBefore(d)).orElse(true)
                 && this.getEndDate().map(d -> !atDate.isAfter(d)).orElse(true);
     }

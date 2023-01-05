@@ -41,6 +41,7 @@ public class SubscriptionTest {
         Assert.assertEquals(subscription.getStartDate(), START_DATE);
         Assert.assertEquals(subscription.getEndDate(), END_DATE);
         Assert.assertFalse(subscription.isTerminated());
+        Assert.assertFalse(subscription.isSuspended());
         Assert.assertEquals(subscription.getContentIdentifier(), CONTENT_IDENTIFIER);
         Assert.assertEquals(subscription.getSubscriberId(), SUBSCRIBER_ID);
     }
@@ -73,15 +74,16 @@ public class SubscriptionTest {
         subscription.terminate();
 
         Assert.assertTrue(subscription.isTerminated());
+        Assert.assertTrue(subscription.isSuspended());
     }
 
     /**
-     * Test isActive when the subscription is terminated.
+     * Test isActive when the subscription is suspended.
      */
     @Test
     public void testIsActiveTerminated() {
         Subscription subscription = new Subscription(START_DATE, END_DATE, CONTENT_IDENTIFIER, SUBSCRIBER_ID);
-        ReflectionTestUtils.setField(subscription, "terminated", true);
+        ReflectionTestUtils.setField(subscription, "suspended", true);
 
         Assert.assertFalse(subscription.isActive(START_DATE.get().plusDays(1)));
     }
