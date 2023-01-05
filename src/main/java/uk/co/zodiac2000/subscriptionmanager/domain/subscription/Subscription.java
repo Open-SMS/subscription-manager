@@ -67,7 +67,9 @@ public class Subscription implements Serializable {
 
     /**
      * Terminates this subscription so that it is not active irrespective of the state of any other attributes. The
-     * terminated state of a subscription cannot be reversed.
+     * terminated state of a subscription cannot be reversed. If an attempt is made to terminate an already
+     * terminated subscription then an IllegalStateException is thrown.
+     * @throws IllegalStateException if an attempt is made to terminate an already terminated subscription
      */
     public void terminate() {
         if (this.terminated) {
