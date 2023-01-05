@@ -107,6 +107,31 @@ public class SubscriptionTest {
     }
 
     /**
+     * Test suspend.
+     */
+    @Test
+    public void testSuspend() {
+        Subscription subscription = new Subscription(START_DATE, END_DATE, CONTENT_IDENTIFIER, SUBSCRIBER_ID);
+
+        subscription.suspend();
+
+        Assert.assertFalse(subscription.isTerminated());
+        Assert.assertTrue(subscription.isSuspended());
+    }
+
+    /**
+     * Test suspend when the subscription is already suspended.
+     */
+    @Test(expectedExceptions = {IllegalStateException.class}, expectedExceptionsMessageRegExp
+            = "^This subscription cannot be suspended because it is already suspended$")
+    public void testSuspendAlreadySuspended() {
+        Subscription subscription = new Subscription(START_DATE, END_DATE, CONTENT_IDENTIFIER, SUBSCRIBER_ID);
+        ReflectionTestUtils.setField(subscription, "suspended", true);
+
+        subscription.suspend();
+    }
+
+    /**
      * Test isActive when the subscription is suspended.
      */
     @Test

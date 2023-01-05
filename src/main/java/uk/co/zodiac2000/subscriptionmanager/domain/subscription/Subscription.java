@@ -80,6 +80,18 @@ public class Subscription implements Serializable {
     }
 
     /**
+     * Suspends this subscription so that it is not active irrespective of the state of any other attributes. The
+     * suspended state can be reversed. If an attempt is made to suspend an already
+     * suspended subscription then an IllegalStateException is thrown.
+     */
+    public void suspend() {
+        if (this.suspended) {
+            throw new IllegalStateException("This subscription cannot be suspended because it is already suspended");
+        }
+        this.suspended = true;
+    }
+
+    /**
      * @return the subscription identifier
      */
     public Long getId() {
@@ -108,7 +120,7 @@ public class Subscription implements Serializable {
     }
 
     /**
-     * Returns true is the subscription has been suspended. A terminated subscription is also considered suspended.
+     * Returns true is the subscription has been suspended. A terminated subscription is also a suspended subscription.
      * @return true if the subscription has been suspended
      */
     public boolean isSuspended() {
