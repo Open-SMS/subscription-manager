@@ -72,7 +72,7 @@ public class Subscription implements Serializable {
      * @throws IllegalStateException if an attempt is made to terminate an already terminated subscription
      */
     public void terminate() {
-        if (this.terminated) {
+        if (!canBeTerminated()) {
             throw new IllegalStateException("This subscription cannot be terminated because it is already terminated");
         }
         this.terminated = true;
@@ -107,6 +107,13 @@ public class Subscription implements Serializable {
             throw new IllegalStateException("This subscription cannot be unsuspended because it is not suspended");
         }
         this.suspended = false;
+    }
+
+    /**
+     * @return true if this subscription can be terminated
+     */
+    public boolean canBeTerminated() {
+        return !this.terminated;
     }
 
     /**
