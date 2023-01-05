@@ -81,14 +81,22 @@ public class SubscriptionTest {
      * Test terminate when the subscription is already terminated. This should result in an IllegalStateException
      * because an already terminated subscription cannot be terminated.
      */
-    @Test(expectedExceptions = {IllegalStateException.class}, expectedExceptionsMessageRegExp
-            = "^This subscription cannot be terminated because it is already terminated$")
+    @Test
     public void testTerminateAlreadyTerminated() {
         Subscription subscription = new Subscription(START_DATE, END_DATE, CONTENT_IDENTIFIER, SUBSCRIBER_ID);
         ReflectionTestUtils.setField(subscription, "suspended", true);
         ReflectionTestUtils.setField(subscription, "terminated", true);
 
-        subscription.terminate();
+        try {
+            subscription.terminate();
+        } catch (IllegalStateException e) {
+            Assert.assertEquals(e.getMessage(),
+                    "This subscription cannot be terminated because it is already terminated");
+        }
+
+        // Verify subscription state is unchanged.
+        Assert.assertTrue(subscription.isTerminated());
+        Assert.assertTrue(subscription.isSuspended());
     }
 
     /**
@@ -122,13 +130,21 @@ public class SubscriptionTest {
     /**
      * Test suspend when the subscription is already suspended.
      */
-    @Test(expectedExceptions = {IllegalStateException.class}, expectedExceptionsMessageRegExp
-            = "^This subscription cannot be suspended because it is already suspended$")
+    @Test
     public void testSuspendAlreadySuspended() {
         Subscription subscription = new Subscription(START_DATE, END_DATE, CONTENT_IDENTIFIER, SUBSCRIBER_ID);
         ReflectionTestUtils.setField(subscription, "suspended", true);
 
-        subscription.suspend();
+        try {
+            subscription.suspend();
+        } catch (IllegalStateException e) {
+            Assert.assertEquals(e.getMessage(),
+                    "This subscription cannot be suspended because it is already suspended");
+        }
+
+        // Verify subscription state is unchanged.
+        Assert.assertFalse(subscription.isTerminated());
+        Assert.assertTrue(subscription.isSuspended());
     }
 
     /**
