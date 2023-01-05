@@ -78,6 +78,35 @@ public class SubscriptionTest {
     }
 
     /**
+     * Test terminate when the subscription is already terminated. This should result in an IllegalStateException
+     * because an already terminated subscription cannot be terminated.
+     */
+    @Test(expectedExceptions = {IllegalStateException.class}, expectedExceptionsMessageRegExp
+            = "^This subscription cannot be terminated because it is already terminated$")
+    public void testTerminateAlreadyTerminated() {
+        Subscription subscription = new Subscription(START_DATE, END_DATE, CONTENT_IDENTIFIER, SUBSCRIBER_ID);
+        ReflectionTestUtils.setField(subscription, "suspended", true);
+        ReflectionTestUtils.setField(subscription, "terminated", true);
+
+        subscription.terminate();
+    }
+
+    /**
+     * Test terminate when the subscription is already suspended. This should result in the subscription being
+     * terminated because terminating a suspended subscription is allowed.
+     */
+    @Test
+    public void testTerminateAlreadySuspended() {
+        Subscription subscription = new Subscription(START_DATE, END_DATE, CONTENT_IDENTIFIER, SUBSCRIBER_ID);
+        ReflectionTestUtils.setField(subscription, "suspended", true);
+
+        subscription.terminate();
+
+        Assert.assertTrue(subscription.isTerminated());
+        Assert.assertTrue(subscription.isSuspended());
+    }
+
+    /**
      * Test isActive when the subscription is suspended.
      */
     @Test

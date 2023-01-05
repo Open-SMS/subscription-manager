@@ -70,6 +70,9 @@ public class Subscription implements Serializable {
      * terminated state of a subscription cannot be reversed.
      */
     public void terminate() {
+        if (this.terminated) {
+            throw new IllegalStateException("This subscription cannot be terminated because it is already terminated");
+        }
         this.terminated = true;
         this.suspended = true;
     }
