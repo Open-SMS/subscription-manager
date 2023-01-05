@@ -205,7 +205,7 @@ public class SubscriptionTest {
      * Test isActive when the subscription is suspended.
      */
     @Test
-    public void testIsActiveTerminated() {
+    public void testIsActiveSuspended() {
         Subscription subscription = new Subscription(START_DATE, END_DATE, CONTENT_IDENTIFIER, SUBSCRIBER_ID);
         ReflectionTestUtils.setField(subscription, "suspended", true);
 
