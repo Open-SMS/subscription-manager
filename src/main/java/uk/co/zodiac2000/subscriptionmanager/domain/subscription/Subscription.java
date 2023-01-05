@@ -86,7 +86,7 @@ public class Subscription implements Serializable {
      * @throws IllegalStateException if an attempt is made to suspend an already suspended subscription
      */
     public void suspend() {
-        if (this.suspended) {
+        if (!canBeSuspended()) {
             throw new IllegalStateException("This subscription cannot be suspended because it is already suspended");
         }
         this.suspended = true;
@@ -114,6 +114,13 @@ public class Subscription implements Serializable {
      */
     public boolean canBeTerminated() {
         return !this.terminated;
+    }
+
+    /**
+     * @return true if this subscription can be suspended
+     */
+    public boolean canBeSuspended() {
+        return !this.suspended;
     }
 
     /**
