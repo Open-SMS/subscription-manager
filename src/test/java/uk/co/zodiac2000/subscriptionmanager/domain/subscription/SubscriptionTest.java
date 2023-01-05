@@ -257,6 +257,39 @@ public class SubscriptionTest {
     }
 
     /**
+     * Test canBeUnsuspended when the subscription is suspended but not terminated.
+     */
+    @Test
+    public void testCanBeUnsuspended() {
+        Subscription subscription = new Subscription(START_DATE, END_DATE, CONTENT_IDENTIFIER, SUBSCRIBER_ID);
+        ReflectionTestUtils.setField(subscription, "suspended", true);
+
+        Assert.assertTrue(subscription.canBeUnsuspended());
+    }
+
+    /**
+     * Test canBeUnsuspended when the subscription is terminated.
+     */
+    @Test
+    public void testCanBeUnsuspendedTerminated() {
+        Subscription subscription = new Subscription(START_DATE, END_DATE, CONTENT_IDENTIFIER, SUBSCRIBER_ID);
+        ReflectionTestUtils.setField(subscription, "suspended", true);
+        ReflectionTestUtils.setField(subscription, "terminated", true);
+
+        Assert.assertFalse(subscription.canBeUnsuspended());
+    }
+
+    /**
+     * Test canBeUnsuspended when the subscription is not suspended.
+     */
+    @Test
+    public void testCanBeUnsuspendedNotSuspended() {
+        Subscription subscription = new Subscription(START_DATE, END_DATE, CONTENT_IDENTIFIER, SUBSCRIBER_ID);
+
+        Assert.assertFalse(subscription.canBeUnsuspended());
+    }
+
+    /**
      * Test isActive when atDate is before the subscription startDate.
      */
     @Test

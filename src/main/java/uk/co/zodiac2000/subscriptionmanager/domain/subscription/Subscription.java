@@ -124,6 +124,13 @@ public class Subscription implements Serializable {
     }
 
     /**
+     * @return true if this subscription can be unsuspended
+     */
+    public boolean canBeUnsuspended() {
+        return !this.terminated && this.suspended;
+    }
+
+    /**
      * @return the subscription identifier
      */
     public Long getId() {
