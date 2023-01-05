@@ -83,12 +83,30 @@ public class Subscription implements Serializable {
      * Suspends this subscription so that it is not active irrespective of the state of any other attributes. The
      * suspended state can be reversed. If an attempt is made to suspend an already
      * suspended subscription then an IllegalStateException is thrown.
+     * @throws IllegalStateException if an attempt is made to suspend an already suspended subscription
      */
     public void suspend() {
         if (this.suspended) {
             throw new IllegalStateException("This subscription cannot be suspended because it is already suspended");
         }
         this.suspended = true;
+    }
+
+    /**
+     * Reverses suspension of this subscription (unsuspends). If the current date is within the subscription start
+     * and end dates then the subscription becomes active. A subscription which is terminated cannot be unsuspended. A
+     * subscription that is not suspended cannot be unsuspended.
+     * @throws IllegalStateException if an attempt is made to unsuspend a terminated subscription, or unsuspend
+     * a subscription that is not suspended
+     */
+    public void unsuspend() {
+        if (this.terminated) {
+            throw new IllegalStateException("This subscription cannot be unsuspended because it is terminated");
+        }
+        if (!this.suspended) {
+            throw new IllegalStateException("This subscription cannot be unsuspended because it is not suspended");
+        }
+        this.suspended = false;
     }
 
     /**

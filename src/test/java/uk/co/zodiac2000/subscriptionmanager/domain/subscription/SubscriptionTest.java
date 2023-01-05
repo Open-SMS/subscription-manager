@@ -132,6 +132,60 @@ public class SubscriptionTest {
     }
 
     /**
+     * Test unsuspend when the subscription is suspended.
+     */
+    @Test
+    public void testUnsuspend() {
+        Subscription subscription = new Subscription(START_DATE, END_DATE, CONTENT_IDENTIFIER, SUBSCRIBER_ID);
+        ReflectionTestUtils.setField(subscription, "suspended", true);
+
+        subscription.unsuspend();
+
+        Assert.assertFalse(subscription.isTerminated());
+        Assert.assertFalse(subscription.isSuspended());
+    }
+
+    /**
+     * Test unsuspend when the subscription is terminated.
+     */
+    @Test
+    public void testUnsuspendTerminated() {
+        Subscription subscription = new Subscription(START_DATE, END_DATE, CONTENT_IDENTIFIER, SUBSCRIBER_ID);
+        ReflectionTestUtils.setField(subscription, "suspended", true);
+        ReflectionTestUtils.setField(subscription, "terminated", true);
+
+        try {
+            subscription.unsuspend();
+            Assert.fail("IllegalStateException should be thrown");
+        } catch (IllegalStateException e) {
+            Assert.assertEquals(e.getMessage(), "This subscription cannot be unsuspended because it is terminated");
+        }
+
+        // Verify subscription state is unchanged.
+        Assert.assertTrue(subscription.isTerminated());
+        Assert.assertTrue(subscription.isSuspended());
+    }
+
+    /**
+     * Test unsuspend when the subscription is not suspended.
+     */
+    @Test
+    public void testUnsuspendNotSuspended() {
+        Subscription subscription = new Subscription(START_DATE, END_DATE, CONTENT_IDENTIFIER, SUBSCRIBER_ID);
+
+        try {
+            subscription.unsuspend();
+            Assert.fail("IllegalStateException should be thrown");
+        } catch (IllegalStateException e) {
+            Assert.assertEquals(e.getMessage(), "This subscription cannot be unsuspended because it is not suspended");
+        }
+
+        // Verify subscription state is unchanged.
+        Assert.assertFalse(subscription.isTerminated());
+        Assert.assertFalse(subscription.isSuspended());
+    }
+
+    /**
      * Test isActive when the subscription is suspended.
      */
     @Test
