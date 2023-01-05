@@ -58,9 +58,13 @@ public class SubscriptionServiceTestITCase extends AbstractTransactionalTestNGSp
                         hasProperty("startDate", is(Optional.of(LocalDate.parse("2012-01-01")))),
                         hasProperty("endDate", is(Optional.of(LocalDate.parse("2012-12-31")))),
                         hasProperty("terminated", is(false)),
+                        hasProperty("suspended", is(false)),
                         hasProperty("contentIdentifier", is("CONTENT-1")),
                         hasProperty("subscriberId", is(100000001L)),
-                        hasProperty("active", is(true))
+                        hasProperty("active", is(true)),
+                        hasProperty("canBeSuspended", is(true)),
+                        hasProperty("canBeTerminated", is(true)),
+                        hasProperty("canBeUnsuspended", is(false))
                 )
         ));
     }
@@ -89,16 +93,45 @@ public class SubscriptionServiceTestITCase extends AbstractTransactionalTestNGSp
                         hasProperty("startDate", is(Optional.of(LocalDate.parse("2012-01-01")))),
                         hasProperty("endDate", is(Optional.of(LocalDate.parse("2012-12-31")))),
                         hasProperty("terminated", is(true)),
+                        hasProperty("suspended", is(true)),
                         hasProperty("contentIdentifier", is("CONTENT-1")),
                         hasProperty("subscriberId", is(100000008L)),
-                        hasProperty("active", is(false))
+                        hasProperty("active", is(false)),
+                        hasProperty("canBeSuspended", is(false)),
+                        hasProperty("canBeTerminated", is(false)),
+                        hasProperty("canBeUnsuspended", is(false))
                 )
         ));
     }
 
     /**
-     * Test getSubscription when the subscription exists and is inactive due to the subscription period not including the
-     * test date.
+     * Test getSubscription when the subscription exists and is inactive due to being suspended.
+     */
+    @Test
+    public void testGetSubscriptionSuspended() {
+        Optional<SubscriptionResponseDto> responseDto = this.subscriptionService.getSubscription(100000014L);
+
+        Assert.assertTrue(responseDto.isPresent());
+        assertThat(responseDto.get(), is(
+                allOf(
+                        hasProperty("id", is(100000014L)),
+                        hasProperty("startDate", is(Optional.of(LocalDate.parse("2012-01-01")))),
+                        hasProperty("endDate", is(Optional.of(LocalDate.parse("2012-12-31")))),
+                        hasProperty("terminated", is(false)),
+                        hasProperty("suspended", is(true)),
+                        hasProperty("contentIdentifier", is("CONTENT-3")),
+                        hasProperty("subscriberId", is(100000010L)),
+                        hasProperty("active", is(false)),
+                        hasProperty("canBeSuspended", is(false)),
+                        hasProperty("canBeTerminated", is(true)),
+                        hasProperty("canBeUnsuspended", is(true))
+                )
+        ));
+    }
+
+    /**
+     * Test getSubscription when the subscription exists and is inactive due to the subscription period not including
+     * the test date.
      */
     @Test
     public void testGetSubscriptionExpired() {
@@ -111,9 +144,13 @@ public class SubscriptionServiceTestITCase extends AbstractTransactionalTestNGSp
                         hasProperty("startDate", is(Optional.of(LocalDate.parse("2011-01-01")))),
                         hasProperty("endDate", is(Optional.of(LocalDate.parse("2011-12-31")))),
                         hasProperty("terminated", is(false)),
+                        hasProperty("suspended", is(false)),
                         hasProperty("contentIdentifier", is("CONTENT-3")),
                         hasProperty("subscriberId", is(100000004L)),
-                        hasProperty("active", is(false))
+                        hasProperty("active", is(false)),
+                        hasProperty("canBeSuspended", is(true)),
+                        hasProperty("canBeTerminated", is(true)),
+                        hasProperty("canBeUnsuspended", is(false))
                 )
         ));
     }
@@ -133,9 +170,13 @@ public class SubscriptionServiceTestITCase extends AbstractTransactionalTestNGSp
                         hasProperty("startDate", is(Optional.of(LocalDate.parse("2012-06-03")))),
                         hasProperty("endDate", is(Optional.of(LocalDate.parse("2012-12-31")))),
                         hasProperty("terminated", is(false)),
+                        hasProperty("suspended", is(false)),
                         hasProperty("contentIdentifier", is("CONTENT-2")),
                         hasProperty("subscriberId", is(100000008L)),
-                        hasProperty("active", is(true))
+                        hasProperty("active", is(true)),
+                        hasProperty("canBeSuspended", is(true)),
+                        hasProperty("canBeTerminated", is(true)),
+                        hasProperty("canBeUnsuspended", is(false))
                 )
         ));
     }
@@ -155,9 +196,13 @@ public class SubscriptionServiceTestITCase extends AbstractTransactionalTestNGSp
                         hasProperty("startDate", is(Optional.of(LocalDate.parse("2012-01-01")))),
                         hasProperty("endDate", is(Optional.of(LocalDate.parse("2012-06-03")))),
                         hasProperty("terminated", is(false)),
+                        hasProperty("suspended", is(false)),
                         hasProperty("contentIdentifier", is("CONTENT-2")),
                         hasProperty("subscriberId", is(100000008L)),
-                        hasProperty("active", is(true))
+                        hasProperty("active", is(true)),
+                        hasProperty("canBeSuspended", is(true)),
+                        hasProperty("canBeTerminated", is(true)),
+                        hasProperty("canBeUnsuspended", is(false))
                 )
         ));
     }
@@ -177,9 +222,13 @@ public class SubscriptionServiceTestITCase extends AbstractTransactionalTestNGSp
                         hasProperty("startDate", is(Optional.empty())),
                         hasProperty("endDate", is(Optional.of(LocalDate.parse("2012-12-31")))),
                         hasProperty("terminated", is(false)),
+                        hasProperty("suspended", is(false)),
                         hasProperty("contentIdentifier", is("CONTENT-1")),
                         hasProperty("subscriberId", is(100000009L)),
-                        hasProperty("active", is(true))
+                        hasProperty("active", is(true)),
+                        hasProperty("canBeSuspended", is(true)),
+                        hasProperty("canBeTerminated", is(true)),
+                        hasProperty("canBeUnsuspended", is(false))
                 )
         ));
     }
@@ -199,9 +248,13 @@ public class SubscriptionServiceTestITCase extends AbstractTransactionalTestNGSp
                         hasProperty("startDate", is(Optional.empty())),
                         hasProperty("endDate", is(Optional.of(LocalDate.parse("2012-06-02")))),
                         hasProperty("terminated", is(false)),
+                        hasProperty("suspended", is(false)),
                         hasProperty("contentIdentifier", is("CONTENT-2")),
                         hasProperty("subscriberId", is(100000009L)),
-                        hasProperty("active", is(false))
+                        hasProperty("active", is(false)),
+                        hasProperty("canBeSuspended", is(true)),
+                        hasProperty("canBeTerminated", is(true)),
+                        hasProperty("canBeUnsuspended", is(false))
                 )
         ));
     }
@@ -221,9 +274,13 @@ public class SubscriptionServiceTestITCase extends AbstractTransactionalTestNGSp
                         hasProperty("startDate", is(Optional.of(LocalDate.parse("2012-01-01")))),
                         hasProperty("endDate", is(Optional.empty())),
                         hasProperty("terminated", is(false)),
+                        hasProperty("suspended", is(false)),
                         hasProperty("contentIdentifier", is("CONTENT-1")),
                         hasProperty("subscriberId", is(100000010L)),
-                        hasProperty("active", is(true))
+                        hasProperty("active", is(true)),
+                        hasProperty("canBeSuspended", is(true)),
+                        hasProperty("canBeTerminated", is(true)),
+                        hasProperty("canBeUnsuspended", is(false))
                 )
         ));
     }
@@ -242,9 +299,13 @@ public class SubscriptionServiceTestITCase extends AbstractTransactionalTestNGSp
                         hasProperty("startDate", is(Optional.of(LocalDate.parse("2012-06-04")))),
                         hasProperty("endDate", is(Optional.empty())),
                         hasProperty("terminated", is(false)),
+                        hasProperty("suspended", is(false)),
                         hasProperty("contentIdentifier", is("CONTENT-2")),
                         hasProperty("subscriberId", is(100000010L)),
-                        hasProperty("active", is(false))
+                        hasProperty("active", is(false)),
+                        hasProperty("canBeSuspended", is(true)),
+                        hasProperty("canBeTerminated", is(true)),
+                        hasProperty("canBeUnsuspended", is(false))
                 )
         ));
     }

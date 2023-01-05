@@ -44,8 +44,11 @@ INSERT INTO subscription (id, start_date, end_date, terminated, suspended, conte
 
 /** Subscriptions for Vince Clarke (100000010). One subscription to CONTENT-1 is active because
     the start  date is before the test date and the end date is empty. One subscription to CONTENT-2 has an empty
-    end date but is inactive because the start date is after the test date. */
+    end date but is inactive because the start date is after the test date. One subscription to CONTENT-3
+    is inactive because the subscription is suspended even though the test date is between the start and end dates */
 INSERT INTO subscription (id, start_date, end_date, terminated, suspended, content_identifier, subscriber_id)
     VALUES (100000012, '2012-01-01', NULL, 'f', 'f', 'CONTENT-1', 100000010);
 INSERT INTO subscription (id, start_date, end_date, terminated, suspended, content_identifier, subscriber_id)
     VALUES (100000013, '2012-06-04', NULL, 'f', 'f', 'CONTENT-2', 100000010);
+INSERT INTO subscription (id, start_date, end_date, terminated, suspended, content_identifier, subscriber_id)
+    VALUES (100000014, '2012-01-01', '2012-12-31', 'f', 't', 'CONTENT-3', 100000010);
