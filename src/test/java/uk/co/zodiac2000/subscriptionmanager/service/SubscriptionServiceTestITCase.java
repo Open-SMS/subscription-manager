@@ -471,4 +471,59 @@ public class SubscriptionServiceTestITCase extends AbstractTransactionalTestNGSp
 
         Assert.assertTrue(responseDto.isEmpty());
     }
+
+    /**
+     * Test suspend when the subscription exists and can be suspended.
+     */
+    @Test
+    public void testSuspend() {
+        Optional<SubscriptionResponseDto> responseDto = this.subscriptionService.suspendSubscription(100000001L);
+
+        Assert.assertTrue(responseDto.isPresent());
+        Assert.assertEquals(responseDto.get().getId(), 100000001L);
+        Assert.assertTrue(responseDto.get().isSuspended());
+        Assert.assertFalse(responseDto.get().isTerminated());
+        Assert.assertFalse(responseDto.get().isActive());
+
+        Optional<Subscription> subscription = this.subscriptionRepository.findById(100000001L);
+        Assert.assertTrue(subscription.isPresent());
+        Assert.assertEquals(subscription.get().getId(), 100000001L);
+        Assert.assertTrue(subscription.get().isSuspended());
+        Assert.assertFalse(subscription.get().isTerminated());
+        Assert.assertFalse(subscription.get().isActive(LocalDate.now(TestClockConfiguration.TEST_CLOCK)));
+    }
+
+    /**
+     * Test suspend when the subscription exists but cannot be suspended because the subscription is already
+     * suspended.
+     */
+    @Test
+    public void testSuspendAlreadySuspended() {
+        Optional<SubscriptionResponseDto> responseDto = Optional.empty();
+        try {
+            responseDto = this.subscriptionService.suspendSubscription(100000007L);
+            Assert.fail("IllegalStateException should have been thrown");
+        } catch (IllegalStateException e) {
+            Assert.assertEquals(e.getMessage(),
+                    "This subscription cannot be suspended because it is already suspended");
+        }
+
+        // Response DTO should be empty because of the exception.
+        Assert.assertTrue(responseDto.isEmpty());
+
+        // Suspended state of the subscription is unchanged.
+        Optional<Subscription> subscription = this.subscriptionRepository.findById(100000007L);
+        Assert.assertTrue(subscription.isPresent());
+        Assert.assertTrue(subscription.get().isSuspended());
+    }
+
+    /**
+     * Test suspend when the subscription does not exist.
+     */
+    @Test
+    public void testSuspendNotFound() {
+        Optional<SubscriptionResponseDto> responseDto = this.subscriptionService.suspendSubscription(3333L);
+
+        Assert.assertTrue(responseDto.isEmpty());
+    }
 }
