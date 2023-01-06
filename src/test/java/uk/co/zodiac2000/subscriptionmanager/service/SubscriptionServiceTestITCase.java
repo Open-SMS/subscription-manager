@@ -473,7 +473,7 @@ public class SubscriptionServiceTestITCase extends AbstractTransactionalTestNGSp
     }
 
     /**
-     * Test suspend when the subscription exists and can be suspended.
+     * Test suspendSubscription when the subscription exists and can be suspended.
      */
     @Test
     public void testSuspend() {
@@ -494,8 +494,8 @@ public class SubscriptionServiceTestITCase extends AbstractTransactionalTestNGSp
     }
 
     /**
-     * Test suspend when the subscription exists but cannot be suspended because the subscription is already
-     * suspended.
+     * Test suspendSubscription when the subscription exists but cannot be suspended because the subscription is
+     * already suspended.
      */
     @Test
     public void testSuspendAlreadySuspended() {
@@ -518,7 +518,7 @@ public class SubscriptionServiceTestITCase extends AbstractTransactionalTestNGSp
     }
 
     /**
-     * Test suspend when the subscription does not exist.
+     * Test suspendSubscription when the subscription does not exist.
      */
     @Test
     public void testSuspendNotFound() {
