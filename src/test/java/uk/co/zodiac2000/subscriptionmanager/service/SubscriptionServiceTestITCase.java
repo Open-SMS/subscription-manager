@@ -606,4 +606,88 @@ public class SubscriptionServiceTestITCase extends AbstractTransactionalTestNGSp
 
         Assert.assertTrue(responseDto.isEmpty());
     }
+
+    /**
+     * Test unsuspendSubscription when the subscription exists and can be unsuspended because it is suspended but
+     * not terminated.
+     */
+    @Test
+    public void testUnsuspendSubscription() {
+        final long subscriptionId = 100000014L;
+        Optional<SubscriptionResponseDto> responseDto = this.subscriptionService.unsuspendSubscription(subscriptionId);
+
+        Assert.assertTrue(responseDto.isPresent());
+        Assert.assertEquals(responseDto.get().getId(), subscriptionId);
+        Assert.assertFalse(responseDto.get().isSuspended());
+        Assert.assertFalse(responseDto.get().isTerminated());
+        Assert.assertTrue(responseDto.get().isActive());
+
+        Optional<Subscription> subscription = this.subscriptionRepository.findById(subscriptionId);
+        Assert.assertTrue(subscription.isPresent());
+        Assert.assertFalse(subscription.get().isSuspended());
+        Assert.assertFalse(subscription.get().isTerminated());
+        Assert.assertTrue(subscription.get().isActive(LocalDate.now(TestClockConfiguration.TEST_CLOCK)));
+    }
+
+    /**
+     * Test unsuspendSubscription when the subscription exists and is suspended, but cannot be unsuspended because
+     * the subscription is terminated.
+     */
+    @Test
+    public void testUnsuspendSubscriptionAlreadyTerminated() {
+        final long subscriptionId = 100000007L;
+        Optional<SubscriptionResponseDto> responseDto = Optional.empty();
+        try {
+            responseDto = this.subscriptionService.unsuspendSubscription(subscriptionId);
+            Assert.fail("IllegalStateException should have been thrown");
+        } catch (IllegalStateException e) {
+            Assert.assertEquals(e.getMessage(),
+                    "This subscription cannot be unsuspended because it is terminated");
+        }
+
+        // Response DTO should be empty because of the exception.
+        Assert.assertTrue(responseDto.isEmpty());
+
+        // Suspended state of the subscription is unchanged.
+        Optional<Subscription> subscription = this.subscriptionRepository.findById(subscriptionId);
+        Assert.assertTrue(subscription.isPresent());
+        Assert.assertTrue(subscription.get().isSuspended());
+        Assert.assertTrue(subscription.get().isTerminated());
+    }
+
+    /**
+     * Test unsuspendSubscription when the subscription exists  but cannot be unsuspended because
+     * the subscription is not suspended.
+     */
+    @Test
+    public void testUnsuspendSubscriptionNotSuspended() {
+        final long subscriptionId = 100000001L;
+        Optional<SubscriptionResponseDto> responseDto = Optional.empty();
+        try {
+            responseDto = this.subscriptionService.unsuspendSubscription(subscriptionId);
+            Assert.fail("IllegalStateException should have been thrown");
+        } catch (IllegalStateException e) {
+            Assert.assertEquals(e.getMessage(),
+                    "This subscription cannot be unsuspended because it is not suspended");
+        }
+
+        // Response DTO should be empty because of the exception.
+        Assert.assertTrue(responseDto.isEmpty());
+
+        // Suspended state of the subscription is unchanged.
+        Optional<Subscription> subscription = this.subscriptionRepository.findById(subscriptionId);
+        Assert.assertTrue(subscription.isPresent());
+        Assert.assertFalse(subscription.get().isSuspended());
+        Assert.assertFalse(subscription.get().isTerminated());
+    }
+
+    /**
+     * Test unsuspendSubscription when the subscription does not exist.
+     */
+    @Test
+    public void testUnsuspendSubscriptionNotFound() {
+        Optional<SubscriptionResponseDto> responseDto = this.subscriptionService.unsuspendSubscription(3333L);
+
+        Assert.assertTrue(responseDto.isEmpty());
+    }
 }
