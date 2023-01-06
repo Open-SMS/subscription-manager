@@ -527,4 +527,83 @@ public class SubscriptionServiceTestITCase extends AbstractTransactionalTestNGSp
 
         Assert.assertTrue(responseDto.isEmpty());
     }
+
+    /**
+     * Test terminateSubscription when the subscription exists and can be terminated.
+     */
+    @Test
+    public void testTerminateSubscription() {
+        final long subscriptionId = 100000001L;
+        Optional<SubscriptionResponseDto> responseDto = this.subscriptionService.terminateSubscription(subscriptionId);
+
+        Assert.assertTrue(responseDto.isPresent());
+        Assert.assertEquals(responseDto.get().getId(), subscriptionId);
+        Assert.assertTrue(responseDto.get().isSuspended());
+        Assert.assertTrue(responseDto.get().isTerminated());
+        Assert.assertFalse(responseDto.get().isActive());
+
+        Optional<Subscription> subscription = this.subscriptionRepository.findById(subscriptionId);
+        Assert.assertTrue(subscription.isPresent());
+        Assert.assertTrue(subscription.get().isSuspended());
+        Assert.assertTrue(subscription.get().isTerminated());
+        Assert.assertFalse(subscription.get().isActive(LocalDate.now(TestClockConfiguration.TEST_CLOCK)));
+    }
+
+
+    /**
+     * Test terminateSubscription when the subscription exists in a suspended state and can be terminated.
+     */
+    @Test
+    public void testTerminateSubscriptionAlreadySuspended() {
+        final long subscriptionId = 100000014L;
+        Optional<SubscriptionResponseDto> responseDto = this.subscriptionService.terminateSubscription(subscriptionId);
+
+        Assert.assertTrue(responseDto.isPresent());
+        Assert.assertEquals(responseDto.get().getId(), subscriptionId);
+        Assert.assertTrue(responseDto.get().isSuspended());
+        Assert.assertTrue(responseDto.get().isTerminated());
+        Assert.assertFalse(responseDto.get().isActive());
+
+        Optional<Subscription> subscription = this.subscriptionRepository.findById(subscriptionId);
+        Assert.assertTrue(subscription.isPresent());
+        Assert.assertTrue(subscription.get().isSuspended());
+        Assert.assertTrue(subscription.get().isTerminated());
+        Assert.assertFalse(subscription.get().isActive(LocalDate.now(TestClockConfiguration.TEST_CLOCK)));
+    }
+
+    /**
+     * Test terminateSubscription when the subscription exists but cannot be suspended because the subscription is
+     * already suspended.
+     */
+    @Test
+    public void testTerminateSubscriptionAlreadyTerminated() {
+        final long subscriptionId = 100000007L;
+        Optional<SubscriptionResponseDto> responseDto = Optional.empty();
+        try {
+            responseDto = this.subscriptionService.terminateSubscription(subscriptionId);
+            Assert.fail("IllegalStateException should have been thrown");
+        } catch (IllegalStateException e) {
+            Assert.assertEquals(e.getMessage(),
+                    "This subscription cannot be terminated because it is already terminated");
+        }
+
+        // Response DTO should be empty because of the exception.
+        Assert.assertTrue(responseDto.isEmpty());
+
+        // Suspended state of the subscription is unchanged.
+        Optional<Subscription> subscription = this.subscriptionRepository.findById(subscriptionId);
+        Assert.assertTrue(subscription.isPresent());
+        Assert.assertTrue(subscription.get().isSuspended());
+        Assert.assertTrue(subscription.get().isTerminated());
+    }
+
+    /**
+     * Test terminateSubscription when the subscription does not exist.
+     */
+    @Test
+    public void testTerminateSubscriptionNotFound() {
+        Optional<SubscriptionResponseDto> responseDto = this.subscriptionService.terminateSubscription(3333L);
+
+        Assert.assertTrue(responseDto.isEmpty());
+    }
 }
