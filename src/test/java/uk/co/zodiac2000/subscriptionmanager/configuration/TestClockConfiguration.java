@@ -16,13 +16,18 @@ import org.springframework.context.annotation.Primary;
 public class TestClockConfiguration {
 
     /**
+     * Clock used integration tests when this class is loaded in the Spring context.
+     */
+    public static final Clock TEST_CLOCK = Clock.fixed(Instant.parse("2012-06-03T10:15:30Z"), ZoneId.of("UTC"));
+
+    /**
      * Defines a bean that returns a fixed Clock object set to 2012-06-03T10:15:30Z UTC.
      * @return a fixed Clock object
      */
     @Bean
     @Primary
     public Clock fixedClock() {
-        return Clock.fixed(Instant.parse("2012-06-03T10:15:30Z"), ZoneId.of("UTC"));
+        return TEST_CLOCK;
     }
 
 }
