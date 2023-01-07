@@ -16,11 +16,19 @@ public class SubscriptionResponseDto {
 
     private final boolean terminated;
 
+    private final boolean suspended;
+
     private final String contentIdentifier;
 
     private final Long subscriberId;
 
     private final boolean active;
+
+    private final boolean canBeSuspended;
+
+    private final boolean canBeTerminated;
+
+    private final boolean canBeUnsuspended;
 
     /**
      * Constructs a new SubscriptionResponseDto using the supplied arguments.
@@ -28,69 +36,107 @@ public class SubscriptionResponseDto {
      * @param startDate the subscription start date
      * @param endDate the subscription end date
      * @param terminated true if the subscription has been terminated
+     * @param suspended true if the subscription is suspended
      * @param contentIdentifier a string that describes the content that is the subject of the subscription
      * @param subscriberId the identifier of the subscriber that is the beneficiary of this subscription
      * @param active true if this subscription is active
+     * @param canBeSuspended true if the subscription can be suspended
+     * @param canBeTerminated true if the subscription can be terminated
+     * @param canBeUnsuspended true if the subscription can be unsuspended
      */
     public SubscriptionResponseDto(final Long id, final Optional&lt;LocalDate&gt; startDate,
-            final Optional&lt;LocalDate&gt; endDate, final boolean terminated, final String contentIdentifier,
-<span class="fc" id="L37">            final Long subscriberId, final boolean active) {</span>
-<span class="fc" id="L38">        this.id = id;</span>
-<span class="fc" id="L39">        this.startDate = startDate;</span>
-<span class="fc" id="L40">        this.endDate = endDate;</span>
-<span class="fc" id="L41">        this.terminated = terminated;</span>
-<span class="fc" id="L42">        this.contentIdentifier = contentIdentifier;</span>
-<span class="fc" id="L43">        this.subscriberId = subscriberId;</span>
-<span class="fc" id="L44">        this.active = active;</span>
-<span class="fc" id="L45">    }</span>
+            final Optional&lt;LocalDate&gt; endDate, final boolean terminated, final boolean suspended,
+            final String contentIdentifier, final Long subscriberId, final boolean active,
+<span class="fc" id="L50">            final boolean canBeSuspended, final boolean canBeTerminated, final boolean canBeUnsuspended) {</span>
+<span class="fc" id="L51">        this.id = id;</span>
+<span class="fc" id="L52">        this.startDate = startDate;</span>
+<span class="fc" id="L53">        this.endDate = endDate;</span>
+<span class="fc" id="L54">        this.terminated = terminated;</span>
+<span class="fc" id="L55">        this.suspended = suspended;</span>
+<span class="fc" id="L56">        this.contentIdentifier = contentIdentifier;</span>
+<span class="fc" id="L57">        this.subscriberId = subscriberId;</span>
+<span class="fc" id="L58">        this.active = active;</span>
+<span class="fc" id="L59">        this.canBeSuspended = canBeSuspended;</span>
+<span class="fc" id="L60">        this.canBeTerminated = canBeTerminated;</span>
+<span class="fc" id="L61">        this.canBeUnsuspended = canBeUnsuspended;</span>
+<span class="fc" id="L62">    }</span>
 
     /**
      * @return the subscription identifier
      */
     public Long getId() {
-<span class="fc" id="L51">        return id;</span>
+<span class="fc" id="L68">        return this.id;</span>
     }
 
     /**
      * @return the subscription start date
      */
     public Optional&lt;LocalDate&gt; getStartDate() {
-<span class="fc" id="L58">        return startDate;</span>
+<span class="fc" id="L75">        return this.startDate;</span>
     }
 
     /**
      * @return the subscription end date
      */
     public Optional&lt;LocalDate&gt; getEndDate() {
-<span class="fc" id="L65">        return endDate;</span>
+<span class="fc" id="L82">        return this.endDate;</span>
     }
 
     /**
      * @return true if the subscription has been terminated
      */
     public boolean isTerminated() {
-<span class="fc" id="L72">        return terminated;</span>
+<span class="fc" id="L89">        return this.terminated;</span>
+    }
+
+    /**
+     * @return true if the subscription is suspended
+     */
+    public boolean isSuspended() {
+<span class="fc" id="L96">        return this.suspended;</span>
     }
 
     /**
      * @return a string that describes the content that is the subject of the subscription
      */
     public String getContentIdentifier() {
-<span class="fc" id="L79">        return contentIdentifier;</span>
+<span class="fc" id="L103">        return this.contentIdentifier;</span>
     }
 
     /**
      * @return the identifier of the subscriber that is the beneficiary of this subscription
      */
     public Long getSubscriberId() {
-<span class="fc" id="L86">        return subscriberId;</span>
+<span class="fc" id="L110">        return this.subscriberId;</span>
     }
 
     /**
      * @return true if this subscription is active
      */
     public boolean isActive() {
-<span class="fc" id="L93">        return active;</span>
+<span class="fc" id="L117">        return this.active;</span>
+    }
+
+    /**
+     * @return true if the subscription can be suspended
+     */
+    public boolean getCanBeSuspended() {
+<span class="fc" id="L124">        return this.canBeSuspended;</span>
+    }
+
+    /**
+     * @return true if the subscription can be terminated
+     */
+    public boolean getCanBeTerminated() {
+<span class="fc" id="L131">        return this.canBeTerminated;</span>
+    }
+
+
+    /**
+     * @return true if the subscription can be unsuspended
+     */
+    public boolean getCanBeUnsuspended() {
+<span class="fc" id="L139">        return this.canBeUnsuspended;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

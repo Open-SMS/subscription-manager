@@ -1,10 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SubscriptionController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Subscription Manager</a> &gt; <a href="index.source.html" class="el_package">uk.co.zodiac2000.subscriptionmanager.api</a> &gt; <span class="el_source">SubscriptionController.java</span></div><h1>SubscriptionController.java</h1><pre class="source lang-java linenums">package uk.co.zodiac2000.subscriptionmanager.api;
 
+import java.io.IOException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,6 +17,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.DispatcherServlet;
+import org.springframework.web.servlet.ModelAndView;
+import uk.co.zodiac2000.subscriptionmanager.domain.subscription.Subscription;
 import uk.co.zodiac2000.subscriptionmanager.service.SubscriptionService;
 import uk.co.zodiac2000.subscriptionmanager.transfer.subscription.NewSubscriptionCommandDto;
 import uk.co.zodiac2000.subscriptionmanager.transfer.subscription.SubscriptionContentIdentifierCommandDto;
@@ -24,10 +31,35 @@ import uk.co.zodiac2000.subscriptionmanager.transfer.subscription.SubscriptionRe
  */
 @RestController
 @RequestMapping(path = &quot;/subscription&quot;, produces = &quot;application/json&quot;)
-<span class="nc" id="L27">public class SubscriptionController {</span>
+<span class="nc" id="L34">public class SubscriptionController {</span>
 
     @Autowired
     private SubscriptionService subscriptionService;
+
+    /**
+     * Handles any {@code IllegalStateException} thrown by methods in
+     * {@link uk.co.zodiac2000.subscriptionmanager.domain.subscription.Subscription Subscription}. If the exception
+     * is thrown by any other class then it is re-thrown, otherwise the request exception attribute is set with the
+     * exception, a Bad Request (400) is set in the response, and an empty {@code ModelAndView} returned.
+     * This handler is for situations where a method called on the domain model would leave the model in an invalid
+     * state.
+     * @param e the exception
+     * @param request the HTTP request
+     * @param response the HTTP response
+     * @return an empty ModelAndView
+     * @throws java.io.IOException if there is a problem sending the error in the response
+     */
+    @ExceptionHandler({IllegalStateException.class})
+    public ModelAndView handleIllegalState(final IllegalStateException e,
+            final HttpServletRequest request, final HttpServletResponse response) throws IOException {
+<span class="nc bnc" id="L55" title="All 2 branches missed.">        if (Subscription.class.getCanonicalName().equals(e.getStackTrace()[0].getClassName())) {</span>
+<span class="nc" id="L56">            request.setAttribute(DispatcherServlet.EXCEPTION_ATTRIBUTE, e);</span>
+<span class="nc" id="L57">            response.sendError(HttpServletResponse.SC_BAD_REQUEST);</span>
+<span class="nc" id="L58">            return new ModelAndView();</span>
+        } else {
+<span class="nc" id="L60">            throw e;</span>
+        }
+    }
 
     /**
      * Returns the Subscription identified by id.
@@ -36,7 +68,7 @@ import uk.co.zodiac2000.subscriptionmanager.transfer.subscription.SubscriptionRe
      */
     @GetMapping(path = &quot;/{id}&quot;)
     public ResponseEntity&lt;SubscriptionResponseDto&gt; getSubscription(@PathVariable(&quot;id&quot;) final long id) {
-<span class="nc" id="L39">        return ResponseEntity.of(this.subscriptionService.getSubscription(id));</span>
+<span class="nc" id="L71">        return ResponseEntity.of(this.subscriptionService.getSubscription(id));</span>
     }
 
     /**
@@ -48,7 +80,7 @@ import uk.co.zodiac2000.subscriptionmanager.transfer.subscription.SubscriptionRe
     @PostMapping
     public ResponseEntity&lt;SubscriptionResponseDto&gt; createSubscription(
             @RequestBody @Valid final NewSubscriptionCommandDto commandDto) {
-<span class="nc" id="L51">        return new ResponseEntity&lt;&gt;(this.subscriptionService.createSubscription(commandDto).get(), HttpStatus.CREATED);</span>
+<span class="nc" id="L83">        return new ResponseEntity&lt;&gt;(this.subscriptionService.createSubscription(commandDto).get(), HttpStatus.CREATED);</span>
     }
 
     /**
@@ -58,8 +90,8 @@ import uk.co.zodiac2000.subscriptionmanager.transfer.subscription.SubscriptionRe
     @DeleteMapping(&quot;/{id}&quot;)
     @ResponseStatus(code = HttpStatus.NO_CONTENT)
     public void deleteSubscription(@PathVariable(&quot;id&quot;) final long id) {
-<span class="nc" id="L61">        this.subscriptionService.deleteSubscription(id);</span>
-<span class="nc" id="L62">    }</span>
+<span class="nc" id="L93">        this.subscriptionService.deleteSubscription(id);</span>
+<span class="nc" id="L94">    }</span>
 
     /**
      * Updates the start and end dates associated with the subscription identified by id. Returns the modified
@@ -71,7 +103,7 @@ import uk.co.zodiac2000.subscriptionmanager.transfer.subscription.SubscriptionRe
     @PutMapping(&quot;/{id}/dates&quot;)
     public ResponseEntity&lt;SubscriptionResponseDto&gt; updateSubscriptionDates(@PathVariable(&quot;id&quot;) final long id,
             @RequestBody @Valid final SubscriptionDatesCommandDto commandDto) {
-<span class="nc" id="L74">        return ResponseEntity.of(this.subscriptionService.updateSubscriptionDates(id, commandDto));</span>
+<span class="nc" id="L106">        return ResponseEntity.of(this.subscriptionService.updateSubscriptionDates(id, commandDto));</span>
     }
 
     /**
@@ -85,7 +117,49 @@ import uk.co.zodiac2000.subscriptionmanager.transfer.subscription.SubscriptionRe
     public ResponseEntity&lt;SubscriptionResponseDto&gt; updateSubscriptionContentIdentifier(
             @PathVariable(&quot;id&quot;) final long id,
             @RequestBody @Valid final SubscriptionContentIdentifierCommandDto commandDto) {
-<span class="nc" id="L88">        return ResponseEntity.of(this.subscriptionService.updateSubscriptionContentIdentifier(id, commandDto));</span>
+<span class="nc" id="L120">        return ResponseEntity.of(this.subscriptionService.updateSubscriptionContentIdentifier(id, commandDto));</span>
+    }
+
+    /**
+     * Suspends the subscription identified by {@code id}. Returns the modified subscription
+     * or Not Found if the subscription doesn't exist. See
+     * {@link uk.co.zodiac2000.subscriptionmanager.domain.subscription.Subscription#suspend Subscription#suspend}
+     * for details.
+     * @param id the subscription identifier
+     * @return the modified subscription
+     */
+    @PutMapping(&quot;/{id}/suspend&quot;)
+    public ResponseEntity&lt;SubscriptionResponseDto&gt; suspendSubscription(
+            @PathVariable(&quot;id&quot;) final long id) {
+<span class="nc" id="L134">        return ResponseEntity.of(this.subscriptionService.suspendSubscription(id));</span>
+    }
+
+    /**
+     * Terminates the subscription identified by {@code id}. Returns the modified subscription
+     * or Not Found if the subscription doesn't exist. See
+     * {@link uk.co.zodiac2000.subscriptionmanager.domain.subscription.Subscription#suspend Subscription#terminate}
+     * for details.
+     * @param id the subscription identifier
+     * @return the modified subscription
+     */
+    @PutMapping(&quot;/{id}/terminate&quot;)
+    public ResponseEntity&lt;SubscriptionResponseDto&gt; terminateSubscription(
+            @PathVariable(&quot;id&quot;) final long id) {
+<span class="nc" id="L148">        return ResponseEntity.of(this.subscriptionService.terminateSubscription(id));</span>
+    }
+
+    /**
+     * Unsuspends the subscription identified by {@code id}. Returns the modified subscription
+     * or Not Found if the subscription doesn't exist. See
+     * {@link uk.co.zodiac2000.subscriptionmanager.domain.subscription.Subscription#suspend Subscription#unsuspend}
+     * for details.
+     * @param id the subscription identifier
+     * @return the modified subscription
+     */
+    @PutMapping(&quot;/{id}/unsuspend&quot;)
+    public ResponseEntity&lt;SubscriptionResponseDto&gt; unsuspendSubscription(
+            @PathVariable(&quot;id&quot;) final long id) {
+<span class="nc" id="L162">        return ResponseEntity.of(this.subscriptionService.unsuspendSubscription(id));</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

@@ -43,8 +43,9 @@ public class SubscriptionResponseDtoFactory {
 <span class="fc" id="L43">                        s.getId(),</span>
 <span class="fc" id="L44">                        s.getStartDate(),</span>
 <span class="fc" id="L45">                        s.getEndDate(),</span>
-<span class="fc" id="L46">                        s.isTerminated(), s.getContentIdentifier(), s.getSubscriberId(),</span>
-<span class="fc" id="L47">                        s.isActive(LocalDate.now(this.systemClock))</span>
+<span class="fc" id="L46">                        s.isTerminated(), s.isSuspended(), s.getContentIdentifier(), s.getSubscriberId(),</span>
+<span class="fc" id="L47">                        s.isActive(LocalDate.now(this.systemClock)),</span>
+<span class="fc" id="L48">                        s.canBeSuspended(), s.canBeTerminated(), s.canBeUnsuspended()</span>
                 ));
     }
 }

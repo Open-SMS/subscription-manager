@@ -29,6 +29,8 @@ public class Subscription implements Serializable {
 
     private LocalDate endDate;
 
+    private boolean suspended;
+
     private boolean terminated;
 
     @NotEmpty
@@ -40,75 +42,142 @@ public class Subscription implements Serializable {
     /**
      * Zero-arg constructor for JPA.
      */
-<span class="fc" id="L43">    public Subscription() { }</span>
+<span class="fc" id="L45">    public Subscription() { }</span>
 
     /**
-     * Constructs a new Subscription using the supplied arguments. Subscriptions created by this constructor are not
-     * terminated.
+     * Constructs a new Subscription using the supplied arguments. Subscriptions created by this constructor are
+     * neither terminated nor suspended.
      * @param optionalStartDate the date from which this subscription is active
      * @param optionalEndDate the date until which this subscription is active
      * @param contentIdentifier a string that describes the content that is the subject of this subscription
      * @param subscriberId the identifier of the subscriber that is the beneficiary of this subscription
      */
     public Subscription(final Optional&lt;LocalDate&gt; optionalStartDate, final Optional&lt;LocalDate&gt; optionalEndDate,
-<span class="fc" id="L54">            final String contentIdentifier, final long subscriberId) {</span>
-<span class="fc bfc" id="L55" title="All 2 branches covered.">        if (!firstDateBeforeSecondDate(optionalStartDate, optionalEndDate)) {</span>
-<span class="fc" id="L56">            throw new IllegalArgumentException(&quot;startDate must be before or equal to endDate&quot;);</span>
+<span class="fc" id="L56">            final String contentIdentifier, final long subscriberId) {</span>
+<span class="fc bfc" id="L57" title="All 2 branches covered.">        if (!firstDateBeforeSecondDate(optionalStartDate, optionalEndDate)) {</span>
+<span class="fc" id="L58">            throw new IllegalArgumentException(&quot;startDate must be before or equal to endDate&quot;);</span>
         }
-<span class="fc" id="L58">        this.startDate = optionalStartDate.orElse(null);</span>
-<span class="fc" id="L59">        this.endDate = optionalEndDate.orElse(null);</span>
-<span class="fc" id="L60">        this.contentIdentifier = contentIdentifier;</span>
-<span class="fc" id="L61">        this.terminated = false;</span>
-<span class="fc" id="L62">        this.subscriberId = subscriberId;</span>
-<span class="fc" id="L63">    }</span>
+<span class="fc" id="L60">        this.startDate = optionalStartDate.orElse(null);</span>
+<span class="fc" id="L61">        this.endDate = optionalEndDate.orElse(null);</span>
+<span class="fc" id="L62">        this.contentIdentifier = contentIdentifier;</span>
+<span class="fc" id="L63">        this.terminated = false;</span>
+<span class="fc" id="L64">        this.suspended = false;</span>
+<span class="fc" id="L65">        this.subscriberId = subscriberId;</span>
+<span class="fc" id="L66">    }</span>
 
     /**
-     * Terminates this subscription so that it is not active irrespective of the state of any other attributes.
+     * Terminates this subscription so that it is not active irrespective of the state of any other attributes. The
+     * terminated state of a subscription cannot be reversed. If an attempt is made to terminate an already
+     * terminated subscription then an IllegalStateException is thrown.
+     * @throws IllegalStateException if an attempt is made to terminate an already terminated subscription
      */
     public void terminate() {
-<span class="nc" id="L69">        this.terminated = true;</span>
-<span class="nc" id="L70">    }</span>
+<span class="fc bfc" id="L75" title="All 2 branches covered.">        if (!canBeTerminated()) {</span>
+<span class="fc" id="L76">            throw new IllegalStateException(&quot;This subscription cannot be terminated because it is already terminated&quot;);</span>
+        }
+<span class="fc" id="L78">        this.terminated = true;</span>
+<span class="fc" id="L79">        this.suspended = true;</span>
+<span class="fc" id="L80">    }</span>
+
+    /**
+     * Suspends this subscription so that it is not active irrespective of the state of any other attributes. The
+     * suspended state can be reversed. If an attempt is made to suspend an already
+     * suspended subscription then an IllegalStateException is thrown.
+     * @throws IllegalStateException if an attempt is made to suspend an already suspended subscription
+     */
+    public void suspend() {
+<span class="fc bfc" id="L89" title="All 2 branches covered.">        if (!canBeSuspended()) {</span>
+<span class="fc" id="L90">            throw new IllegalStateException(&quot;This subscription cannot be suspended because it is already suspended&quot;);</span>
+        }
+<span class="fc" id="L92">        this.suspended = true;</span>
+<span class="fc" id="L93">    }</span>
+
+    /**
+     * Reverses suspension of this subscription (unsuspends). If the current date is within the subscription start
+     * and end dates then the subscription becomes active. A subscription which is terminated cannot be unsuspended. A
+     * subscription that is not suspended cannot be unsuspended.
+     * @throws IllegalStateException if an attempt is made to unsuspend a terminated subscription, or unsuspend
+     * a subscription that is not suspended
+     */
+    public void unsuspend() {
+<span class="fc bfc" id="L103" title="All 2 branches covered.">        if (this.terminated) {</span>
+<span class="fc" id="L104">            throw new IllegalStateException(&quot;This subscription cannot be unsuspended because it is terminated&quot;);</span>
+        }
+<span class="fc bfc" id="L106" title="All 2 branches covered.">        if (!this.suspended) {</span>
+<span class="fc" id="L107">            throw new IllegalStateException(&quot;This subscription cannot be unsuspended because it is not suspended&quot;);</span>
+        }
+<span class="fc" id="L109">        this.suspended = false;</span>
+<span class="fc" id="L110">    }</span>
+
+    /**
+     * @return true if this subscription can be terminated
+     */
+    public boolean canBeTerminated() {
+<span class="fc bfc" id="L116" title="All 2 branches covered.">        return !this.terminated;</span>
+    }
+
+    /**
+     * @return true if this subscription can be suspended
+     */
+    public boolean canBeSuspended() {
+<span class="fc bfc" id="L123" title="All 2 branches covered.">        return !this.suspended;</span>
+    }
+
+    /**
+     * @return true if this subscription can be unsuspended
+     */
+    public boolean canBeUnsuspended() {
+<span class="fc bfc" id="L130" title="All 4 branches covered.">        return !this.terminated &amp;&amp; this.suspended;</span>
+    }
 
     /**
      * @return the subscription identifier
      */
     public Long getId() {
-<span class="fc" id="L76">        return this.id;</span>
+<span class="fc" id="L137">        return this.id;</span>
     }
 
     /**
      * @return the date from which this subscription is active
      */
     public Optional&lt;LocalDate&gt; getStartDate() {
-<span class="fc" id="L83">        return Optional.ofNullable(this.startDate);</span>
+<span class="fc" id="L144">        return Optional.ofNullable(this.startDate);</span>
     }
 
     /**
      * @return the date until which this subscription is active
      */
     public Optional&lt;LocalDate&gt; getEndDate() {
-<span class="fc" id="L90">        return Optional.ofNullable(this.endDate);</span>
+<span class="fc" id="L151">        return Optional.ofNullable(this.endDate);</span>
     }
 
     /**
      * @return if true this subscription has been terminated
      */
     public boolean isTerminated() {
-<span class="fc" id="L97">        return this.terminated;</span>
+<span class="fc" id="L158">        return this.terminated;</span>
+    }
+
+    /**
+     * Returns true is the subscription has been suspended. A terminated subscription is also a suspended subscription.
+     * @return true if the subscription has been suspended
+     */
+    public boolean isSuspended() {
+<span class="fc" id="L166">        return this.suspended;</span>
     }
 
     /**
      * @return a string that describes the content that is the subject of this subscription
      */
     public String getContentIdentifier() {
-<span class="fc" id="L104">        return contentIdentifier;</span>
+<span class="fc" id="L173">        return contentIdentifier;</span>
     }
 
     /**
      * @return the identifier of the subscriber that is the beneficiary of this subscription
      */
     public Long getSubscriberId() {
-<span class="fc" id="L111">        return this.subscriberId;</span>
+<span class="fc" id="L180">        return this.subscriberId;</span>
     }
 
     /**
@@ -119,9 +188,9 @@ public class Subscription implements Serializable {
      * @return true if the subscription is active
      */
     public boolean isActive(final LocalDate atDate) {
-<span class="fc bfc" id="L122" title="All 2 branches covered.">        return !this.terminated</span>
-<span class="fc bfc" id="L123" title="All 4 branches covered.">                &amp;&amp; this.getStartDate().map(d -&gt; !atDate.isBefore(d)).orElse(true)</span>
-<span class="fc bfc" id="L124" title="All 4 branches covered.">                &amp;&amp; this.getEndDate().map(d -&gt; !atDate.isAfter(d)).orElse(true);</span>
+<span class="fc bfc" id="L191" title="All 2 branches covered.">        return !this.suspended</span>
+<span class="fc bfc" id="L192" title="All 4 branches covered.">                &amp;&amp; this.getStartDate().map(d -&gt; !atDate.isBefore(d)).orElse(true)</span>
+<span class="fc bfc" id="L193" title="All 4 branches covered.">                &amp;&amp; this.getEndDate().map(d -&gt; !atDate.isAfter(d)).orElse(true);</span>
     }
 
     /**
@@ -130,14 +199,14 @@ public class Subscription implements Serializable {
      * @param commandDto command DTO representing the new start and end dates
      */
     public void setDates(final SubscriptionDatesCommandDto commandDto) {
-<span class="fc" id="L133">        Optional&lt;LocalDate&gt; optionalStartDate = commandDto.getStartDate().map(LocalDate::parse);</span>
-<span class="fc" id="L134">        Optional&lt;LocalDate&gt; optionalEndDate = commandDto.getEndDate().map(LocalDate::parse);</span>
-<span class="fc bfc" id="L135" title="All 2 branches covered.">        if (!firstDateBeforeSecondDate(optionalStartDate, optionalEndDate)) {</span>
-<span class="fc" id="L136">            throw new IllegalArgumentException(&quot;startDate must be before or equal to endDate&quot;);</span>
+<span class="fc" id="L202">        Optional&lt;LocalDate&gt; optionalStartDate = commandDto.getStartDate().map(LocalDate::parse);</span>
+<span class="fc" id="L203">        Optional&lt;LocalDate&gt; optionalEndDate = commandDto.getEndDate().map(LocalDate::parse);</span>
+<span class="fc bfc" id="L204" title="All 2 branches covered.">        if (!firstDateBeforeSecondDate(optionalStartDate, optionalEndDate)) {</span>
+<span class="fc" id="L205">            throw new IllegalArgumentException(&quot;startDate must be before or equal to endDate&quot;);</span>
         }
-<span class="fc" id="L138">        this.startDate = optionalStartDate.orElse(null);</span>
-<span class="fc" id="L139">        this.endDate = optionalEndDate.orElse(null);</span>
-<span class="fc" id="L140">    }</span>
+<span class="fc" id="L207">        this.startDate = optionalStartDate.orElse(null);</span>
+<span class="fc" id="L208">        this.endDate = optionalEndDate.orElse(null);</span>
+<span class="fc" id="L209">    }</span>
 
     /**
      * @param firstDate the first date
@@ -146,9 +215,9 @@ public class Subscription implements Serializable {
      */
     private boolean firstDateBeforeSecondDate(final Optional&lt;LocalDate&gt; firstDate,
             final Optional&lt;LocalDate&gt; secondDate) {
-<span class="fc" id="L149">        return firstDate.map(s -&gt;</span>
-<span class="pc bpc" id="L150" title="1 of 4 branches missed.">                secondDate.map(e -&gt; e.isAfter(s) || e.equals(s)).orElse(true)</span>
-<span class="fc" id="L151">        ).orElse(true);</span>
+<span class="fc" id="L218">        return firstDate.map(s -&gt;</span>
+<span class="pc bpc" id="L219" title="1 of 4 branches missed.">                secondDate.map(e -&gt; e.isAfter(s) || e.equals(s)).orElse(true)</span>
+<span class="fc" id="L220">        ).orElse(true);</span>
     }
 
     /**
@@ -156,7 +225,7 @@ public class Subscription implements Serializable {
      * @param commandDto command DTO representing the new content identifier
      */
     public void setContentIdentifier(final SubscriptionContentIdentifierCommandDto commandDto) {
-<span class="fc" id="L159">        this.contentIdentifier = commandDto.getContentIdentifier();</span>
-<span class="fc" id="L160">    }</span>
+<span class="fc" id="L228">        this.contentIdentifier = commandDto.getContentIdentifier();</span>
+<span class="fc" id="L229">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>
