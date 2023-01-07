@@ -29,6 +29,8 @@ public class Subscription implements Serializable {
 
     private LocalDate endDate;
 
+    private boolean suspended;
+
     private boolean terminated;
 
     @NotEmpty
@@ -43,8 +45,8 @@ public class Subscription implements Serializable {
     public Subscription() { }
 
     /**
-     * Constructs a new Subscription using the supplied arguments. Subscriptions created by this constructor are not
-     * terminated.
+     * Constructs a new Subscription using the supplied arguments. Subscriptions created by this constructor are
+     * neither terminated nor suspended.
      * @param optionalStartDate the date from which this subscription is active
      * @param optionalEndDate the date until which this subscription is active
      * @param contentIdentifier a string that describes the content that is the subject of this subscription
@@ -59,14 +61,73 @@ public class Subscription implements Serializable {
         this.endDate = optionalEndDate.orElse(null);
         this.contentIdentifier = contentIdentifier;
         this.terminated = false;
+        this.suspended = false;
         this.subscriberId = subscriberId;
     }
 
     /**
-     * Terminates this subscription so that it is not active irrespective of the state of any other attributes.
+     * Terminates this subscription so that it is not active irrespective of the state of any other attributes. The
+     * terminated state of a subscription cannot be reversed. If an attempt is made to terminate an already
+     * terminated subscription then an IllegalStateException is thrown.
+     * @throws IllegalStateException if an attempt is made to terminate an already terminated subscription
      */
     public void terminate() {
+        if (!canBeTerminated()) {
+            throw new IllegalStateException("This subscription cannot be terminated because it is already terminated");
+        }
         this.terminated = true;
+        this.suspended = true;
+    }
+
+    /**
+     * Suspends this subscription so that it is not active irrespective of the state of any other attributes. The
+     * suspended state can be reversed. If an attempt is made to suspend an already
+     * suspended subscription then an IllegalStateException is thrown.
+     * @throws IllegalStateException if an attempt is made to suspend an already suspended subscription
+     */
+    public void suspend() {
+        if (!canBeSuspended()) {
+            throw new IllegalStateException("This subscription cannot be suspended because it is already suspended");
+        }
+        this.suspended = true;
+    }
+
+    /**
+     * Reverses suspension of this subscription (unsuspends). If the current date is within the subscription start
+     * and end dates then the subscription becomes active. A subscription which is terminated cannot be unsuspended. A
+     * subscription that is not suspended cannot be unsuspended.
+     * @throws IllegalStateException if an attempt is made to unsuspend a terminated subscription, or unsuspend
+     * a subscription that is not suspended
+     */
+    public void unsuspend() {
+        if (this.terminated) {
+            throw new IllegalStateException("This subscription cannot be unsuspended because it is terminated");
+        }
+        if (!this.suspended) {
+            throw new IllegalStateException("This subscription cannot be unsuspended because it is not suspended");
+        }
+        this.suspended = false;
+    }
+
+    /**
+     * @return true if this subscription can be terminated
+     */
+    public boolean canBeTerminated() {
+        return !this.terminated;
+    }
+
+    /**
+     * @return true if this subscription can be suspended
+     */
+    public boolean canBeSuspended() {
+        return !this.suspended;
+    }
+
+    /**
+     * @return true if this subscription can be unsuspended
+     */
+    public boolean canBeUnsuspended() {
+        return !this.terminated && this.suspended;
     }
 
     /**
@@ -98,6 +159,14 @@ public class Subscription implements Serializable {
     }
 
     /**
+     * Returns true is the subscription has been suspended. A terminated subscription is also a suspended subscription.
+     * @return true if the subscription has been suspended
+     */
+    public boolean isSuspended() {
+        return this.suspended;
+    }
+
+    /**
      * @return a string that describes the content that is the subject of this subscription
      */
     public String getContentIdentifier() {
@@ -119,7 +188,7 @@ public class Subscription implements Serializable {
      * @return true if the subscription is active
      */
     public boolean isActive(final LocalDate atDate) {
-        return !this.terminated
+        return !this.suspended
                 && this.getStartDate().map(d -> !atDate.isBefore(d)).orElse(true)
                 && this.getEndDate().map(d -> !atDate.isAfter(d)).orElse(true);
     }

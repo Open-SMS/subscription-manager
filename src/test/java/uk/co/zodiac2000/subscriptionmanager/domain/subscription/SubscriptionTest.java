@@ -41,6 +41,7 @@ public class SubscriptionTest {
         Assert.assertEquals(subscription.getStartDate(), START_DATE);
         Assert.assertEquals(subscription.getEndDate(), END_DATE);
         Assert.assertFalse(subscription.isTerminated());
+        Assert.assertFalse(subscription.isSuspended());
         Assert.assertEquals(subscription.getContentIdentifier(), CONTENT_IDENTIFIER);
         Assert.assertEquals(subscription.getSubscriberId(), SUBSCRIBER_ID);
     }
@@ -73,17 +74,219 @@ public class SubscriptionTest {
         subscription.terminate();
 
         Assert.assertTrue(subscription.isTerminated());
+        Assert.assertTrue(subscription.isSuspended());
     }
 
     /**
-     * Test isActive when the subscription is terminated.
+     * Test terminate when the subscription is already terminated. This should result in an IllegalStateException
+     * because an already terminated subscription cannot be terminated.
      */
     @Test
-    public void testIsActiveTerminated() {
+    public void testTerminateAlreadyTerminated() {
         Subscription subscription = new Subscription(START_DATE, END_DATE, CONTENT_IDENTIFIER, SUBSCRIBER_ID);
+        ReflectionTestUtils.setField(subscription, "suspended", true);
         ReflectionTestUtils.setField(subscription, "terminated", true);
 
+        try {
+            subscription.terminate();
+        } catch (IllegalStateException e) {
+            Assert.assertEquals(e.getMessage(),
+                    "This subscription cannot be terminated because it is already terminated");
+        }
+
+        // Verify subscription state is unchanged.
+        Assert.assertTrue(subscription.isTerminated());
+        Assert.assertTrue(subscription.isSuspended());
+    }
+
+    /**
+     * Test terminate when the subscription is already suspended. This should result in the subscription being
+     * terminated because terminating a suspended subscription is allowed.
+     */
+    @Test
+    public void testTerminateAlreadySuspended() {
+        Subscription subscription = new Subscription(START_DATE, END_DATE, CONTENT_IDENTIFIER, SUBSCRIBER_ID);
+        ReflectionTestUtils.setField(subscription, "suspended", true);
+
+        subscription.terminate();
+
+        Assert.assertTrue(subscription.isTerminated());
+        Assert.assertTrue(subscription.isSuspended());
+    }
+
+    /**
+     * Test suspend.
+     */
+    @Test
+    public void testSuspend() {
+        Subscription subscription = new Subscription(START_DATE, END_DATE, CONTENT_IDENTIFIER, SUBSCRIBER_ID);
+
+        subscription.suspend();
+
+        Assert.assertFalse(subscription.isTerminated());
+        Assert.assertTrue(subscription.isSuspended());
+    }
+
+    /**
+     * Test suspend when the subscription is already suspended.
+     */
+    @Test
+    public void testSuspendAlreadySuspended() {
+        Subscription subscription = new Subscription(START_DATE, END_DATE, CONTENT_IDENTIFIER, SUBSCRIBER_ID);
+        ReflectionTestUtils.setField(subscription, "suspended", true);
+
+        try {
+            subscription.suspend();
+        } catch (IllegalStateException e) {
+            Assert.assertEquals(e.getMessage(),
+                    "This subscription cannot be suspended because it is already suspended");
+        }
+
+        // Verify subscription state is unchanged.
+        Assert.assertFalse(subscription.isTerminated());
+        Assert.assertTrue(subscription.isSuspended());
+    }
+
+    /**
+     * Test unsuspend when the subscription is suspended.
+     */
+    @Test
+    public void testUnsuspend() {
+        Subscription subscription = new Subscription(START_DATE, END_DATE, CONTENT_IDENTIFIER, SUBSCRIBER_ID);
+        ReflectionTestUtils.setField(subscription, "suspended", true);
+
+        subscription.unsuspend();
+
+        Assert.assertFalse(subscription.isTerminated());
+        Assert.assertFalse(subscription.isSuspended());
+    }
+
+    /**
+     * Test unsuspend when the subscription is terminated.
+     */
+    @Test
+    public void testUnsuspendTerminated() {
+        Subscription subscription = new Subscription(START_DATE, END_DATE, CONTENT_IDENTIFIER, SUBSCRIBER_ID);
+        ReflectionTestUtils.setField(subscription, "suspended", true);
+        ReflectionTestUtils.setField(subscription, "terminated", true);
+
+        try {
+            subscription.unsuspend();
+            Assert.fail("IllegalStateException should be thrown");
+        } catch (IllegalStateException e) {
+            Assert.assertEquals(e.getMessage(), "This subscription cannot be unsuspended because it is terminated");
+        }
+
+        // Verify subscription state is unchanged.
+        Assert.assertTrue(subscription.isTerminated());
+        Assert.assertTrue(subscription.isSuspended());
+    }
+
+    /**
+     * Test unsuspend when the subscription is not suspended.
+     */
+    @Test
+    public void testUnsuspendNotSuspended() {
+        Subscription subscription = new Subscription(START_DATE, END_DATE, CONTENT_IDENTIFIER, SUBSCRIBER_ID);
+
+        try {
+            subscription.unsuspend();
+            Assert.fail("IllegalStateException should be thrown");
+        } catch (IllegalStateException e) {
+            Assert.assertEquals(e.getMessage(), "This subscription cannot be unsuspended because it is not suspended");
+        }
+
+        // Verify subscription state is unchanged.
+        Assert.assertFalse(subscription.isTerminated());
+        Assert.assertFalse(subscription.isSuspended());
+    }
+
+    /**
+     * Test isActive when the subscription is suspended.
+     */
+    @Test
+    public void testIsActiveSuspended() {
+        Subscription subscription = new Subscription(START_DATE, END_DATE, CONTENT_IDENTIFIER, SUBSCRIBER_ID);
+        ReflectionTestUtils.setField(subscription, "suspended", true);
+
         Assert.assertFalse(subscription.isActive(START_DATE.get().plusDays(1)));
+    }
+
+    /**
+     * Test canBeTerminated when the subscription is terminated.
+     */
+    @Test
+    public void testCanBeTerminated() {
+        Subscription subscription = new Subscription(START_DATE, END_DATE, CONTENT_IDENTIFIER, SUBSCRIBER_ID);
+        ReflectionTestUtils.setField(subscription, "suspended", true);
+        ReflectionTestUtils.setField(subscription, "terminated", true);
+
+        Assert.assertFalse(subscription.canBeTerminated());
+    }
+
+    /**
+     * Test canBeTerminated when the subscription is not terminated but is suspended.
+     */
+    @Test
+    public void testCanBeTerminatedNotTerminated() {
+        Subscription subscription = new Subscription(START_DATE, END_DATE, CONTENT_IDENTIFIER, SUBSCRIBER_ID);
+        ReflectionTestUtils.setField(subscription, "suspended", true);
+
+        Assert.assertTrue(subscription.canBeTerminated());
+    }
+
+    /**
+     * Test canBeSuspended when the subscription is not suspended.
+     */
+    @Test
+    public void testCanBeSuspended() {
+        Subscription subscription = new Subscription(START_DATE, END_DATE, CONTENT_IDENTIFIER, SUBSCRIBER_ID);
+
+        Assert.assertTrue(subscription.canBeSuspended());
+    }
+
+    /**
+     * Test canBeSuspended when the subscription is suspended.
+     */
+    @Test
+    public void testCanBeSuspendedIsSuspended() {
+        Subscription subscription = new Subscription(START_DATE, END_DATE, CONTENT_IDENTIFIER, SUBSCRIBER_ID);
+        ReflectionTestUtils.setField(subscription, "suspended", true);
+
+        Assert.assertFalse(subscription.canBeSuspended());
+    }
+
+    /**
+     * Test canBeUnsuspended when the subscription is suspended but not terminated.
+     */
+    @Test
+    public void testCanBeUnsuspended() {
+        Subscription subscription = new Subscription(START_DATE, END_DATE, CONTENT_IDENTIFIER, SUBSCRIBER_ID);
+        ReflectionTestUtils.setField(subscription, "suspended", true);
+
+        Assert.assertTrue(subscription.canBeUnsuspended());
+    }
+
+    /**
+     * Test canBeUnsuspended when the subscription is terminated.
+     */
+    @Test
+    public void testCanBeUnsuspendedTerminated() {
+        Subscription subscription = new Subscription(START_DATE, END_DATE, CONTENT_IDENTIFIER, SUBSCRIBER_ID);
+        ReflectionTestUtils.setField(subscription, "suspended", true);
+        ReflectionTestUtils.setField(subscription, "terminated", true);
+
+        Assert.assertFalse(subscription.canBeUnsuspended());
+    }
+
+    /**
+     * Test canBeUnsuspended when the subscription is not suspended.
+     */
+    @Test
+    public void testCanBeUnsuspendedNotSuspended() {
+        Subscription subscription = new Subscription(START_DATE, END_DATE, CONTENT_IDENTIFIER, SUBSCRIBER_ID);
+
+        Assert.assertFalse(subscription.canBeUnsuspended());
     }
 
     /**

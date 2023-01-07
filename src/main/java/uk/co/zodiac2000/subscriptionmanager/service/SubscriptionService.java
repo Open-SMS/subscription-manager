@@ -94,4 +94,55 @@ public class SubscriptionService {
         subscription.ifPresent(s -> s.setContentIdentifier(commandDto));
         return this.subscriptionResponseDtoFactory.subscriptionToSubscriptionResponseDto(subscription);
     }
+
+    /**
+     * Suspends the subscription identified by the {@code id} argument. Returns the state of the updated subscription
+     * or an empty {@code Optional} if not found. Throws an IllegalStateException if the subscription cannot be
+     * suspended. See
+     * {@link uk.co.zodiac2000.subscriptionmanager.domain.subscription.Subscription#suspend Subscription#suspend} for
+     * details.
+     * @param id the subscription identifier
+     * @return the updated subscription
+     * @throws IllegalStateException if the subscription cannot be suspended
+     */
+    @Transactional(readOnly = false)
+    public Optional<SubscriptionResponseDto> suspendSubscription(final long id) {
+        Optional<Subscription> subscription = this.subscriptionRepository.findById(id);
+        subscription.ifPresent(s -> s.suspend());
+        return this.subscriptionResponseDtoFactory.subscriptionToSubscriptionResponseDto(subscription);
+    }
+
+    /**
+     * Terminates the subscription identified by the {@code id} argument. Returns the state of the updated subscription
+     * or an empty {@code Optional} if not found. Throws an IllegalStateException if the subscription cannot be
+     * terminated. See
+     * {@link uk.co.zodiac2000.subscriptionmanager.domain.subscription.Subscription#terminate Subscription#terminate}
+     * for details.
+     * @param id the subscription identifier
+     * @return the updated subscription
+     * @throws IllegalStateException if the subscription cannot be terminated
+     */
+    @Transactional(readOnly = false)
+    public Optional<SubscriptionResponseDto> terminateSubscription(final long id) {
+        Optional<Subscription> subscription = this.subscriptionRepository.findById(id);
+        subscription.ifPresent(s -> s.terminate());
+        return this.subscriptionResponseDtoFactory.subscriptionToSubscriptionResponseDto(subscription);
+    }
+
+    /**
+     * Unsuspends the subscription identified by the {@code id} argument. Returns the state of the updated subscription
+     * or an empty {@code Optional} if not found. Throws an IllegalStateException if the subscription cannot be
+     * unsuspended. See
+     * {@link uk.co.zodiac2000.subscriptionmanager.domain.subscription.Subscription#terminate Subscription#unsuspend}
+     * for details.
+     * @param id the subscription identifier
+     * @return the updated subscription
+     * @throws IllegalStateException if the subscription cannot be unsuspended
+     */
+    @Transactional(readOnly = false)
+    public Optional<SubscriptionResponseDto> unsuspendSubscription(final long id) {
+        Optional<Subscription> subscription = this.subscriptionRepository.findById(id);
+        subscription.ifPresent(s -> s.unsuspend());
+        return this.subscriptionResponseDtoFactory.subscriptionToSubscriptionResponseDto(subscription);
+    }
 }

@@ -62,9 +62,13 @@ public class SubscriptionResponseDtoFactoryTest {
                         hasProperty("startDate", is(START_DATE)),
                         hasProperty("endDate", is(END_DATE)),
                         hasProperty("terminated", is(false)),
+                        hasProperty("suspended", is(false)),
                         hasProperty("contentIdentifier", is(CONTENT_IDENTIFIER)),
                         hasProperty("subscriberId", is(SUBSCRIBER_ID)),
-                        hasProperty("active", is(true))
+                        hasProperty("active", is(true)),
+                        hasProperty("canBeSuspended", is(true)),
+                        hasProperty("canBeTerminated", is(true)),
+                        hasProperty("canBeUnsuspended", is(false))
                 )
         ));
     }
@@ -85,9 +89,13 @@ public class SubscriptionResponseDtoFactoryTest {
                         hasProperty("startDate", is(Optional.empty())),
                         hasProperty("endDate", is(Optional.empty())),
                         hasProperty("terminated", is(false)),
+                        hasProperty("suspended", is(false)),
                         hasProperty("contentIdentifier", is(PERPETUAL_CONTENT_IDENTIFIER)),
                         hasProperty("subscriberId", is(PERPETUAL_SUBSCRIBER_ID)),
-                        hasProperty("active", is(true))
+                        hasProperty("active", is(true)),
+                        hasProperty("canBeSuspended", is(true)),
+                        hasProperty("canBeTerminated", is(true)),
+                        hasProperty("canBeUnsuspended", is(false))
                 )
         ));
     }

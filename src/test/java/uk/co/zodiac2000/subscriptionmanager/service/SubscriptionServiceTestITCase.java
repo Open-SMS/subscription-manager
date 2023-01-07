@@ -58,9 +58,13 @@ public class SubscriptionServiceTestITCase extends AbstractTransactionalTestNGSp
                         hasProperty("startDate", is(Optional.of(LocalDate.parse("2012-01-01")))),
                         hasProperty("endDate", is(Optional.of(LocalDate.parse("2012-12-31")))),
                         hasProperty("terminated", is(false)),
+                        hasProperty("suspended", is(false)),
                         hasProperty("contentIdentifier", is("CONTENT-1")),
                         hasProperty("subscriberId", is(100000001L)),
-                        hasProperty("active", is(true))
+                        hasProperty("active", is(true)),
+                        hasProperty("canBeSuspended", is(true)),
+                        hasProperty("canBeTerminated", is(true)),
+                        hasProperty("canBeUnsuspended", is(false))
                 )
         ));
     }
@@ -89,16 +93,45 @@ public class SubscriptionServiceTestITCase extends AbstractTransactionalTestNGSp
                         hasProperty("startDate", is(Optional.of(LocalDate.parse("2012-01-01")))),
                         hasProperty("endDate", is(Optional.of(LocalDate.parse("2012-12-31")))),
                         hasProperty("terminated", is(true)),
+                        hasProperty("suspended", is(true)),
                         hasProperty("contentIdentifier", is("CONTENT-1")),
                         hasProperty("subscriberId", is(100000008L)),
-                        hasProperty("active", is(false))
+                        hasProperty("active", is(false)),
+                        hasProperty("canBeSuspended", is(false)),
+                        hasProperty("canBeTerminated", is(false)),
+                        hasProperty("canBeUnsuspended", is(false))
                 )
         ));
     }
 
     /**
-     * Test getSubscription when the subscription exists and is inactive due to the subscription period not including the
-     * test date.
+     * Test getSubscription when the subscription exists and is inactive due to being suspended.
+     */
+    @Test
+    public void testGetSubscriptionSuspended() {
+        Optional<SubscriptionResponseDto> responseDto = this.subscriptionService.getSubscription(100000014L);
+
+        Assert.assertTrue(responseDto.isPresent());
+        assertThat(responseDto.get(), is(
+                allOf(
+                        hasProperty("id", is(100000014L)),
+                        hasProperty("startDate", is(Optional.of(LocalDate.parse("2012-01-01")))),
+                        hasProperty("endDate", is(Optional.of(LocalDate.parse("2012-12-31")))),
+                        hasProperty("terminated", is(false)),
+                        hasProperty("suspended", is(true)),
+                        hasProperty("contentIdentifier", is("CONTENT-3")),
+                        hasProperty("subscriberId", is(100000010L)),
+                        hasProperty("active", is(false)),
+                        hasProperty("canBeSuspended", is(false)),
+                        hasProperty("canBeTerminated", is(true)),
+                        hasProperty("canBeUnsuspended", is(true))
+                )
+        ));
+    }
+
+    /**
+     * Test getSubscription when the subscription exists and is inactive due to the subscription period not including
+     * the test date.
      */
     @Test
     public void testGetSubscriptionExpired() {
@@ -111,9 +144,13 @@ public class SubscriptionServiceTestITCase extends AbstractTransactionalTestNGSp
                         hasProperty("startDate", is(Optional.of(LocalDate.parse("2011-01-01")))),
                         hasProperty("endDate", is(Optional.of(LocalDate.parse("2011-12-31")))),
                         hasProperty("terminated", is(false)),
+                        hasProperty("suspended", is(false)),
                         hasProperty("contentIdentifier", is("CONTENT-3")),
                         hasProperty("subscriberId", is(100000004L)),
-                        hasProperty("active", is(false))
+                        hasProperty("active", is(false)),
+                        hasProperty("canBeSuspended", is(true)),
+                        hasProperty("canBeTerminated", is(true)),
+                        hasProperty("canBeUnsuspended", is(false))
                 )
         ));
     }
@@ -133,9 +170,13 @@ public class SubscriptionServiceTestITCase extends AbstractTransactionalTestNGSp
                         hasProperty("startDate", is(Optional.of(LocalDate.parse("2012-06-03")))),
                         hasProperty("endDate", is(Optional.of(LocalDate.parse("2012-12-31")))),
                         hasProperty("terminated", is(false)),
+                        hasProperty("suspended", is(false)),
                         hasProperty("contentIdentifier", is("CONTENT-2")),
                         hasProperty("subscriberId", is(100000008L)),
-                        hasProperty("active", is(true))
+                        hasProperty("active", is(true)),
+                        hasProperty("canBeSuspended", is(true)),
+                        hasProperty("canBeTerminated", is(true)),
+                        hasProperty("canBeUnsuspended", is(false))
                 )
         ));
     }
@@ -155,9 +196,13 @@ public class SubscriptionServiceTestITCase extends AbstractTransactionalTestNGSp
                         hasProperty("startDate", is(Optional.of(LocalDate.parse("2012-01-01")))),
                         hasProperty("endDate", is(Optional.of(LocalDate.parse("2012-06-03")))),
                         hasProperty("terminated", is(false)),
+                        hasProperty("suspended", is(false)),
                         hasProperty("contentIdentifier", is("CONTENT-2")),
                         hasProperty("subscriberId", is(100000008L)),
-                        hasProperty("active", is(true))
+                        hasProperty("active", is(true)),
+                        hasProperty("canBeSuspended", is(true)),
+                        hasProperty("canBeTerminated", is(true)),
+                        hasProperty("canBeUnsuspended", is(false))
                 )
         ));
     }
@@ -177,9 +222,13 @@ public class SubscriptionServiceTestITCase extends AbstractTransactionalTestNGSp
                         hasProperty("startDate", is(Optional.empty())),
                         hasProperty("endDate", is(Optional.of(LocalDate.parse("2012-12-31")))),
                         hasProperty("terminated", is(false)),
+                        hasProperty("suspended", is(false)),
                         hasProperty("contentIdentifier", is("CONTENT-1")),
                         hasProperty("subscriberId", is(100000009L)),
-                        hasProperty("active", is(true))
+                        hasProperty("active", is(true)),
+                        hasProperty("canBeSuspended", is(true)),
+                        hasProperty("canBeTerminated", is(true)),
+                        hasProperty("canBeUnsuspended", is(false))
                 )
         ));
     }
@@ -199,9 +248,13 @@ public class SubscriptionServiceTestITCase extends AbstractTransactionalTestNGSp
                         hasProperty("startDate", is(Optional.empty())),
                         hasProperty("endDate", is(Optional.of(LocalDate.parse("2012-06-02")))),
                         hasProperty("terminated", is(false)),
+                        hasProperty("suspended", is(false)),
                         hasProperty("contentIdentifier", is("CONTENT-2")),
                         hasProperty("subscriberId", is(100000009L)),
-                        hasProperty("active", is(false))
+                        hasProperty("active", is(false)),
+                        hasProperty("canBeSuspended", is(true)),
+                        hasProperty("canBeTerminated", is(true)),
+                        hasProperty("canBeUnsuspended", is(false))
                 )
         ));
     }
@@ -221,9 +274,13 @@ public class SubscriptionServiceTestITCase extends AbstractTransactionalTestNGSp
                         hasProperty("startDate", is(Optional.of(LocalDate.parse("2012-01-01")))),
                         hasProperty("endDate", is(Optional.empty())),
                         hasProperty("terminated", is(false)),
+                        hasProperty("suspended", is(false)),
                         hasProperty("contentIdentifier", is("CONTENT-1")),
                         hasProperty("subscriberId", is(100000010L)),
-                        hasProperty("active", is(true))
+                        hasProperty("active", is(true)),
+                        hasProperty("canBeSuspended", is(true)),
+                        hasProperty("canBeTerminated", is(true)),
+                        hasProperty("canBeUnsuspended", is(false))
                 )
         ));
     }
@@ -242,9 +299,13 @@ public class SubscriptionServiceTestITCase extends AbstractTransactionalTestNGSp
                         hasProperty("startDate", is(Optional.of(LocalDate.parse("2012-06-04")))),
                         hasProperty("endDate", is(Optional.empty())),
                         hasProperty("terminated", is(false)),
+                        hasProperty("suspended", is(false)),
                         hasProperty("contentIdentifier", is("CONTENT-2")),
                         hasProperty("subscriberId", is(100000010L)),
-                        hasProperty("active", is(false))
+                        hasProperty("active", is(false)),
+                        hasProperty("canBeSuspended", is(true)),
+                        hasProperty("canBeTerminated", is(true)),
+                        hasProperty("canBeUnsuspended", is(false))
                 )
         ));
     }
@@ -407,6 +468,225 @@ public class SubscriptionServiceTestITCase extends AbstractTransactionalTestNGSp
         SubscriptionContentIdentifierCommandDto commandDto = new SubscriptionContentIdentifierCommandDto("CONTENT-X");
         Optional<SubscriptionResponseDto> responseDto
                 = this.subscriptionService.updateSubscriptionContentIdentifier(123L, commandDto);
+
+        Assert.assertTrue(responseDto.isEmpty());
+    }
+
+    /**
+     * Test suspendSubscription when the subscription exists and can be suspended.
+     */
+    @Test
+    public void testSuspendSubscription() {
+        final long subscriptionId = 100000001L;
+        Optional<SubscriptionResponseDto> responseDto = this.subscriptionService.suspendSubscription(subscriptionId);
+
+        Assert.assertTrue(responseDto.isPresent());
+        Assert.assertEquals(responseDto.get().getId(), subscriptionId);
+        Assert.assertTrue(responseDto.get().isSuspended());
+        Assert.assertFalse(responseDto.get().isTerminated());
+        Assert.assertFalse(responseDto.get().isActive());
+
+        Optional<Subscription> subscription = this.subscriptionRepository.findById(subscriptionId);
+        Assert.assertTrue(subscription.isPresent());
+        Assert.assertTrue(subscription.get().isSuspended());
+        Assert.assertFalse(subscription.get().isTerminated());
+        Assert.assertFalse(subscription.get().isActive(LocalDate.now(TestClockConfiguration.TEST_CLOCK)));
+    }
+
+    /**
+     * Test suspendSubscription when the subscription exists but cannot be suspended because the subscription is
+     * already suspended.
+     */
+    @Test
+    public void testSuspendSubscriptionAlreadySuspended() {
+        final long subscriptionId = 100000007L;
+        Optional<SubscriptionResponseDto> responseDto = Optional.empty();
+        try {
+            responseDto = this.subscriptionService.suspendSubscription(subscriptionId);
+            Assert.fail("IllegalStateException should have been thrown");
+        } catch (IllegalStateException e) {
+            Assert.assertEquals(e.getMessage(),
+                    "This subscription cannot be suspended because it is already suspended");
+        }
+
+        // Response DTO should be empty because of the exception.
+        Assert.assertTrue(responseDto.isEmpty());
+
+        // Suspended state of the subscription is unchanged.
+        Optional<Subscription> subscription = this.subscriptionRepository.findById(subscriptionId);
+        Assert.assertTrue(subscription.isPresent());
+        Assert.assertTrue(subscription.get().isSuspended());
+    }
+
+    /**
+     * Test suspendSubscription when the subscription does not exist.
+     */
+    @Test
+    public void testSuspendSubscriptionNotFound() {
+        Optional<SubscriptionResponseDto> responseDto = this.subscriptionService.suspendSubscription(3333L);
+
+        Assert.assertTrue(responseDto.isEmpty());
+    }
+
+    /**
+     * Test terminateSubscription when the subscription exists and can be terminated.
+     */
+    @Test
+    public void testTerminateSubscription() {
+        final long subscriptionId = 100000001L;
+        Optional<SubscriptionResponseDto> responseDto = this.subscriptionService.terminateSubscription(subscriptionId);
+
+        Assert.assertTrue(responseDto.isPresent());
+        Assert.assertEquals(responseDto.get().getId(), subscriptionId);
+        Assert.assertTrue(responseDto.get().isSuspended());
+        Assert.assertTrue(responseDto.get().isTerminated());
+        Assert.assertFalse(responseDto.get().isActive());
+
+        Optional<Subscription> subscription = this.subscriptionRepository.findById(subscriptionId);
+        Assert.assertTrue(subscription.isPresent());
+        Assert.assertTrue(subscription.get().isSuspended());
+        Assert.assertTrue(subscription.get().isTerminated());
+        Assert.assertFalse(subscription.get().isActive(LocalDate.now(TestClockConfiguration.TEST_CLOCK)));
+    }
+
+
+    /**
+     * Test terminateSubscription when the subscription exists in a suspended state and can be terminated.
+     */
+    @Test
+    public void testTerminateSubscriptionAlreadySuspended() {
+        final long subscriptionId = 100000014L;
+        Optional<SubscriptionResponseDto> responseDto = this.subscriptionService.terminateSubscription(subscriptionId);
+
+        Assert.assertTrue(responseDto.isPresent());
+        Assert.assertEquals(responseDto.get().getId(), subscriptionId);
+        Assert.assertTrue(responseDto.get().isSuspended());
+        Assert.assertTrue(responseDto.get().isTerminated());
+        Assert.assertFalse(responseDto.get().isActive());
+
+        Optional<Subscription> subscription = this.subscriptionRepository.findById(subscriptionId);
+        Assert.assertTrue(subscription.isPresent());
+        Assert.assertTrue(subscription.get().isSuspended());
+        Assert.assertTrue(subscription.get().isTerminated());
+        Assert.assertFalse(subscription.get().isActive(LocalDate.now(TestClockConfiguration.TEST_CLOCK)));
+    }
+
+    /**
+     * Test terminateSubscription when the subscription exists but cannot be suspended because the subscription is
+     * already suspended.
+     */
+    @Test
+    public void testTerminateSubscriptionAlreadyTerminated() {
+        final long subscriptionId = 100000007L;
+        Optional<SubscriptionResponseDto> responseDto = Optional.empty();
+        try {
+            responseDto = this.subscriptionService.terminateSubscription(subscriptionId);
+            Assert.fail("IllegalStateException should have been thrown");
+        } catch (IllegalStateException e) {
+            Assert.assertEquals(e.getMessage(),
+                    "This subscription cannot be terminated because it is already terminated");
+        }
+
+        // Response DTO should be empty because of the exception.
+        Assert.assertTrue(responseDto.isEmpty());
+
+        // Suspended state of the subscription is unchanged.
+        Optional<Subscription> subscription = this.subscriptionRepository.findById(subscriptionId);
+        Assert.assertTrue(subscription.isPresent());
+        Assert.assertTrue(subscription.get().isSuspended());
+        Assert.assertTrue(subscription.get().isTerminated());
+    }
+
+    /**
+     * Test terminateSubscription when the subscription does not exist.
+     */
+    @Test
+    public void testTerminateSubscriptionNotFound() {
+        Optional<SubscriptionResponseDto> responseDto = this.subscriptionService.terminateSubscription(3333L);
+
+        Assert.assertTrue(responseDto.isEmpty());
+    }
+
+    /**
+     * Test unsuspendSubscription when the subscription exists and can be unsuspended because it is suspended but
+     * not terminated.
+     */
+    @Test
+    public void testUnsuspendSubscription() {
+        final long subscriptionId = 100000014L;
+        Optional<SubscriptionResponseDto> responseDto = this.subscriptionService.unsuspendSubscription(subscriptionId);
+
+        Assert.assertTrue(responseDto.isPresent());
+        Assert.assertEquals(responseDto.get().getId(), subscriptionId);
+        Assert.assertFalse(responseDto.get().isSuspended());
+        Assert.assertFalse(responseDto.get().isTerminated());
+        Assert.assertTrue(responseDto.get().isActive());
+
+        Optional<Subscription> subscription = this.subscriptionRepository.findById(subscriptionId);
+        Assert.assertTrue(subscription.isPresent());
+        Assert.assertFalse(subscription.get().isSuspended());
+        Assert.assertFalse(subscription.get().isTerminated());
+        Assert.assertTrue(subscription.get().isActive(LocalDate.now(TestClockConfiguration.TEST_CLOCK)));
+    }
+
+    /**
+     * Test unsuspendSubscription when the subscription exists and is suspended, but cannot be unsuspended because
+     * the subscription is terminated.
+     */
+    @Test
+    public void testUnsuspendSubscriptionAlreadyTerminated() {
+        final long subscriptionId = 100000007L;
+        Optional<SubscriptionResponseDto> responseDto = Optional.empty();
+        try {
+            responseDto = this.subscriptionService.unsuspendSubscription(subscriptionId);
+            Assert.fail("IllegalStateException should have been thrown");
+        } catch (IllegalStateException e) {
+            Assert.assertEquals(e.getMessage(),
+                    "This subscription cannot be unsuspended because it is terminated");
+        }
+
+        // Response DTO should be empty because of the exception.
+        Assert.assertTrue(responseDto.isEmpty());
+
+        // Suspended state of the subscription is unchanged.
+        Optional<Subscription> subscription = this.subscriptionRepository.findById(subscriptionId);
+        Assert.assertTrue(subscription.isPresent());
+        Assert.assertTrue(subscription.get().isSuspended());
+        Assert.assertTrue(subscription.get().isTerminated());
+    }
+
+    /**
+     * Test unsuspendSubscription when the subscription exists  but cannot be unsuspended because
+     * the subscription is not suspended.
+     */
+    @Test
+    public void testUnsuspendSubscriptionNotSuspended() {
+        final long subscriptionId = 100000001L;
+        Optional<SubscriptionResponseDto> responseDto = Optional.empty();
+        try {
+            responseDto = this.subscriptionService.unsuspendSubscription(subscriptionId);
+            Assert.fail("IllegalStateException should have been thrown");
+        } catch (IllegalStateException e) {
+            Assert.assertEquals(e.getMessage(),
+                    "This subscription cannot be unsuspended because it is not suspended");
+        }
+
+        // Response DTO should be empty because of the exception.
+        Assert.assertTrue(responseDto.isEmpty());
+
+        // Suspended state of the subscription is unchanged.
+        Optional<Subscription> subscription = this.subscriptionRepository.findById(subscriptionId);
+        Assert.assertTrue(subscription.isPresent());
+        Assert.assertFalse(subscription.get().isSuspended());
+        Assert.assertFalse(subscription.get().isTerminated());
+    }
+
+    /**
+     * Test unsuspendSubscription when the subscription does not exist.
+     */
+    @Test
+    public void testUnsuspendSubscriptionNotFound() {
+        Optional<SubscriptionResponseDto> responseDto = this.subscriptionService.unsuspendSubscription(3333L);
 
         Assert.assertTrue(responseDto.isEmpty());
     }
