@@ -10,8 +10,8 @@ public class SubscriberResponseDto implements Serializable {
 
     private final Long id;
     private final String subscriberName;
-    private final List<SamlIdentifierResponseDto> samlIdentifierResponseDtos;
-    private final List<OidcIdentifierResponseDto> oidcIdentifierResponseDtos;
+    private final List<SamlIdentifierResponseDto> samlIdentifiers;
+    private final List<OidcIdentifierResponseDto> oidcIdentifiers;
 
     /**
      * Constructs a new SubscriberResponseDto using the supplied arguments.
@@ -25,8 +25,8 @@ public class SubscriberResponseDto implements Serializable {
             final List<OidcIdentifierResponseDto> oidcIdentifierResponseDtos) {
         this.id = id;
         this.subscriberName = subscriberName;
-        this.samlIdentifierResponseDtos = samlIdentifierResponseDtos;
-        this.oidcIdentifierResponseDtos = oidcIdentifierResponseDtos;
+        this.samlIdentifiers = samlIdentifierResponseDtos;
+        this.oidcIdentifiers = oidcIdentifierResponseDtos;
     }
 
     /**
@@ -47,13 +47,13 @@ public class SubscriberResponseDto implements Serializable {
      * @return a list of SAML identifiers associated with this subscriber in their natural order
      */
     public List<SamlIdentifierResponseDto> getSamlIdentifiers() {
-        return this.samlIdentifierResponseDtos;
+        return this.samlIdentifiers;
     }
 
     /**
      * @return a list of OIDC identifiers associated with this subscriber in their natural order
      */
     public List<OidcIdentifierResponseDto> getOidcIdentifiers() {
-        return this.oidcIdentifierResponseDtos;
+        return this.oidcIdentifiers;
     }
 }
