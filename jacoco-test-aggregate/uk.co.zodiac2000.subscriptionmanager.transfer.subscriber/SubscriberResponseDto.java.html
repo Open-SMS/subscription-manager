@@ -10,8 +10,8 @@ public class SubscriberResponseDto implements Serializable {
 
     private final Long id;
     private final String subscriberName;
-    private final List&lt;SamlIdentifierResponseDto&gt; samlIdentifierResponseDtos;
-    private final List&lt;OidcIdentifierResponseDto&gt; oidcIdentifierResponseDtos;
+    private final List&lt;SamlIdentifierResponseDto&gt; samlIdentifiers;
+    private final List&lt;OidcIdentifierResponseDto&gt; oidcIdentifiers;
 
     /**
      * Constructs a new SubscriberResponseDto using the supplied arguments.
@@ -25,8 +25,8 @@ public class SubscriberResponseDto implements Serializable {
 <span class="fc" id="L25">            final List&lt;OidcIdentifierResponseDto&gt; oidcIdentifierResponseDtos) {</span>
 <span class="fc" id="L26">        this.id = id;</span>
 <span class="fc" id="L27">        this.subscriberName = subscriberName;</span>
-<span class="fc" id="L28">        this.samlIdentifierResponseDtos = samlIdentifierResponseDtos;</span>
-<span class="fc" id="L29">        this.oidcIdentifierResponseDtos = oidcIdentifierResponseDtos;</span>
+<span class="fc" id="L28">        this.samlIdentifiers = samlIdentifierResponseDtos;</span>
+<span class="fc" id="L29">        this.oidcIdentifiers = oidcIdentifierResponseDtos;</span>
 <span class="fc" id="L30">    }</span>
 
     /**
@@ -47,14 +47,14 @@ public class SubscriberResponseDto implements Serializable {
      * @return a list of SAML identifiers associated with this subscriber in their natural order
      */
     public List&lt;SamlIdentifierResponseDto&gt; getSamlIdentifiers() {
-<span class="fc" id="L50">        return this.samlIdentifierResponseDtos;</span>
+<span class="fc" id="L50">        return this.samlIdentifiers;</span>
     }
 
     /**
      * @return a list of OIDC identifiers associated with this subscriber in their natural order
      */
     public List&lt;OidcIdentifierResponseDto&gt; getOidcIdentifiers() {
-<span class="fc" id="L57">        return this.oidcIdentifierResponseDtos;</span>
+<span class="fc" id="L57">        return this.oidcIdentifiers;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

@@ -25,8 +25,8 @@ Subscription Manager,uk.co.zodiac2000.subscriptionmanager.configuration,ClockCon
 Subscription Manager,uk.co.zodiac2000.subscriptionmanager.constraint.validator,ValidDateStringValidator,0,20,0,0,0,7,0,4,0,4
 Subscription Manager,uk.co.zodiac2000.subscriptionmanager.constraint.validator,DoesNotExistValidator,0,117,0,8,0,30,0,11,0,7
 Subscription Manager,uk.co.zodiac2000.subscriptionmanager.constraint.validator,ValidDateRangeValidator,0,120,0,6,0,30,0,11,0,8
-Subscription Manager,uk.co.zodiac2000.subscriptionmanager.api,SubscriptionController,76,3,2,0,14,1,10,1,9,1
-Subscription Manager,uk.co.zodiac2000.subscriptionmanager.api,SubscriberController,63,3,2,0,13,1,7,1,6,1
+Subscription Manager,uk.co.zodiac2000.subscriptionmanager.api,SubscriptionController,2,77,1,1,1,14,1,10,0,10
+Subscription Manager,uk.co.zodiac2000.subscriptionmanager.api,SubscriberController,0,66,0,2,0,14,0,8,0,7
 Subscription Manager,uk.co.zodiac2000.subscriptionmanager.domain.subscription,Subscription,0,252,0,34,0,51,0,40,0,23
 Subscription Manager,uk.co.zodiac2000.subscriptionmanager.domain.subscriber,OidcIdentifier,0,69,0,8,0,15,0,11,0,7
 Subscription Manager,uk.co.zodiac2000.subscriptionmanager.domain.subscriber,Subscriber,0,84,0,0,0,20,0,11,0,11

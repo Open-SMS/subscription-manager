@@ -15,10 +15,10 @@ import uk.co.zodiac2000.subscriptionmanager.constraint.ValidDateRange;
 /**
  * Validator for {@code ValidDateRange}.
  */
-<span class="nc" id="L18">public class ValidDateRangeValidator implements ConstraintValidator&lt;ValidDateRange, Object&gt; {</span>
+<span class="fc" id="L18">public class ValidDateRangeValidator implements ConstraintValidator&lt;ValidDateRange, Object&gt; {</span>
 
-<span class="nc" id="L20">    private static final Logger LOG = LoggerFactory.getLogger(ValidDateRangeValidator.class);</span>
-<span class="nc" id="L21">    private static final DateTimeFormatter FORMAT = DateTimeFormatter.ISO_LOCAL_DATE;</span>
+<span class="fc" id="L20">    private static final Logger LOG = LoggerFactory.getLogger(ValidDateRangeValidator.class);</span>
+<span class="fc" id="L21">    private static final DateTimeFormatter FORMAT = DateTimeFormatter.ISO_LOCAL_DATE;</span>
 
     private String firstDatePropertyName;
 
@@ -32,10 +32,10 @@ import uk.co.zodiac2000.subscriptionmanager.constraint.ValidDateRange;
      */
     @Override
     public void initialize(final ValidDateRange constraintAnnotation) {
-<span class="nc" id="L35">        this.firstDatePropertyName = constraintAnnotation.firstDatePropertyName();</span>
-<span class="nc" id="L36">        this.secondDatePropertyName = constraintAnnotation.secondDatePropertyName();</span>
-<span class="nc" id="L37">        this.message = constraintAnnotation.message();</span>
-<span class="nc" id="L38">    }</span>
+<span class="fc" id="L35">        this.firstDatePropertyName = constraintAnnotation.firstDatePropertyName();</span>
+<span class="fc" id="L36">        this.secondDatePropertyName = constraintAnnotation.secondDatePropertyName();</span>
+<span class="fc" id="L37">        this.message = constraintAnnotation.message();</span>
+<span class="fc" id="L38">    }</span>
 
     /**
      * Returns true if the property named {@code firstDatePropertyName} is an {@code Optional} containing
@@ -51,20 +51,20 @@ import uk.co.zodiac2000.subscriptionmanager.constraint.ValidDateRange;
      */
     @Override
     public boolean isValid(final Object value, final ConstraintValidatorContext context) {
-<span class="nc" id="L54">        Optional&lt;LocalDate&gt; firstDate = getPropertyValueAsLocalDate(value, this.firstDatePropertyName);</span>
-<span class="nc" id="L55">        Optional&lt;LocalDate&gt; secondDate = getPropertyValueAsLocalDate(value, this.secondDatePropertyName);</span>
-<span class="nc" id="L56">        boolean valid = firstDate.map(s -&gt;</span>
-<span class="nc bnc" id="L57" title="All 4 branches missed.">                secondDate.map(e -&gt; e.isAfter(s) || e.equals(s)).orElse(true)</span>
-<span class="nc" id="L58">        ).orElse(true);</span>
+<span class="fc" id="L54">        Optional&lt;LocalDate&gt; firstDate = getPropertyValueAsLocalDate(value, this.firstDatePropertyName);</span>
+<span class="fc" id="L55">        Optional&lt;LocalDate&gt; secondDate = getPropertyValueAsLocalDate(value, this.secondDatePropertyName);</span>
+<span class="fc" id="L56">        boolean valid = firstDate.map(s -&gt;</span>
+<span class="pc bpc" id="L57" title="3 of 4 branches missed.">                secondDate.map(e -&gt; e.isAfter(s) || e.equals(s)).orElse(true)</span>
+<span class="fc" id="L58">        ).orElse(true);</span>
 
-<span class="nc bnc" id="L60" title="All 2 branches missed.">        if (!valid) {</span>
+<span class="pc bpc" id="L60" title="1 of 2 branches missed.">        if (!valid) {</span>
 <span class="nc" id="L61">            context.disableDefaultConstraintViolation();</span>
 <span class="nc" id="L62">            context.buildConstraintViolationWithTemplate(this.message)</span>
 <span class="nc" id="L63">                    .addPropertyNode(this.firstDatePropertyName)</span>
 <span class="nc" id="L64">                    .addConstraintViolation();</span>
         }
 
-<span class="nc" id="L67">        return valid;</span>
+<span class="fc" id="L67">        return valid;</span>
     }
 
     /**
@@ -76,10 +76,10 @@ import uk.co.zodiac2000.subscriptionmanager.constraint.ValidDateRange;
      * @return an optional containing the property value
      */
     private Optional&lt;LocalDate&gt; getPropertyValueAsLocalDate(final Object targetObject, final String propertyName) {
-<span class="nc" id="L79">        Optional&lt;?&gt; dateString = Optional.empty();</span>
+<span class="fc" id="L79">        Optional&lt;?&gt; dateString = Optional.empty();</span>
         try {
-<span class="nc" id="L81">            dateString = (Optional) PropertyUtils.getProperty(targetObject, propertyName);</span>
-<span class="nc" id="L82">            return dateString.map(v -&gt; LocalDate.parse((String) v, FORMAT));</span>
+<span class="fc" id="L81">            dateString = (Optional) PropertyUtils.getProperty(targetObject, propertyName);</span>
+<span class="fc" id="L82">            return dateString.map(v -&gt; LocalDate.parse((String) v, FORMAT));</span>
 <span class="nc" id="L83">        } catch (InvocationTargetException | IllegalAccessException | NoSuchMethodException e) {</span>
 <span class="nc" id="L84">            LOG.info(&quot;Failed to access property named: {}&quot;, propertyName);</span>
 <span class="nc" id="L85">            return Optional.empty();</span>

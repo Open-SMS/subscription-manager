@@ -11,9 +11,9 @@ import uk.co.zodiac2000.subscriptionmanager.constraint.ValidDateString;
 /**
  * Validator for ValidDateString.
  */
-<span class="nc" id="L14">public class ValidDateStringValidator implements ConstraintValidator&lt;ValidDateString, Optional&lt;String&gt;&gt; {</span>
+<span class="fc" id="L14">public class ValidDateStringValidator implements ConstraintValidator&lt;ValidDateString, Optional&lt;String&gt;&gt; {</span>
 
-<span class="nc" id="L16">    private static final DateTimeFormatter FORMAT = DateTimeFormatter.ISO_LOCAL_DATE;</span>
+<span class="fc" id="L16">    private static final DateTimeFormatter FORMAT = DateTimeFormatter.ISO_LOCAL_DATE;</span>
 
     /**
      * Verifies a date string is valid. If the {@code Optional} contains a value then it must be a valid date string
@@ -26,11 +26,11 @@ import uk.co.zodiac2000.subscriptionmanager.constraint.ValidDateString;
     @Override
     public boolean isValid(final Optional&lt;String&gt; value, final ConstraintValidatorContext context) {
         try {
-<span class="nc" id="L29">            Optional&lt;LocalDate&gt; date = value.map(v -&gt; LocalDate.parse(v, FORMAT));</span>
+<span class="fc" id="L29">            Optional&lt;LocalDate&gt; date = value.map(v -&gt; LocalDate.parse(v, FORMAT));</span>
 <span class="nc" id="L30">        } catch (DateTimeParseException e) {</span>
 <span class="nc" id="L31">            return false;</span>
-<span class="nc" id="L32">        }</span>
-<span class="nc" id="L33">        return true;</span>
+<span class="fc" id="L32">        }</span>
+<span class="fc" id="L33">        return true;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

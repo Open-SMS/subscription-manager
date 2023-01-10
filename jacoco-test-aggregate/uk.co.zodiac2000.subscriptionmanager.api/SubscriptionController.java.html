@@ -52,10 +52,10 @@ import uk.co.zodiac2000.subscriptionmanager.transfer.subscription.SubscriptionRe
     @ExceptionHandler({IllegalStateException.class})
     public ModelAndView handleIllegalState(final IllegalStateException e,
             final HttpServletRequest request, final HttpServletResponse response) throws IOException {
-<span class="nc bnc" id="L55" title="All 2 branches missed.">        if (Subscription.class.getCanonicalName().equals(e.getStackTrace()[0].getClassName())) {</span>
-<span class="nc" id="L56">            request.setAttribute(DispatcherServlet.EXCEPTION_ATTRIBUTE, e);</span>
-<span class="nc" id="L57">            response.sendError(HttpServletResponse.SC_BAD_REQUEST);</span>
-<span class="nc" id="L58">            return new ModelAndView();</span>
+<span class="pc bpc" id="L55" title="1 of 2 branches missed.">        if (Subscription.class.getCanonicalName().equals(e.getStackTrace()[0].getClassName())) {</span>
+<span class="fc" id="L56">            request.setAttribute(DispatcherServlet.EXCEPTION_ATTRIBUTE, e);</span>
+<span class="fc" id="L57">            response.sendError(HttpServletResponse.SC_BAD_REQUEST);</span>
+<span class="fc" id="L58">            return new ModelAndView();</span>
         } else {
 <span class="nc" id="L60">            throw e;</span>
         }
@@ -68,7 +68,7 @@ import uk.co.zodiac2000.subscriptionmanager.transfer.subscription.SubscriptionRe
      */
     @GetMapping(path = &quot;/{id}&quot;)
     public ResponseEntity&lt;SubscriptionResponseDto&gt; getSubscription(@PathVariable(&quot;id&quot;) final long id) {
-<span class="nc" id="L71">        return ResponseEntity.of(this.subscriptionService.getSubscription(id));</span>
+<span class="fc" id="L71">        return ResponseEntity.of(this.subscriptionService.getSubscription(id));</span>
     }
 
     /**
@@ -80,7 +80,7 @@ import uk.co.zodiac2000.subscriptionmanager.transfer.subscription.SubscriptionRe
     @PostMapping
     public ResponseEntity&lt;SubscriptionResponseDto&gt; createSubscription(
             @RequestBody @Valid final NewSubscriptionCommandDto commandDto) {
-<span class="nc" id="L83">        return new ResponseEntity&lt;&gt;(this.subscriptionService.createSubscription(commandDto).get(), HttpStatus.CREATED);</span>
+<span class="fc" id="L83">        return new ResponseEntity&lt;&gt;(this.subscriptionService.createSubscription(commandDto).get(), HttpStatus.CREATED);</span>
     }
 
     /**
@@ -90,8 +90,8 @@ import uk.co.zodiac2000.subscriptionmanager.transfer.subscription.SubscriptionRe
     @DeleteMapping(&quot;/{id}&quot;)
     @ResponseStatus(code = HttpStatus.NO_CONTENT)
     public void deleteSubscription(@PathVariable(&quot;id&quot;) final long id) {
-<span class="nc" id="L93">        this.subscriptionService.deleteSubscription(id);</span>
-<span class="nc" id="L94">    }</span>
+<span class="fc" id="L93">        this.subscriptionService.deleteSubscription(id);</span>
+<span class="fc" id="L94">    }</span>
 
     /**
      * Updates the start and end dates associated with the subscription identified by id. Returns the modified
@@ -103,7 +103,7 @@ import uk.co.zodiac2000.subscriptionmanager.transfer.subscription.SubscriptionRe
     @PutMapping(&quot;/{id}/dates&quot;)
     public ResponseEntity&lt;SubscriptionResponseDto&gt; updateSubscriptionDates(@PathVariable(&quot;id&quot;) final long id,
             @RequestBody @Valid final SubscriptionDatesCommandDto commandDto) {
-<span class="nc" id="L106">        return ResponseEntity.of(this.subscriptionService.updateSubscriptionDates(id, commandDto));</span>
+<span class="fc" id="L106">        return ResponseEntity.of(this.subscriptionService.updateSubscriptionDates(id, commandDto));</span>
     }
 
     /**
@@ -117,7 +117,7 @@ import uk.co.zodiac2000.subscriptionmanager.transfer.subscription.SubscriptionRe
     public ResponseEntity&lt;SubscriptionResponseDto&gt; updateSubscriptionContentIdentifier(
             @PathVariable(&quot;id&quot;) final long id,
             @RequestBody @Valid final SubscriptionContentIdentifierCommandDto commandDto) {
-<span class="nc" id="L120">        return ResponseEntity.of(this.subscriptionService.updateSubscriptionContentIdentifier(id, commandDto));</span>
+<span class="fc" id="L120">        return ResponseEntity.of(this.subscriptionService.updateSubscriptionContentIdentifier(id, commandDto));</span>
     }
 
     /**
@@ -131,7 +131,7 @@ import uk.co.zodiac2000.subscriptionmanager.transfer.subscription.SubscriptionRe
     @PutMapping(&quot;/{id}/suspend&quot;)
     public ResponseEntity&lt;SubscriptionResponseDto&gt; suspendSubscription(
             @PathVariable(&quot;id&quot;) final long id) {
-<span class="nc" id="L134">        return ResponseEntity.of(this.subscriptionService.suspendSubscription(id));</span>
+<span class="fc" id="L134">        return ResponseEntity.of(this.subscriptionService.suspendSubscription(id));</span>
     }
 
     /**
@@ -145,7 +145,7 @@ import uk.co.zodiac2000.subscriptionmanager.transfer.subscription.SubscriptionRe
     @PutMapping(&quot;/{id}/terminate&quot;)
     public ResponseEntity&lt;SubscriptionResponseDto&gt; terminateSubscription(
             @PathVariable(&quot;id&quot;) final long id) {
-<span class="nc" id="L148">        return ResponseEntity.of(this.subscriptionService.terminateSubscription(id));</span>
+<span class="fc" id="L148">        return ResponseEntity.of(this.subscriptionService.terminateSubscription(id));</span>
     }
 
     /**
@@ -159,7 +159,7 @@ import uk.co.zodiac2000.subscriptionmanager.transfer.subscription.SubscriptionRe
     @PutMapping(&quot;/{id}/unsuspend&quot;)
     public ResponseEntity&lt;SubscriptionResponseDto&gt; unsuspendSubscription(
             @PathVariable(&quot;id&quot;) final long id) {
-<span class="nc" id="L162">        return ResponseEntity.of(this.subscriptionService.unsuspendSubscription(id));</span>
+<span class="fc" id="L162">        return ResponseEntity.of(this.subscriptionService.unsuspendSubscription(id));</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>
