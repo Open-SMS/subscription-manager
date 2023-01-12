@@ -20,14 +20,13 @@ public class SubscriptionResponseDtoFactory {
      * Constructs a new SubscriptionResponseDtoFactory with systemClock argument. This clock is used in all date-time
      * expressions that involve the current system date-time. This is autowired by Spring using a bean available from
      * the Spring context. In unit tests a Clock needs to be supplied, possibly a fixed implementation. Integration
-     * tests can make use of the fixed clock bean produced by
-     * {@link uk.co.zodiac2000.jparevision.configuration.TestClockConfiguration#fixedClock}
+     * tests can make use of the fixed clock bean produced by test class TestClockConfiguration#fixedClock.
      * @param systemClock the Clock to use
      */
     @Autowired
-<span class="fc" id="L28">    public SubscriptionResponseDtoFactory(final Clock systemClock) {</span>
-<span class="fc" id="L29">        this.systemClock = systemClock;</span>
-<span class="fc" id="L30">    }</span>
+<span class="fc" id="L27">    public SubscriptionResponseDtoFactory(final Clock systemClock) {</span>
+<span class="fc" id="L28">        this.systemClock = systemClock;</span>
+<span class="fc" id="L29">    }</span>
 
     /**
      * Returns a SubscriptionResponseDto object with state based on the subscription argument.Dates are expressed as
@@ -38,14 +37,14 @@ public class SubscriptionResponseDtoFactory {
      */
     public Optional&lt;SubscriptionResponseDto&gt; subscriptionToSubscriptionResponseDto(
             final Optional&lt;Subscription&gt; subscription) {
-<span class="fc" id="L41">        return subscription</span>
-<span class="fc" id="L42">                .map(s -&gt; new SubscriptionResponseDto(</span>
-<span class="fc" id="L43">                        s.getId(),</span>
-<span class="fc" id="L44">                        s.getStartDate(),</span>
-<span class="fc" id="L45">                        s.getEndDate(),</span>
-<span class="fc" id="L46">                        s.isTerminated(), s.isSuspended(), s.getContentIdentifier(), s.getSubscriberId(),</span>
-<span class="fc" id="L47">                        s.isActive(LocalDate.now(this.systemClock)),</span>
-<span class="fc" id="L48">                        s.canBeSuspended(), s.canBeTerminated(), s.canBeUnsuspended()</span>
+<span class="fc" id="L40">        return subscription</span>
+<span class="fc" id="L41">                .map(s -&gt; new SubscriptionResponseDto(</span>
+<span class="fc" id="L42">                        s.getId(),</span>
+<span class="fc" id="L43">                        s.getStartDate(),</span>
+<span class="fc" id="L44">                        s.getEndDate(),</span>
+<span class="fc" id="L45">                        s.isTerminated(), s.isSuspended(), s.getContentIdentifier(), s.getSubscriberId(),</span>
+<span class="fc" id="L46">                        s.isActive(LocalDate.now(this.systemClock)),</span>
+<span class="fc" id="L47">                        s.canBeSuspended(), s.canBeTerminated(), s.canBeUnsuspended()</span>
                 ));
     }
 }
