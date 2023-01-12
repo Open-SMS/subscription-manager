@@ -1,0 +1,37 @@
+# Ubiquitous Language
+
+## Subscriber
+
+A subscriber is an individual or organization that may be associated with subscriptions that provide access to
+resources. A subscriber may be identified for authorization by matching OIDC Claims or SAML Attributes with the
+authentication identifiers associated with that subscription.
+
+### Authentication Identifier
+
+An authentication identifier represents the claims, assertions or other information that identifies a subcriber.
+The resource requesting authorization from the Subscription Manager provides any claims or assertions it has
+obtained about a user to the API which are then matched against the authentication identifiers present in the system
+to identify subscribers.
+
+## Subscription
+
+A active subscription indicates permission to access a resource defined by a content identifier. A subscription may be
+active or inactive depending on the period the subscription is for, or whether the subscription has been suspended.
+When the current date is outside the subscription period, or the subscription has been suspended, the subscription
+is inactive.
+
+### Suspended subscription
+
+A subscription may be suspended subject to the rules for suspending subscriptions by making a request to the API. When
+suspended the subscription is inactive. A suspended subscription may be unsuspended in certain circumstances.
+
+### Terminated Subscription
+
+A subscription may be terminated subject to the rules for terminating subscription by making a request to the API.
+This action suspends the subscription and prevents it being unsuspended. Terminating a subscription indicates that it
+will never become active in the future.
+
+## Content Identifier
+
+A content identifier identifies content that a resource requires the user to have an active subscription to be entitled
+to access. At present this feature is not fully developed so is just an attribute of subscription.

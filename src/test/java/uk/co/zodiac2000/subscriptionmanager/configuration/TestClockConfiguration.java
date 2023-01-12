@@ -9,7 +9,8 @@ import org.springframework.context.annotation.Primary;
 
 /**
  * Configures a fixed Clock bean for use in tests. The clock is set to 2012-06-03T10:15:30Z UTC.
- * See {@link https://stackoverflow.com/questions/62817126/mock-localdate-nowclock-using-clock-fixed stackoverflow}
+ * See
+ * <a href="https://stackoverflow.com/questions/62817126/mock-localdate-nowclock-using-clock-fixed">stackoverflow</a>
  * for more examples of overriding the Clock bean.
  */
 @TestConfiguration

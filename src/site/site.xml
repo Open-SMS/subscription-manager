@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/DECORATION/1.8.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://maven.apache.org/DECORATION/1.8.0 https://maven.apache.org/xsd/decoration-1.8.0.xsd"
+             name="Subscription Manager">
+    <bannerLeft>
+        <name>Subscription Manager</name>
+    </bannerLeft>
+     
+    <body>
+        <menu name="Subscription Manager">
+            <item name="Introduction" href="index.html"/>
+            <item name="Ubiquitous Language" href="ubiquitous_language.html"/>
+            <item name="Design Details" href="design_details/index.html" />
+            <item name="Software Development" href="software_development/index.html" />
+        </menu>
+     
+        <menu ref="reports"/>
+
+        <menu name="Test Coverage">
+            <item name="Unit Tests" href="jacoco/index.html"/>
+            <item name="Integration Tests" href="jacoco-it/index.html"/>
+            <item name="Aggregated Tests" href="jacoco-test-aggregate/index.html"/>
+        </menu>
+    </body>
+</project>

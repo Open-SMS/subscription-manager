@@ -20,8 +20,7 @@ public class SubscriptionResponseDtoFactory {
      * Constructs a new SubscriptionResponseDtoFactory with systemClock argument. This clock is used in all date-time
      * expressions that involve the current system date-time. This is autowired by Spring using a bean available from
      * the Spring context. In unit tests a Clock needs to be supplied, possibly a fixed implementation. Integration
-     * tests can make use of the fixed clock bean produced by
-     * {@link uk.co.zodiac2000.jparevision.configuration.TestClockConfiguration#fixedClock}
+     * tests can make use of the fixed clock bean produced by test class TestClockConfiguration#fixedClock.
      * @param systemClock the Clock to use
      */
     @Autowired

@@ -329,6 +329,23 @@
                 </reportSets>
             </plugin>
 
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <reportSets>
+                    <reportSet>
+                        <id>javadoc-report</id>
+                        <configuration>
+                            <quiet>true</quiet>
+                        </configuration>
+                        <reports>
+                            <report>javadoc</report>
+                            <report>test-javadoc</report>
+                        </reports>
+                    </reportSet>
+                </reportSets>
+            </plugin>
+
         </plugins>
     </reporting>
 
