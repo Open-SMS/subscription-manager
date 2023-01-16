@@ -1,5 +1,6 @@
 package uk.co.zodiac2000.subscriptionmanager.domain.subscriber;
 
+import java.util.Set;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -8,10 +9,24 @@ import org.testng.annotations.Test;
  */
 public class OidcIdentifierTest {
 
-    private static final String ISSUER_ONE = "https://accounts.google.com";
-    private static final String ISSUER_TWO = "https://www.facebook.com";
-    private static final String SUBJECT_ONE = "3204823904";
-    private static final String SUBJECT_TWO = "d2liYmxlCg==";
+    private static final String ISSUER_ONE = "https://www.facebook.com";
+    private static final String ISSUER_TWO = "https://accounts.google.com";
+    private static final String CLAIM_NAME_ONE = "sub";
+    private static final String CLAIM_VALUE_ONE = "3204823904";
+    private static final String CLAIM_NAME_TWO = "sub";
+    private static final String CLAIM_VALUE_TWO = "d2liYmxlCg==";
+    private static final Set<OidcIdentifierClaim> OIDC_IDENTIFIER_CLAIMS_ONE = Set.of(
+            new OidcIdentifierClaim(CLAIM_NAME_ONE, CLAIM_VALUE_ONE),
+            new OidcIdentifierClaim(CLAIM_NAME_TWO, CLAIM_VALUE_TWO)
+    );
+    private static final String CLAIM_NAME_THREE = "sub";
+    private static final String CLAIM_VALUE_THREE = "23201384129";
+    private static final String CLAIM_NAME_FOUR = "groups";
+    private static final String CLAIM_VALUE_FOUR = "staff";
+    private static final Set<OidcIdentifierClaim> OIDC_IDENTIFIER_CLAIMS_TWO = Set.of(
+            new OidcIdentifierClaim(CLAIM_NAME_THREE, CLAIM_VALUE_THREE),
+            new OidcIdentifierClaim(CLAIM_NAME_FOUR, CLAIM_VALUE_FOUR)
+    );
 
     /**
      * Test zero-arg constructor.
@@ -28,10 +43,11 @@ public class OidcIdentifierTest {
      */
     @Test
     public void testAccessors() {
-        OidcIdentifier identifier = new OidcIdentifier(ISSUER_ONE, SUBJECT_ONE);
+
+        OidcIdentifier identifier = new OidcIdentifier(ISSUER_ONE, OIDC_IDENTIFIER_CLAIMS_ONE);
 
         Assert.assertEquals(identifier.getIssuer(), ISSUER_ONE);
-        Assert.assertEquals(identifier.getSubject(),  SUBJECT_ONE);
+        Assert.assertEquals(identifier.getOidcIdentifierClaims(), OIDC_IDENTIFIER_CLAIMS_ONE);
     }
 
     /**
@@ -39,14 +55,14 @@ public class OidcIdentifierTest {
      */
     @Test(expectedExceptions = {NullPointerException.class})
     public void testConstructorIssuerNull() {
-        OidcIdentifier identifier = new OidcIdentifier(null, SUBJECT_ONE);
+        OidcIdentifier identifier = new OidcIdentifier(null, Set.of());
     }
 
     /**
-     * Test constructor when subject is null.
+     * Test constructor when oidcIdentifierClaims is null.
      */
     @Test(expectedExceptions = {NullPointerException.class})
-    public void testConstructorSubjectNull() {
+    public void testConstructorOidcIdentifierClaimsNull() {
         OidcIdentifier identifier = new OidcIdentifier(ISSUER_ONE, null);
     }
 
@@ -55,7 +71,7 @@ public class OidcIdentifierTest {
      */
     @Test
     public void testEqualsNull() {
-        OidcIdentifier identifier = new OidcIdentifier(ISSUER_ONE, SUBJECT_ONE);
+        OidcIdentifier identifier = new OidcIdentifier(ISSUER_ONE, Set.of());
 
         Assert.assertFalse(identifier.equals(null));
     }
@@ -65,7 +81,7 @@ public class OidcIdentifierTest {
      */
     @Test
     public void testEqualsDifferent() {
-        OidcIdentifier identifier = new OidcIdentifier(ISSUER_ONE, SUBJECT_ONE);
+        OidcIdentifier identifier = new OidcIdentifier(ISSUER_ONE, Set.of());
 
         Assert.assertFalse(identifier.equals("foo"));
     }
@@ -75,19 +91,19 @@ public class OidcIdentifierTest {
      */
     @Test
     public void testEqualsDifferentIssuer() {
-        OidcIdentifier identifierOne = new OidcIdentifier(ISSUER_ONE, SUBJECT_ONE);
-        OidcIdentifier identifierTwo = new OidcIdentifier(ISSUER_TWO, SUBJECT_ONE);
+        OidcIdentifier identifierOne = new OidcIdentifier(ISSUER_ONE, OIDC_IDENTIFIER_CLAIMS_ONE);
+        OidcIdentifier identifierTwo = new OidcIdentifier(ISSUER_TWO, OIDC_IDENTIFIER_CLAIMS_ONE);
 
         Assert.assertFalse(identifierOne.equals(identifierTwo));
     }
 
     /**
-     * Test equals when the issuer fields are equal but subject fields are not equal.
+     * Test equals when the issuer fields are equal but oidcIdentifier set contains elements that are not equal.
      */
     @Test
     public void testEqualsDifferentScopedAffiliation() {
-        OidcIdentifier identifierOne = new OidcIdentifier(ISSUER_ONE, SUBJECT_ONE);
-        OidcIdentifier identifierTwo = new OidcIdentifier(ISSUER_ONE, SUBJECT_TWO);
+        OidcIdentifier identifierOne = new OidcIdentifier(ISSUER_ONE, OIDC_IDENTIFIER_CLAIMS_ONE);
+        OidcIdentifier identifierTwo = new OidcIdentifier(ISSUER_ONE, OIDC_IDENTIFIER_CLAIMS_TWO);
 
         Assert.assertFalse(identifierOne.equals(identifierTwo));
     }
@@ -97,8 +113,8 @@ public class OidcIdentifierTest {
      */
     @Test
     public void testEquals() {
-        OidcIdentifier identifierOne = new OidcIdentifier(ISSUER_ONE, SUBJECT_ONE);
-        OidcIdentifier identifierTwo = new OidcIdentifier(ISSUER_ONE, SUBJECT_ONE);
+        OidcIdentifier identifierOne = new OidcIdentifier(ISSUER_ONE, OIDC_IDENTIFIER_CLAIMS_ONE);
+        OidcIdentifier identifierTwo = new OidcIdentifier(ISSUER_ONE, OIDC_IDENTIFIER_CLAIMS_ONE);
 
         Assert.assertTrue(identifierOne.equals(identifierTwo));
     }
@@ -108,42 +124,9 @@ public class OidcIdentifierTest {
      */
     @Test
     public void testHashCode() {
-        OidcIdentifier identifierOne = new OidcIdentifier(ISSUER_ONE, SUBJECT_ONE);
-        OidcIdentifier identifierTwo = new OidcIdentifier(ISSUER_ONE, SUBJECT_ONE);
+        OidcIdentifier identifierOne = new OidcIdentifier(ISSUER_ONE, OIDC_IDENTIFIER_CLAIMS_ONE);
+        OidcIdentifier identifierTwo = new OidcIdentifier(ISSUER_ONE, OIDC_IDENTIFIER_CLAIMS_ONE);
 
         Assert.assertEquals(identifierOne.hashCode(), identifierTwo.hashCode());
-    }
-
-    /**
-     * Test compareTo when the objects  are equal.
-     */
-    @Test
-    public void testCompareToEqual() {
-        OidcIdentifier identifierOne = new OidcIdentifier(ISSUER_ONE, SUBJECT_ONE);
-        OidcIdentifier identifierTwo = new OidcIdentifier(ISSUER_ONE, SUBJECT_ONE);
-
-        Assert.assertTrue(identifierOne.compareTo(identifierTwo) == 0);
-    }
-
-    /**
-     * Test compareTo when issuer fields are not equal.
-     */
-    @Test
-    public void testCompareToDifferentIssuer() {
-        OidcIdentifier identifierOne = new OidcIdentifier(ISSUER_ONE, SUBJECT_ONE);
-        OidcIdentifier identifierTwo = new OidcIdentifier(ISSUER_TWO, SUBJECT_ONE);
-
-        Assert.assertTrue(identifierOne.compareTo(identifierTwo) < 0);
-    }
-
-    /**
-     * Test compareTo when subject fields are not equal.
-     */
-    @Test
-    public void testCompareToDifferentSubject() {
-        OidcIdentifier identifierOne = new OidcIdentifier(ISSUER_ONE, SUBJECT_ONE);
-        OidcIdentifier identifierTwo = new OidcIdentifier(ISSUER_ONE, SUBJECT_TWO);
-
-        Assert.assertTrue(identifierOne.compareTo(identifierTwo) < 0);
     }
 }
