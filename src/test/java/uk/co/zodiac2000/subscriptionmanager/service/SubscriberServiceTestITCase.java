@@ -32,7 +32,8 @@ public class SubscriberServiceTestITCase extends AbstractTransactionalTestNGSpri
     private static final String SUBSCRIBER_NAME = "Trevor Horn";
     private static final String UPDATED_SUBSCRIBER_NAME = "Ben Stokes";
 
-    private static final NewSubscriberCommandDto NEW_SUBSCRIBER_COMMAND_DTO = new NewSubscriberCommandDto(SUBSCRIBER_NAME);
+    private static final NewSubscriberCommandDto NEW_SUBSCRIBER_COMMAND_DTO
+            = new NewSubscriberCommandDto(SUBSCRIBER_NAME);
 
     @Autowired
     private SubscriberService subscriberService;
@@ -122,7 +123,8 @@ public class SubscriberServiceTestITCase extends AbstractTransactionalTestNGSpri
      */
     @Test
     public void testCreateSubscriber() {
-        Optional<SubscriberResponseDto> responseDto = this.subscriberService.createSubscriber(NEW_SUBSCRIBER_COMMAND_DTO);
+        Optional<SubscriberResponseDto> responseDto
+                = this.subscriberService.createSubscriber(NEW_SUBSCRIBER_COMMAND_DTO);
 
         Assert.assertTrue(responseDto.get().getId() > 0);
         Assert.assertEquals(responseDto.get().getSubscriberName(), SUBSCRIBER_NAME);
@@ -139,8 +141,8 @@ public class SubscriberServiceTestITCase extends AbstractTransactionalTestNGSpri
      */
     @Test
     public void testUpdateSubscriberName() {
-        Optional<SubscriberResponseDto> responseDto
-                = this.subscriberService.updateSubscriberName(new SubscriberNameCommandDto(100000003L, UPDATED_SUBSCRIBER_NAME));
+        Optional<SubscriberResponseDto> responseDto = this.subscriberService.updateSubscriberName(
+                new SubscriberNameCommandDto(100000003L, UPDATED_SUBSCRIBER_NAME));
 
         Assert.assertTrue(responseDto.isPresent());
         Assert.assertEquals(responseDto.get().getSubscriberName(), UPDATED_SUBSCRIBER_NAME);
@@ -155,8 +157,8 @@ public class SubscriberServiceTestITCase extends AbstractTransactionalTestNGSpri
      */
     @Test
     public void testUpdateSubscriberNameNotFound() {
-        Optional<SubscriberResponseDto> responseDto
-                = this.subscriberService.updateSubscriberName(new SubscriberNameCommandDto(42L, UPDATED_SUBSCRIBER_NAME));
+        Optional<SubscriberResponseDto> responseDto = this.subscriberService.updateSubscriberName(
+                new SubscriberNameCommandDto(42L, UPDATED_SUBSCRIBER_NAME));
 
         Assert.assertTrue(responseDto.isEmpty());
     }
@@ -194,15 +196,16 @@ public class SubscriberServiceTestITCase extends AbstractTransactionalTestNGSpri
     }
 
     /**
-     * Test setSamlIdentifiers when the subscriber is already associated with some SAML identifiers but not OIDC identifiers.
-     * The existing SAML identifier collection should be replaced.
+     * Test setSamlIdentifiers when the subscriber is already associated with some SAML identifiers but not OIDC
+     * identifiers. The existing SAML identifier collection should be replaced.
      */
     @Test
     public void testSetSamlIdentifiersReplace() {
         Set<SamlIdentifierCommandDto> samlIdentifiers = Set.of(
                 new SamlIdentifierCommandDto("http://example.com/shib", "member@example.com")
         );
-        Optional<SubscriberResponseDto> responseDto = this.subscriberService.setSamlIdentifiers(100000004L, samlIdentifiers);
+        Optional<SubscriberResponseDto> responseDto
+                = this.subscriberService.setSamlIdentifiers(100000004L, samlIdentifiers);
 
         Assert.assertTrue(responseDto.isPresent());
         Assert.assertEquals(responseDto.get().getId(), 100000004L);
@@ -226,8 +229,8 @@ public class SubscriberServiceTestITCase extends AbstractTransactionalTestNGSpri
     }
 
     /**
-     * Test setSamlIdentifiers when the subscriber is not already associated with some SAML identifiers but is associated with OIDC
-     * identifiers. The SAML identifiers should be created and the OIDC identifiers unmodified.
+     * Test setSamlIdentifiers when the subscriber is not already associated with some SAML identifiers but is
+     * associated with OIDC identifiers. The SAML identifiers should be created and the OIDC identifiers unmodified.
      */
     @Test
     public void testSetSamlIdentifiers() {
@@ -235,7 +238,8 @@ public class SubscriberServiceTestITCase extends AbstractTransactionalTestNGSpri
                 new SamlIdentifierCommandDto("http://open.ac.uk/shib", "staff@open.ac.uk"),
                 new SamlIdentifierCommandDto("http://open.ac.uk/shib", "student@open.ac.uk")
         );
-        Optional<SubscriberResponseDto> responseDto = this.subscriberService.setSamlIdentifiers(100000005L, samlIdentifiers);
+        Optional<SubscriberResponseDto> responseDto
+                = this.subscriberService.setSamlIdentifiers(100000005L, samlIdentifiers);
 
         Assert.assertTrue(responseDto.isPresent());
         Assert.assertEquals(responseDto.get().getId(), 100000005L);
@@ -311,7 +315,8 @@ public class SubscriberServiceTestITCase extends AbstractTransactionalTestNGSpri
                         new OidcIdentifierClaimCommandDto("sub", "3DA52E3")
                 ))
         );
-        Optional<SubscriberResponseDto> responseDto = this.subscriberService.setOidcIdentifiers(100000001L, oidcIdentifiers);
+        Optional<SubscriberResponseDto> responseDto
+                = this.subscriberService.setOidcIdentifiers(100000001L, oidcIdentifiers);
 
         Assert.assertTrue(responseDto.isPresent());
         Assert.assertEquals(responseDto.get().getId(), 100000001L);
@@ -436,7 +441,8 @@ public class SubscriberServiceTestITCase extends AbstractTransactionalTestNGSpri
      */
     @Test
     public void testGetSubscriberBySamlIdentifier() {
-        SamlIdentifierRequestDto requestDto = new SamlIdentifierRequestDto("https://brighton.ac.uk/shib", "student@brighton.ac.uk");
+        SamlIdentifierRequestDto requestDto
+                = new SamlIdentifierRequestDto("https://brighton.ac.uk/shib", "student@brighton.ac.uk");
         Set<SubscriberResponseDto> responseDtos = this.subscriberService.getSubscriberBySamlIdentifier(requestDto);
 
         assertThat(responseDtos, contains(
@@ -473,7 +479,8 @@ public class SubscriberServiceTestITCase extends AbstractTransactionalTestNGSpri
      */
     @Test
     public void testGetSubscriberBySamlIdentifierMultiple() {
-        SamlIdentifierRequestDto requestDto = new SamlIdentifierRequestDto("https://brighton.ac.uk/shib", "staff@brighton.ac.uk");
+        SamlIdentifierRequestDto requestDto
+                = new SamlIdentifierRequestDto("https://brighton.ac.uk/shib", "staff@brighton.ac.uk");
         Set<SubscriberResponseDto> responseDtos = this.subscriberService.getSubscriberBySamlIdentifier(requestDto);
 
         assertThat(responseDtos, containsInAnyOrder(
@@ -520,7 +527,8 @@ public class SubscriberServiceTestITCase extends AbstractTransactionalTestNGSpri
      */
     @Test
     public void testGetSubscriberBySamlIdentifierNone() {
-        SamlIdentifierRequestDto requestDto = new SamlIdentifierRequestDto("https://example.com/shib", "foo@example.com");
+        SamlIdentifierRequestDto requestDto
+                = new SamlIdentifierRequestDto("https://example.com/shib", "foo@example.com");
         Set<SubscriberResponseDto> responseDtos = this.subscriberService.getSubscriberBySamlIdentifier(requestDto);
 
         Assert.assertTrue(responseDtos.isEmpty());
