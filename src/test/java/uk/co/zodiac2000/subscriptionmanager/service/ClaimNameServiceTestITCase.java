@@ -36,6 +36,7 @@ public class ClaimNameServiceTestITCase extends AbstractTransactionalTestNGSprin
     @Test
     public void testEnsurePresent() {
         this.service.ensurePresent(NEW_CLAIM_NAME);
+        this.repository.flush();
 
         // Verify the claim name now exists
         Assert.assertTrue(this.repository.findByClaimName(NEW_CLAIM_NAME).isPresent());
