@@ -18,7 +18,7 @@ public class OidcIdentifierClaimCommandDtoTest {
     public void testConstructor() {
         OidcIdentifierClaimCommandDto dto = new OidcIdentifierClaimCommandDto(CLAIM_NAME, CLAIM_VALUE);
 
-        Assert.assertEquals(dto.getName(), CLAIM_NAME);
-        Assert.assertEquals(dto.getValue(), CLAIM_VALUE);
+        Assert.assertEquals(dto.getClaimName(), CLAIM_NAME);
+        Assert.assertEquals(dto.getClaimValue(), CLAIM_VALUE);
     }
 }

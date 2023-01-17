@@ -8,10 +8,10 @@ import javax.validation.constraints.NotEmpty;
 public class OidcIdentifierClaimCommandDto {
 
     @NotEmpty
-    private final String name;
+    private final String claimName;
 
     @NotEmpty
-    private final String value;
+    private final String claimValue;
 
     /**
      * Constructs a new OidcIdentifierClaimResponseDto.
@@ -19,21 +19,21 @@ public class OidcIdentifierClaimCommandDto {
      * @param value the claim value
      */
     public OidcIdentifierClaimCommandDto(String name, String value) {
-        this.name = name;
-        this.value = value;
+        this.claimName = name;
+        this.claimValue = value;
     }
 
     /**
      * @return the claim name
      */
-    public String getName() {
-        return this.name;
+    public String getClaimName() {
+        return this.claimName;
     }
 
     /**
      * @return the claim value
      */
-    public String getValue() {
-        return this.value;
+    public String getClaimValue() {
+        return this.claimValue;
     }
 }
