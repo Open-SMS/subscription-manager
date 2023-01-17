@@ -8,9 +8,12 @@ import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 /**
  * Value object representing an OpenID Connect issuer and a set of claims. The authorization request must satisfy
@@ -35,6 +38,11 @@ public class OidcIdentifier implements Serializable {
     @CollectionTable(name = "oidc_identifier_claim")
     private Set<OidcIdentifierClaim> oidcIdentifierClaims;
 
+    @NotNull
+    @ManyToOne
+    @JoinColumn(name = "subscriber_id")
+    private Subscriber subscriber;
+
     /**
      * Zero-args constructor for JPA.
      */
@@ -43,10 +51,13 @@ public class OidcIdentifier implements Serializable {
     /**
      * @param issuer the iss claim
      * @param oidcIdentifierClaims the set of OIDC claims associated with this OIDC identifier
+     * @param subscriber
      */
-    public OidcIdentifier(final String issuer, final Set<OidcIdentifierClaim> oidcIdentifierClaims) {
+    public OidcIdentifier(final String issuer, final Set<OidcIdentifierClaim> oidcIdentifierClaims,
+            final Subscriber subscriber) {
         this.issuer = Objects.requireNonNull(issuer);
         this.oidcIdentifierClaims = Objects.requireNonNull(oidcIdentifierClaims);
+        this.subscriber = Objects.requireNonNull(subscriber);
     }
 
     /**

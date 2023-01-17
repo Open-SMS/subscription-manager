@@ -10,7 +10,6 @@ import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.validation.Valid;
@@ -41,8 +40,7 @@ public class Subscriber implements Serializable {
     private Set<SamlIdentifier> samlIdentifiers = new HashSet<>();
 
     @Valid
-    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
-    @JoinColumn(name = "subscriber_id")
+    @OneToMany(mappedBy = "subscriber", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
     private Set<OidcIdentifier> oidcIdentifiers = new HashSet<>();
 
     /**
@@ -106,7 +104,8 @@ public class Subscriber implements Serializable {
                 .map(i -> new OidcIdentifier(i.getIssuer(),
                         i.getOidcIdentifierClaims().stream()
                         .map(c -> new OidcIdentifierClaim(c.getClaimName(), c.getClaimValue()))
-                        .collect(Collectors.toSet())
+                        .collect(Collectors.toSet()),
+                        this
                 ))
                 .collect(Collectors.toSet());
     }
