@@ -14,6 +14,7 @@ import org.testng.annotations.Test;
 import uk.co.zodiac2000.subscriptionmanager.domain.subscriber.Subscriber;
 import uk.co.zodiac2000.subscriptionmanager.repository.SubscriberRepository;
 import uk.co.zodiac2000.subscriptionmanager.transfer.subscriber.NewSubscriberCommandDto;
+import uk.co.zodiac2000.subscriptionmanager.transfer.subscriber.OidcIdentifierClaimCommandDto;
 import uk.co.zodiac2000.subscriptionmanager.transfer.subscriber.OidcIdentifierCommandDto;
 import uk.co.zodiac2000.subscriptionmanager.transfer.subscriber.OidcIdentifierRequestDto;
 import uk.co.zodiac2000.subscriptionmanager.transfer.subscriber.SamlIdentifierCommandDto;
@@ -41,6 +42,7 @@ public class SubscriberServiceTestITCase extends AbstractTransactionalTestNGSpri
 
     @BeforeMethod
     public void loadTestData() {
+        executeSqlScript("classpath:test_data/claim_name_test_data.sql", false);
         executeSqlScript("classpath:test_data/subscriber_test_data.sql", false);
     }
 
@@ -105,7 +107,12 @@ public class SubscriberServiceTestITCase extends AbstractTransactionalTestNGSpri
         assertThat(subscriber.get().getOidcIdentifiers(), contains(
                 allOf(
                         hasProperty("issuer", is("https://www.facebook.com")),
-                        hasProperty("subject", is("23987283"))
+                        hasProperty("oidcIdentifierClaims", contains(
+                                allOf(
+                                        hasProperty("claimName", is("sub")),
+                                        hasProperty("claimValue", is("23987283"))
+                                )
+                        ))
                 )
         ));
     }
@@ -245,7 +252,12 @@ public class SubscriberServiceTestITCase extends AbstractTransactionalTestNGSpri
         assertThat(responseDto.get().getOidcIdentifiers(), contains(
                 allOf(
                         hasProperty("issuer", is("https://oidc.open.ac.uk")),
-                        hasProperty("subject", is("343274"))
+                        hasProperty("oidcIdentifierClaims", contains(
+                                allOf(
+                                        hasProperty("claimName", is("sub")),
+                                        hasProperty("claimValue", is("343274"))
+                                )
+                        ))
                 )
         ));
 
@@ -265,7 +277,12 @@ public class SubscriberServiceTestITCase extends AbstractTransactionalTestNGSpri
         assertThat(subscriber.get().getOidcIdentifiers(), contains(
                 allOf(
                         hasProperty("issuer", is("https://oidc.open.ac.uk")),
-                        hasProperty("subject", is("343274"))
+                        hasProperty("oidcIdentifierClaims", contains(
+                                allOf(
+                                        hasProperty("claimName", is("sub")),
+                                        hasProperty("claimValue", is("343274"))
+                                )
+                        ))
                 )
         ));
     }
@@ -290,7 +307,9 @@ public class SubscriberServiceTestITCase extends AbstractTransactionalTestNGSpri
     @Test
     public void testSetOidcIdentifiersReplace() {
         Set<OidcIdentifierCommandDto> oidcIdentifiers = Set.of(
-                new OidcIdentifierCommandDto("https://accounts.google.com", "3DA52E3")
+                new OidcIdentifierCommandDto("https://accounts.google.com", Set.of(
+                        new OidcIdentifierClaimCommandDto("sub", "3DA52E3")
+                ))
         );
         Optional<SubscriberResponseDto> responseDto = this.subscriberService.setOidcIdentifiers(100000001L, oidcIdentifiers);
 
@@ -300,7 +319,12 @@ public class SubscriberServiceTestITCase extends AbstractTransactionalTestNGSpri
         assertThat(responseDto.get().getOidcIdentifiers(), contains(
                 allOf(
                         hasProperty("issuer", is("https://accounts.google.com")),
-                        hasProperty("subject", is("3DA52E3"))
+                        hasProperty("oidcIdentifierClaims", contains(
+                                allOf(
+                                        hasProperty("claimName", is("sub")),
+                                        hasProperty("claimValue", is("3DA52E3"))
+                                )
+                        ))
                 )
         ));
 
@@ -310,7 +334,12 @@ public class SubscriberServiceTestITCase extends AbstractTransactionalTestNGSpri
         assertThat(subscriber.get().getOidcIdentifiers(), contains(
                 allOf(
                         hasProperty("issuer", is("https://accounts.google.com")),
-                        hasProperty("subject", is("3DA52E3"))
+                        hasProperty("oidcIdentifierClaims", contains(
+                                allOf(
+                                        hasProperty("claimName", is("sub")),
+                                        hasProperty("claimValue", is("3DA52E3"))
+                                )
+                        ))
                 )
         ));
     }
@@ -321,7 +350,9 @@ public class SubscriberServiceTestITCase extends AbstractTransactionalTestNGSpri
     @Test
     public void testSetOidcIdentifiersNotFound() {
         Set<OidcIdentifierCommandDto> oidcIdentifiers = Set.of(
-                new OidcIdentifierCommandDto("https://accounts.google.com", "3DA52E3")
+                new OidcIdentifierCommandDto("https://accounts.google.com", Set.of(
+                        new OidcIdentifierClaimCommandDto("sub", "3DA52E3")
+                ))
         );
         Optional<SubscriberResponseDto> responseDto = this.subscriberService.setOidcIdentifiers(42L, oidcIdentifiers);
 
@@ -425,7 +456,12 @@ public class SubscriberServiceTestITCase extends AbstractTransactionalTestNGSpri
                         hasProperty("oidcIdentifiers", contains(
                                 allOf(
                                         hasProperty("issuer", is("https://oidc.brighton.ac.uk")),
-                                        hasProperty("subject", is("21224"))
+                                        hasProperty("oidcIdentifierClaims", contains(
+                                                allOf(
+                                                        hasProperty("claimName", is("sub")),
+                                                        hasProperty("claimValue", is("21224"))
+                                                )
+                                        ))
                                 )
                         ))
                 )
@@ -457,11 +493,15 @@ public class SubscriberServiceTestITCase extends AbstractTransactionalTestNGSpri
                         hasProperty("oidcIdentifiers", contains(
                                 allOf(
                                         hasProperty("issuer", is("https://oidc.brighton.ac.uk")),
-                                        hasProperty("subject", is("21224"))
-                                )
-                        ))
-                ),
-                allOf(
+                                        hasProperty("oidcIdentifierClaims", contains(
+                                                allOf(
+                                                        hasProperty("claimName", is("sub")),
+                                                        hasProperty("claimValue", is("21224"))
+                                                )
+                                        ))
+                                ))
+                        )),
+                        allOf(
                         hasProperty("id", is(100000009L)),
                         hasProperty("subscriberName", is("University of Brighton Admin")),
                         hasProperty("samlIdentifiers", contains(
