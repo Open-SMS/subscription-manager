@@ -21,6 +21,7 @@ public class SubscriberResponseDtoFactoryTest {
 
     private static final Long SUBSCRIBER_ID = 42L;
     private static final String SUBSCRIBER_NAME = "Terry Riley";
+    private static final Subscriber SUBSCRIBER = new Subscriber("SUBSCRIBER_NAME");
 
     private static final Long IDENTIFIERS_SUBSCRIBER_ID = 67L;
     private static final String IDENTIFIERS_SUBSCRIBER_NAME = "Durham University";
@@ -47,11 +48,11 @@ public class SubscriberResponseDtoFactoryTest {
             new OidcIdentifier(ISSUER_ONE, Set.of(
                     new OidcIdentifierClaim(CLAIM_NAME_ONE, CLAIM_VALUE_ONE),
                     new OidcIdentifierClaim(CLAIM_NAME_TWO, CLAIM_VALUE_TWO)
-            )),
+            ), SUBSCRIBER),
             new OidcIdentifier(ISSUER_TWO, Set.of(
                     new OidcIdentifierClaim(CLAIM_NAME_THREE, CLAIM_VALUE_THREE),
                     new OidcIdentifierClaim(CLAIM_NAME_FOUR, CLAIM_VALUE_FOUR)
-            ))
+            ), SUBSCRIBER)
     );
 
     private final SubscriberResponseDtoFactory factory = new SubscriberResponseDtoFactory();
