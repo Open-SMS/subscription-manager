@@ -2,6 +2,7 @@ package uk.co.zodiac2000.subscriptionmanager.api;
 
 import com.jayway.jsonpath.JsonPath;
 import java.util.Optional;
+import java.util.Set;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +23,7 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import uk.co.zodiac2000.subscriptionmanager.configuration.TestClockConfiguration;
 import uk.co.zodiac2000.subscriptionmanager.domain.subscriber.OidcIdentifier;
+import uk.co.zodiac2000.subscriptionmanager.domain.subscriber.OidcIdentifierClaim;
 import uk.co.zodiac2000.subscriptionmanager.domain.subscriber.SamlIdentifier;
 import uk.co.zodiac2000.subscriptionmanager.domain.subscriber.Subscriber;
 import uk.co.zodiac2000.subscriptionmanager.repository.SubscriberRepository;
@@ -50,6 +52,7 @@ public class SubscriberControllerTestITCase extends AbstractTransactionalTestNGS
 
     @BeforeMethod
     public void loadTestData() {
+        executeSqlScript("classpath:test_data/claim_name_test_data.sql", false);
         executeSqlScript("classpath:test_data/subscriber_test_data.sql", false);
     }
 
@@ -68,7 +71,8 @@ public class SubscriberControllerTestITCase extends AbstractTransactionalTestNGS
                 .jsonPath("$.subscriberName").isEqualTo("The Open University")
                 .jsonPath("$.samlIdentifiers").isEmpty()
                 .jsonPath("$.oidcIdentifiers[0].issuer").isEqualTo("https://oidc.open.ac.uk")
-                .jsonPath("$.oidcIdentifiers[0].subject").isEqualTo("343274");
+                .jsonPath("$.oidcIdentifiers[0].oidcIdentifierClaims[0].claimName").isEqualTo("sub")
+                .jsonPath("$.oidcIdentifiers[0].oidcIdentifierClaims[0].claimValue").isEqualTo("343274");
     }
 
     /**
@@ -242,7 +246,12 @@ public class SubscriberControllerTestITCase extends AbstractTransactionalTestNGS
                 + " \"oidcIdentifiers\": ["
                 + "  {"
                 + "   \"issuer\":\"https://accounts.google.com\","
-                + "   \"subject\":\"d2liYmxlCg==\""
+                + "   \"oidcIdentifierClaims\" : ["
+                + "     {"
+                + "      \"claimValue\":\"d2liYmxlCg==\","
+                + "      \"claimName\" : \"sub\""
+                + "     }"
+                + "   ]"
                 + "  }"
                 + " ]"
                 + "}";
@@ -262,7 +271,9 @@ public class SubscriberControllerTestITCase extends AbstractTransactionalTestNGS
         Optional<Subscriber> subscriber = this.subscriberRepository.findById(100000004L);
         Assert.assertTrue(subscriber.isPresent());
         assertThat(subscriber.get().getOidcIdentifiers(), contains(
-                equalTo(new OidcIdentifier("https://accounts.google.com", "d2liYmxlCg=="))
+                equalTo(new OidcIdentifier("https://accounts.google.com", Set.of(
+                        new OidcIdentifierClaim("sub", "d2liYmxlCg==")
+                )))
         ));
     }
 }
