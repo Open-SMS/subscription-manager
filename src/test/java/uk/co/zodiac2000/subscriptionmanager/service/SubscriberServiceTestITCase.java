@@ -16,7 +16,6 @@ import uk.co.zodiac2000.subscriptionmanager.repository.SubscriberRepository;
 import uk.co.zodiac2000.subscriptionmanager.transfer.subscriber.NewSubscriberCommandDto;
 import uk.co.zodiac2000.subscriptionmanager.transfer.subscriber.OidcIdentifierClaimCommandDto;
 import uk.co.zodiac2000.subscriptionmanager.transfer.subscriber.OidcIdentifierCommandDto;
-import uk.co.zodiac2000.subscriptionmanager.transfer.subscriber.OidcIdentifierRequestDto;
 import uk.co.zodiac2000.subscriptionmanager.transfer.subscriber.SamlIdentifierCommandDto;
 import uk.co.zodiac2000.subscriptionmanager.transfer.subscriber.SamlIdentifierRequestDto;
 import uk.co.zodiac2000.subscriptionmanager.transfer.subscriber.SubscriberNameCommandDto;
@@ -308,6 +307,85 @@ public class SubscriberServiceTestITCase extends AbstractTransactionalTestNGSpri
         Optional<SubscriberResponseDto> responseDto = this.subscriberService.setSamlIdentifiers(42L, samlIdentifiers);
 
         Assert.assertTrue(responseDto.isEmpty());
+    }
+
+    /**
+     * Test setOidcIdentifiers when the subscriber is not associated with SAML or OIDC identifiers. There are two
+     * OIDC identifiers, and the OIDC identifier with issuer https://auth.open.ac.uk is associated with two claims,
+     * one of which includes a claim name that doesn't already exist in the system.
+     */
+    @Test
+    public void testSetOidcIdentifiers() {
+        Set<OidcIdentifierCommandDto> oidcIdentifiers = Set.of(
+                new OidcIdentifierCommandDto("https://auth.open.ac.uk", Set.of(
+                        new OidcIdentifierClaimCommandDto("sub", "347839447"),
+                        new OidcIdentifierClaimCommandDto("eduPersonScopedAffiliation", "staff@open.ac.uk")
+                )),
+                new OidcIdentifierCommandDto("https://accounts.google.com", Set.of(
+                        new OidcIdentifierClaimCommandDto("sub", "3DA52E3")
+                ))
+        );
+        Optional<SubscriberResponseDto> responseDto
+                = this.subscriberService.setOidcIdentifiers(100000002L, oidcIdentifiers);
+        this.subscriberRepository.flush();
+
+        Assert.assertTrue(responseDto.isPresent());
+        Assert.assertEquals(responseDto.get().getId(), 100000002L);
+        Assert.assertTrue(responseDto.get().getSamlIdentifiers().isEmpty());
+        assertThat(responseDto.get().getOidcIdentifiers(), contains(
+                allOf(
+                        hasProperty("issuer", is("https://accounts.google.com")),
+                        hasProperty("oidcIdentifierClaims", contains(
+                                allOf(
+                                        hasProperty("claimName", is("sub")),
+                                        hasProperty("claimValue", is("3DA52E3"))
+                                )
+                        ))
+                ),
+                allOf(
+                        hasProperty("issuer", is("https://auth.open.ac.uk")),
+                        hasProperty("oidcIdentifierClaims", contains(
+                                allOf(
+                                        hasProperty("claimName", is("eduPersonScopedAffiliation")),
+                                        hasProperty("claimValue", is("staff@open.ac.uk"))
+                                ),
+                                allOf(
+                                        hasProperty("claimName", is("sub")),
+                                        hasProperty("claimValue", is("347839447"))
+                                )
+
+                        ))
+                )
+        ));
+
+        Optional<Subscriber> subscriber = this.subscriberRepository.findById(100000002L);
+        Assert.assertTrue(subscriber.isPresent());
+        Assert.assertTrue(subscriber.get().getSamlIdentifiers().isEmpty());
+        assertThat(subscriber.get().getOidcIdentifiers(), containsInAnyOrder(
+                allOf(
+                        hasProperty("issuer", is("https://accounts.google.com")),
+                        hasProperty("oidcIdentifierClaims", contains(
+                                allOf(
+                                        hasProperty("claimName", is("sub")),
+                                        hasProperty("claimValue", is("3DA52E3"))
+                                )
+                        ))
+                ),
+                allOf(
+                        hasProperty("issuer", is("https://auth.open.ac.uk")),
+                        hasProperty("oidcIdentifierClaims", containsInAnyOrder(
+                                allOf(
+                                        hasProperty("claimName", is("eduPersonScopedAffiliation")),
+                                        hasProperty("claimValue", is("staff@open.ac.uk"))
+                                ),
+                                allOf(
+                                        hasProperty("claimName", is("sub")),
+                                        hasProperty("claimValue", is("347839447"))
+                                )
+
+                        ))
+                )
+        ));
     }
 
     /**

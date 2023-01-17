@@ -33,6 +33,9 @@ public class SubscriberService {
     @Autowired
     private SubscriberFactory subscriberFactory;
 
+    @Autowired
+    private ClaimNameService claimNameService;
+
     /**
      * Returns the Subscriber identified by id.
      * @param id the subscriber id
@@ -137,7 +140,14 @@ public class SubscriberService {
     public Optional<SubscriberResponseDto> setOidcIdentifiers(final long id,
             final Set<OidcIdentifierCommandDto> oidcIdentifierCommandDtos) {
         Optional<Subscriber> subscriber = this.subscriberRepository.findById(id);
-        subscriber.ifPresent(p -> p.setOidcIdentifiers(oidcIdentifierCommandDtos));
+        // Only check claim names are present if a subscriber was found.
+        if (subscriber.isPresent()) {
+            oidcIdentifierCommandDtos.stream()
+                    .forEach(i -> i.getOidcIdentifierClaims().stream()
+                            .forEach(c -> this.claimNameService.ensurePresent(c.getClaimName()))
+                    );
+        }
+        subscriber.ifPresent(s -> s.setOidcIdentifiers(oidcIdentifierCommandDtos));
         return this.subscriberResponseDtoFactory.subscriberToSubscriberResponseDto(subscriber);
     }
 }
