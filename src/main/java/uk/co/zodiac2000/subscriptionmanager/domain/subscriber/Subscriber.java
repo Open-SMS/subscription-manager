@@ -4,11 +4,14 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
+import javax.persistence.CascadeType;
 import javax.persistence.CollectionTable;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
@@ -38,8 +41,8 @@ public class Subscriber implements Serializable {
     private Set<SamlIdentifier> samlIdentifiers = new HashSet<>();
 
     @Valid
-    @ElementCollection
-    @CollectionTable(name = "oidc_identifier")
+    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
+    @JoinColumn(name = "subscriber_id")
     private Set<OidcIdentifier> oidcIdentifiers = new HashSet<>();
 
     /**
@@ -100,7 +103,11 @@ public class Subscriber implements Serializable {
      */
     public void setOidcIdentifiers(final Set<OidcIdentifierCommandDto> oidcIdentifiers) {
         this.oidcIdentifiers = oidcIdentifiers.stream()
-                .map(i -> new OidcIdentifier(i.getIssuer(), i.getSubject()))
+                .map(i -> new OidcIdentifier(i.getIssuer(),
+                        i.getOidcIdentifierClaims().stream()
+                        .map(c -> new OidcIdentifierClaim(c.getClaimName(), c.getClaimValue()))
+                        .collect(Collectors.toSet())
+                ))
                 .collect(Collectors.toSet());
     }
 

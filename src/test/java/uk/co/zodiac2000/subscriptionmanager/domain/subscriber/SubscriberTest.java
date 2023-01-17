@@ -6,6 +6,7 @@ import static org.hamcrest.Matchers.*;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.testng.Assert;
 import org.testng.annotations.Test;
+import uk.co.zodiac2000.subscriptionmanager.transfer.subscriber.OidcIdentifierClaimCommandDto;
 import uk.co.zodiac2000.subscriptionmanager.transfer.subscriber.OidcIdentifierCommandDto;
 import uk.co.zodiac2000.subscriptionmanager.transfer.subscriber.SamlIdentifierCommandDto;
 import uk.co.zodiac2000.subscriptionmanager.transfer.subscriber.SubscriberNameCommandDto;
@@ -22,8 +23,13 @@ public class SubscriberTest {
     private static final SamlIdentifierCommandDto SAML_IDENTIFIER = new SamlIdentifierCommandDto(ENTITY_ID, SCOPED_AFFILIATION);
     private static final Set<SamlIdentifierCommandDto> SAML_IDENTIFIERS = Set.of(SAML_IDENTIFIER);
     private static final String ISSUER = "https://accounts.google.com";
-    private static final String SUBJECT = "3204823904";
-    private static final OidcIdentifierCommandDto OIDC_IDENTIFIER = new OidcIdentifierCommandDto(ISSUER, SUBJECT);
+    private static final String CLAIM_NAME = "sub";
+    private static final String CLAIM_VALUE = "3204823904";
+    private static final Set<OidcIdentifierClaimCommandDto> OIDC_IDENTIFIER_CLAIMS = Set.of(
+            new OidcIdentifierClaimCommandDto(CLAIM_NAME, CLAIM_VALUE)
+    );
+    private static final OidcIdentifierCommandDto OIDC_IDENTIFIER
+            = new OidcIdentifierCommandDto(ISSUER, OIDC_IDENTIFIER_CLAIMS);
     private static final Set<OidcIdentifierCommandDto> OIDC_IDENTIFIERS = Set.of(OIDC_IDENTIFIER);
 
     /**
@@ -71,7 +77,15 @@ public class SubscriberTest {
         subscriber.setOidcIdentifiers(OIDC_IDENTIFIERS);
 
         assertThat(subscriber.getOidcIdentifiers(), contains(
-                equalTo(new OidcIdentifier(ISSUER, SUBJECT))
+                allOf(
+                        hasProperty("issuer", is(ISSUER)),
+                        hasProperty("oidcIdentifierClaims", contains(
+                                allOf(
+                                        hasProperty("claimName", is(CLAIM_NAME)),
+                                        hasProperty("claimValue", is(CLAIM_VALUE))
+                                )
+                        ))
+                )
         ));
     }
 }
