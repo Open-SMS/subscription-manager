@@ -5,31 +5,31 @@ package uk.co.zodiac2000.subscriptionmanager.transfer.subscriber;
  */
 public class OidcIdentifierClaimResponseDto {
 
-    private final String name;
+    private final String claimName;
 
-    private final String value;
+    private final String claimValue;
 
     /**
      * Constructs a new OidcIdentifierClaimResponseDto.
-     * @param name the claim name
-     * @param value the claim value
+     * @param claimName the claim name
+     * @param claimValue the claim value
      */
-    public OidcIdentifierClaimResponseDto(String name, String value) {
-        this.name = name;
-        this.value = value;
+    public OidcIdentifierClaimResponseDto(String claimName, String claimValue) {
+        this.claimName = claimName;
+        this.claimValue = claimValue;
     }
 
     /**
      * @return the claim name
      */
-    public String getName() {
-        return this.name;
+    public String getClaimName() {
+        return this.claimName;
     }
 
     /**
      * @return the claim value
      */
-    public String getValue() {
-        return this.value;
+    public String getClaimValue() {
+        return this.claimValue;
     }
 }
