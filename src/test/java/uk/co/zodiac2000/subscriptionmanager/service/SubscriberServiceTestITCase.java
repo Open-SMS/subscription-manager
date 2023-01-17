@@ -125,6 +125,7 @@ public class SubscriberServiceTestITCase extends AbstractTransactionalTestNGSpri
     public void testCreateSubscriber() {
         Optional<SubscriberResponseDto> responseDto
                 = this.subscriberService.createSubscriber(NEW_SUBSCRIBER_COMMAND_DTO);
+        this.subscriberRepository.flush();
 
         Assert.assertTrue(responseDto.get().getId() > 0);
         Assert.assertEquals(responseDto.get().getSubscriberName(), SUBSCRIBER_NAME);
@@ -143,6 +144,7 @@ public class SubscriberServiceTestITCase extends AbstractTransactionalTestNGSpri
     public void testUpdateSubscriberName() {
         Optional<SubscriberResponseDto> responseDto = this.subscriberService.updateSubscriberName(
                 new SubscriberNameCommandDto(100000003L, UPDATED_SUBSCRIBER_NAME));
+        this.subscriberRepository.flush();
 
         Assert.assertTrue(responseDto.isPresent());
         Assert.assertEquals(responseDto.get().getSubscriberName(), UPDATED_SUBSCRIBER_NAME);
@@ -170,6 +172,7 @@ public class SubscriberServiceTestITCase extends AbstractTransactionalTestNGSpri
     @Test
     public void testDeleteSubscriber() {
         this.subscriberService.deleteSubscriber(100000003L);
+        this.subscriberRepository.flush();
 
         Optional<Subscriber> subscriber = this.subscriberRepository.findById(100000003L);
         Assert.assertTrue(subscriber.isEmpty());
@@ -181,6 +184,7 @@ public class SubscriberServiceTestITCase extends AbstractTransactionalTestNGSpri
     @Test
     public void testDeleteSubscriberIdentifiers() {
         this.subscriberService.deleteSubscriber(100000011L);
+        this.subscriberRepository.flush();
 
         Optional<Subscriber> subscriber = this.subscriberRepository.findById(100000011L);
         Assert.assertTrue(subscriber.isEmpty());
@@ -206,6 +210,7 @@ public class SubscriberServiceTestITCase extends AbstractTransactionalTestNGSpri
         );
         Optional<SubscriberResponseDto> responseDto
                 = this.subscriberService.setSamlIdentifiers(100000004L, samlIdentifiers);
+        this.subscriberRepository.flush();
 
         Assert.assertTrue(responseDto.isPresent());
         Assert.assertEquals(responseDto.get().getId(), 100000004L);
@@ -240,6 +245,7 @@ public class SubscriberServiceTestITCase extends AbstractTransactionalTestNGSpri
         );
         Optional<SubscriberResponseDto> responseDto
                 = this.subscriberService.setSamlIdentifiers(100000005L, samlIdentifiers);
+        this.subscriberRepository.flush();
 
         Assert.assertTrue(responseDto.isPresent());
         Assert.assertEquals(responseDto.get().getId(), 100000005L);
@@ -317,6 +323,7 @@ public class SubscriberServiceTestITCase extends AbstractTransactionalTestNGSpri
         );
         Optional<SubscriberResponseDto> responseDto
                 = this.subscriberService.setOidcIdentifiers(100000001L, oidcIdentifiers);
+        this.subscriberRepository.flush();
 
         Assert.assertTrue(responseDto.isPresent());
         Assert.assertEquals(responseDto.get().getId(), 100000001L);
