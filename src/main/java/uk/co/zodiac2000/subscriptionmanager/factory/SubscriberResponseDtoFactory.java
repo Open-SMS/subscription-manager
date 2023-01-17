@@ -1,5 +1,6 @@
 package uk.co.zodiac2000.subscriptionmanager.factory;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -8,6 +9,7 @@ import org.springframework.stereotype.Component;
 import uk.co.zodiac2000.subscriptionmanager.domain.subscriber.OidcIdentifier;
 import uk.co.zodiac2000.subscriptionmanager.domain.subscriber.SamlIdentifier;
 import uk.co.zodiac2000.subscriptionmanager.domain.subscriber.Subscriber;
+import uk.co.zodiac2000.subscriptionmanager.transfer.subscriber.OidcIdentifierClaimResponseDto;
 import uk.co.zodiac2000.subscriptionmanager.transfer.subscriber.OidcIdentifierResponseDto;
 import uk.co.zodiac2000.subscriptionmanager.transfer.subscriber.SamlIdentifierResponseDto;
 import uk.co.zodiac2000.subscriptionmanager.transfer.subscriber.SubscriberResponseDto;
@@ -65,18 +67,24 @@ public class SubscriberResponseDtoFactory {
     }
 
     /**
-     * Returns a natural sort ordered list of OidcIdentifierResponseDto objects based on the oidcIdentifiers argument.
-     * @param oidcIdentifiers a set of SAML identifiers
-     * @return a set of OidcIdentifierResponseDto objects
+     * Returns a list of OidcIdentifierResponseDto objects order by issuer. The composed OidcIdentifierClaimResponseDto
+     * are sorted in their natural order.
+     * @param oidcIdentifiers a set of OIDC identifiers
+     * @return a list of OidcIdentifierResponseDto objects
      */
     public List<OidcIdentifierResponseDto> oidcIdentifiersToOidcIdentifierResponseDtos(
             final Set<OidcIdentifier> oidcIdentifiers) {
         return oidcIdentifiers.stream()
-                .sorted()
+                .sorted(Comparator.comparing(OidcIdentifier::getIssuer))
                 .map(i -> {
                     return new OidcIdentifierResponseDto(
                             i.getIssuer(),
-                            i.getSubject()
+                            i.getOidcIdentifierClaims().stream()
+                                    .sorted()
+                                    .map(c -> {
+                                        return new OidcIdentifierClaimResponseDto(c.getClaimName(), c.getClaimValue());
+                                    })
+                            .collect(Collectors.toList())
                     );
                 })
                 .collect(Collectors.toList());

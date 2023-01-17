@@ -9,6 +9,7 @@ import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import uk.co.zodiac2000.subscriptionmanager.domain.subscriber.OidcIdentifier;
+import uk.co.zodiac2000.subscriptionmanager.domain.subscriber.OidcIdentifierClaim;
 import uk.co.zodiac2000.subscriptionmanager.domain.subscriber.SamlIdentifier;
 import uk.co.zodiac2000.subscriptionmanager.domain.subscriber.Subscriber;
 import uk.co.zodiac2000.subscriptionmanager.transfer.subscriber.SubscriberResponseDto;
@@ -31,13 +32,26 @@ public class SubscriberResponseDtoFactoryTest {
             new SamlIdentifier(ENTITY_ID_ONE, SCOPED_AFFILIATION_ONE),
             new SamlIdentifier(ENTITY_ID_TWO, SCOPED_AFFILIATION_TWO)
     );
-    private static final String ISSUER_ONE = "https://accounts.google.com";
-    private static final String ISSUER_TWO = "https://www.facebook.com";
-    private static final String SUBJECT_ONE = "3204823904";
-    private static final String SUBJECT_TWO = "d2liYmxlCg==";
+    private static final String ISSUER_ONE = "https://www.facebook.com";
+    private static final String ISSUER_TWO = "https://accounts.google.com";
+    private static final String CLAIM_NAME_ONE = "sub";
+    private static final String CLAIM_VALUE_ONE = "3204823904";
+    private static final String CLAIM_NAME_TWO = "sub";
+    private static final String CLAIM_VALUE_TWO = "d2liYmxlCg==";
+    private static final String CLAIM_NAME_THREE = "sub";
+    private static final String CLAIM_VALUE_THREE = "23201384129";
+    private static final String CLAIM_NAME_FOUR = "groups";
+    private static final String CLAIM_VALUE_FOUR = "staff";
+
     private static final Set<OidcIdentifier> OIDC_IDENTIFIERS = Set.of(
-            new OidcIdentifier(ISSUER_ONE, SUBJECT_ONE),
-            new OidcIdentifier(ISSUER_TWO, SUBJECT_TWO)
+            new OidcIdentifier(ISSUER_ONE, Set.of(
+                    new OidcIdentifierClaim(CLAIM_NAME_ONE, CLAIM_VALUE_ONE),
+                    new OidcIdentifierClaim(CLAIM_NAME_TWO, CLAIM_VALUE_TWO)
+            )),
+            new OidcIdentifier(ISSUER_TWO, Set.of(
+                    new OidcIdentifierClaim(CLAIM_NAME_THREE, CLAIM_VALUE_THREE),
+                    new OidcIdentifierClaim(CLAIM_NAME_FOUR, CLAIM_VALUE_FOUR)
+            ))
     );
 
     private final SubscriberResponseDtoFactory factory = new SubscriberResponseDtoFactory();
@@ -103,12 +117,30 @@ public class SubscriberResponseDtoFactoryTest {
                         )),
                         hasProperty("oidcIdentifiers", contains(
                                 allOf(
-                                        hasProperty("issuer", is(ISSUER_ONE)),
-                                        hasProperty("subject", is(SUBJECT_ONE))
+                                        hasProperty("issuer", is(ISSUER_TWO)),
+                                        hasProperty("oidcIdentifierClaims", contains(
+                                                allOf(
+                                                        hasProperty("claimName", is(CLAIM_NAME_FOUR)),
+                                                        hasProperty("claimValue", is(CLAIM_VALUE_FOUR))
+                                                ),
+                                                allOf(
+                                                        hasProperty("claimName", is(CLAIM_NAME_THREE)),
+                                                        hasProperty("claimValue", is(CLAIM_VALUE_THREE))
+                                                )
+                                        ))
                                 ),
                                 allOf(
-                                        hasProperty("issuer", is(ISSUER_TWO)),
-                                        hasProperty("subject", is(SUBJECT_TWO))
+                                        hasProperty("issuer", is(ISSUER_ONE)),
+                                        hasProperty("oidcIdentifierClaims", contains(
+                                                allOf(
+                                                        hasProperty("claimName", is(CLAIM_NAME_ONE)),
+                                                        hasProperty("claimValue", is(CLAIM_VALUE_ONE))
+                                                ),
+                                                allOf(
+                                                        hasProperty("claimName", is(CLAIM_NAME_TWO)),
+                                                        hasProperty("claimValue", is(CLAIM_VALUE_TWO))
+                                                )
+                                        ))
                                 )
                         ))
                 )
@@ -155,12 +187,30 @@ public class SubscriberResponseDtoFactoryTest {
                         )),
                         hasProperty("oidcIdentifiers", contains(
                                 allOf(
-                                        hasProperty("issuer", is(ISSUER_ONE)),
-                                        hasProperty("subject", is(SUBJECT_ONE))
+                                        hasProperty("issuer", is(ISSUER_TWO)),
+                                        hasProperty("oidcIdentifierClaims", contains(
+                                                allOf(
+                                                        hasProperty("claimName", is(CLAIM_NAME_FOUR)),
+                                                        hasProperty("claimValue", is(CLAIM_VALUE_FOUR))
+                                                ),
+                                                allOf(
+                                                        hasProperty("claimName", is(CLAIM_NAME_THREE)),
+                                                        hasProperty("claimValue", is(CLAIM_VALUE_THREE))
+                                                )
+                                        ))
                                 ),
                                 allOf(
-                                        hasProperty("issuer", is(ISSUER_TWO)),
-                                        hasProperty("subject", is(SUBJECT_TWO))
+                                        hasProperty("issuer", is(ISSUER_ONE)),
+                                        hasProperty("oidcIdentifierClaims", contains(
+                                                allOf(
+                                                        hasProperty("claimName", is(CLAIM_NAME_ONE)),
+                                                        hasProperty("claimValue", is(CLAIM_VALUE_ONE))
+                                                ),
+                                                allOf(
+                                                        hasProperty("claimName", is(CLAIM_NAME_TWO)),
+                                                        hasProperty("claimValue", is(CLAIM_VALUE_TWO))
+                                                )
+                                        ))
                                 )
                         ))
                 )
