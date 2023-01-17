@@ -18,7 +18,7 @@ public class OidcIdentifierClaimCommandDto {
      * @param claimName the claim name
      * @param claimValue the claim value
      */
-    public OidcIdentifierClaimCommandDto(String claimName, String claimValue) {
+    public OidcIdentifierClaimCommandDto(final String claimName, final String claimValue) {
         this.claimName = claimName;
         this.claimValue = claimValue;
     }

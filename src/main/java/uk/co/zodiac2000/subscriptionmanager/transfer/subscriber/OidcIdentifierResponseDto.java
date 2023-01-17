@@ -16,7 +16,8 @@ public class OidcIdentifierResponseDto {
      * @param issuer the iss claim
      * @param oidcIdentifierClaims a list of OIDC claims
      */
-    public OidcIdentifierResponseDto(final String issuer, List<OidcIdentifierClaimResponseDto> oidcIdentifierClaims) {
+    public OidcIdentifierResponseDto(final String issuer,
+            final List<OidcIdentifierClaimResponseDto> oidcIdentifierClaims) {
         this.issuer = issuer;
         this.oidcIdentifierClaims = oidcIdentifierClaims;
     }
