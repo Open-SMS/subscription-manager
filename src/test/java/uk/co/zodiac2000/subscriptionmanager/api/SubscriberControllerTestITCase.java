@@ -271,9 +271,16 @@ public class SubscriberControllerTestITCase extends AbstractTransactionalTestNGS
         Optional<Subscriber> subscriber = this.subscriberRepository.findById(100000004L);
         Assert.assertTrue(subscriber.isPresent());
         assertThat(subscriber.get().getOidcIdentifiers(), contains(
-                equalTo(new OidcIdentifier("https://accounts.google.com", Set.of(
-                        new OidcIdentifierClaim("sub", "d2liYmxlCg==")
-                )))
+                allOf(
+                        hasProperty("issuer", is("https://accounts.google.com")),
+                        hasProperty("oidcIdentifierClaims", contains(
+                                allOf(
+                                        hasProperty("claimName", is("sub")),
+                                        hasProperty("claimValue", is("d2liYmxlCg=="))
+                                )
+                        ))
+                )
         ));
+
     }
 }
