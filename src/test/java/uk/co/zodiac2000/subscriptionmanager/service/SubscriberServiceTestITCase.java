@@ -1,5 +1,6 @@
 package uk.co.zodiac2000.subscriptionmanager.service;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -317,11 +318,11 @@ public class SubscriberServiceTestITCase extends AbstractTransactionalTestNGSpri
     @Test
     public void testSetOidcIdentifiers() {
         Set<OidcIdentifierCommandDto> oidcIdentifiers = Set.of(
-                new OidcIdentifierCommandDto("https://auth.open.ac.uk", Set.of(
+                new OidcIdentifierCommandDto("https://auth.open.ac.uk", List.of(
                         new OidcIdentifierClaimCommandDto("sub", "347839447"),
                         new OidcIdentifierClaimCommandDto("eduPersonScopedAffiliation", "staff@open.ac.uk")
                 )),
-                new OidcIdentifierCommandDto("https://accounts.google.com", Set.of(
+                new OidcIdentifierCommandDto("https://accounts.google.com", List.of(
                         new OidcIdentifierClaimCommandDto("sub", "3DA52E3")
                 ))
         );
@@ -395,7 +396,7 @@ public class SubscriberServiceTestITCase extends AbstractTransactionalTestNGSpri
     @Test
     public void testSetOidcIdentifiersReplace() {
         Set<OidcIdentifierCommandDto> oidcIdentifiers = Set.of(
-                new OidcIdentifierCommandDto("https://accounts.google.com", Set.of(
+                new OidcIdentifierCommandDto("https://accounts.google.com", List.of(
                         new OidcIdentifierClaimCommandDto("sub", "3DA52E3")
                 ))
         );
@@ -442,7 +443,7 @@ public class SubscriberServiceTestITCase extends AbstractTransactionalTestNGSpri
     @Test
     public void testSetOidcIdentifiersNoClaims() {
         Set<OidcIdentifierCommandDto> oidcIdentifiers = Set.of(
-                new OidcIdentifierCommandDto("https://auth.open.ac.uk", Set.of())
+                new OidcIdentifierCommandDto("https://auth.open.ac.uk", List.of())
         );
         Optional<SubscriberResponseDto> responseDto
                 = this.subscriberService.setOidcIdentifiers(100000002L, oidcIdentifiers);
@@ -475,7 +476,7 @@ public class SubscriberServiceTestITCase extends AbstractTransactionalTestNGSpri
     @Test
     public void testSetOidcIdentifiersNotFound() {
         Set<OidcIdentifierCommandDto> oidcIdentifiers = Set.of(
-                new OidcIdentifierCommandDto("https://accounts.google.com", Set.of(
+                new OidcIdentifierCommandDto("https://accounts.google.com", List.of(
                         new OidcIdentifierClaimCommandDto("sub", "3DA52E3")
                 ))
         );

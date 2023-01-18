@@ -1,5 +1,6 @@
 package uk.co.zodiac2000.subscriptionmanager.domain.subscriber;
 
+import java.util.List;
 import java.util.Set;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
@@ -25,7 +26,7 @@ public class SubscriberTest {
     private static final String ISSUER = "https://accounts.google.com";
     private static final String CLAIM_NAME = "sub";
     private static final String CLAIM_VALUE = "3204823904";
-    private static final Set<OidcIdentifierClaimCommandDto> OIDC_IDENTIFIER_CLAIMS = Set.of(
+    private static final List<OidcIdentifierClaimCommandDto> OIDC_IDENTIFIER_CLAIMS = List.of(
             new OidcIdentifierClaimCommandDto(CLAIM_NAME, CLAIM_VALUE)
     );
     private static final OidcIdentifierCommandDto OIDC_IDENTIFIER

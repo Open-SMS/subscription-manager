@@ -1,6 +1,6 @@
 package uk.co.zodiac2000.subscriptionmanager.transfer.subscriber;
 
-import java.util.Set;
+import java.util.List;
 import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -15,14 +15,14 @@ public class OidcIdentifierCommandDto {
 
     @NotNull
     @Valid
-    private final Set<OidcIdentifierClaimCommandDto> oidcIdentifierClaims;
+    private final List<OidcIdentifierClaimCommandDto> oidcIdentifierClaims;
 
     /**
      * @param issuer the iss claim
      * @param oidcIdentifierClaims the the claims associated with this OIDC identifier
      */
     public OidcIdentifierCommandDto(final String issuer,
-            final Set<OidcIdentifierClaimCommandDto> oidcIdentifierClaims) {
+            final List<OidcIdentifierClaimCommandDto> oidcIdentifierClaims) {
         this.issuer = issuer;
         this.oidcIdentifierClaims = oidcIdentifierClaims;
     }
@@ -37,7 +37,7 @@ public class OidcIdentifierCommandDto {
     /**
      * @return the the claims associated with this OIDC identifier
      */
-    public Set<OidcIdentifierClaimCommandDto> getOidcIdentifierClaims() {
+    public List<OidcIdentifierClaimCommandDto> getOidcIdentifierClaims() {
         return this.oidcIdentifierClaims;
     }
 }
