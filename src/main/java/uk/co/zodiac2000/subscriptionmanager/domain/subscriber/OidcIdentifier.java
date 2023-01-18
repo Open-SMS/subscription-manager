@@ -39,7 +39,7 @@ public class OidcIdentifier implements Serializable {
     private Set<OidcIdentifierClaim> oidcIdentifierClaims;
 
     @NotNull
-    @ManyToOne
+    @ManyToOne(optional = false)
     @JoinColumn(name = "subscriber_id")
     private Subscriber subscriber;
 
@@ -72,6 +72,13 @@ public class OidcIdentifier implements Serializable {
      */
     public Set<OidcIdentifierClaim> getOidcIdentifierClaims() {
         return Set.copyOf(this.oidcIdentifierClaims);
+    }
+
+    /**
+     * Removes the reference to the subscriber owning this OIDC identifier.
+     */
+    public void removeSubscriber() {
+        this.subscriber = null;
     }
 
     /**

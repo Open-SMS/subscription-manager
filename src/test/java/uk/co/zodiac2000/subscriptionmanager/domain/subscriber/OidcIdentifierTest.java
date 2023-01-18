@@ -45,7 +45,6 @@ public class OidcIdentifierTest {
      */
     @Test
     public void testAccessors() {
-
         OidcIdentifier identifier = new OidcIdentifier(ISSUER_ONE, OIDC_IDENTIFIER_CLAIMS_ONE, SUBSCRIBER);
 
         Assert.assertEquals(identifier.getIssuer(), ISSUER_ONE);
@@ -131,5 +130,16 @@ public class OidcIdentifierTest {
         OidcIdentifier identifierTwo = new OidcIdentifier(ISSUER_ONE, OIDC_IDENTIFIER_CLAIMS_ONE, SUBSCRIBER);
 
         Assert.assertEquals(identifierOne.hashCode(), identifierTwo.hashCode());
+    }
+
+    /**
+     * Test removeSubscriber.
+     */
+    @Test
+    public void testRemoveSubscriber() {
+        OidcIdentifier identifier = new OidcIdentifier(ISSUER_ONE, OIDC_IDENTIFIER_CLAIMS_ONE, SUBSCRIBER);
+        identifier.removeSubscriber();
+
+        Assert.assertNull(ReflectionTestUtils.getField(identifier, "subscriber"));
     }
 }

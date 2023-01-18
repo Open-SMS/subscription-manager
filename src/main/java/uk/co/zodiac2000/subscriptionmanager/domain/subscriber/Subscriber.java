@@ -40,7 +40,7 @@ public class Subscriber implements Serializable {
     private Set<SamlIdentifier> samlIdentifiers = new HashSet<>();
 
     @Valid
-    @OneToMany(mappedBy = "subscriber", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
+    @OneToMany(mappedBy = "subscriber", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<OidcIdentifier> oidcIdentifiers = new HashSet<>();
 
     /**
@@ -100,14 +100,17 @@ public class Subscriber implements Serializable {
      * @param oidcIdentifiers the OIDC identifiers
      */
     public void setOidcIdentifiers(final Set<OidcIdentifierCommandDto> oidcIdentifiers) {
-        this.oidcIdentifiers = oidcIdentifiers.stream()
+        this.oidcIdentifiers.stream().forEach(i -> i.removeSubscriber());
+        this.oidcIdentifiers.clear();
+        this.oidcIdentifiers.addAll(
+                oidcIdentifiers.stream()
                 .map(i -> new OidcIdentifier(i.getIssuer(),
-                        i.getOidcIdentifierClaims().stream()
+                i.getOidcIdentifierClaims().stream()
                         .map(c -> new OidcIdentifierClaim(c.getClaimName(), c.getClaimValue()))
                         .collect(Collectors.toSet()),
-                        this
-                ))
-                .collect(Collectors.toSet());
+                this))
+                .collect(Collectors.toSet())
+        );
     }
 
     /**

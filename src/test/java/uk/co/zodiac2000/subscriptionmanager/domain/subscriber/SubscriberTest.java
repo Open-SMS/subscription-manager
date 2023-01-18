@@ -1,11 +1,16 @@
 package uk.co.zodiac2000.subscriptionmanager.domain.subscriber;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.testng.MockitoTestNGListener;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.testng.Assert;
+import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 import uk.co.zodiac2000.subscriptionmanager.transfer.subscriber.OidcIdentifierClaimCommandDto;
 import uk.co.zodiac2000.subscriptionmanager.transfer.subscriber.OidcIdentifierCommandDto;
@@ -15,6 +20,7 @@ import uk.co.zodiac2000.subscriptionmanager.transfer.subscriber.SubscriberNameCo
 /**
  * Unit tests for Subscriber.
  */
+@Listeners(MockitoTestNGListener.class)
 public class SubscriberTest {
 
     private static final Long SUBSCRIBER_ID = 65L;
@@ -32,6 +38,9 @@ public class SubscriberTest {
     private static final OidcIdentifierCommandDto OIDC_IDENTIFIER
             = new OidcIdentifierCommandDto(ISSUER, OIDC_IDENTIFIER_CLAIMS);
     private static final Set<OidcIdentifierCommandDto> OIDC_IDENTIFIERS = Set.of(OIDC_IDENTIFIER);
+
+    @Mock(lenient = true)
+    private OidcIdentifier oidcIdentifier;
 
     /**
      * Test constructor and accessors.
@@ -70,11 +79,15 @@ public class SubscriberTest {
     }
 
     /**
-     * Test OIDC identifier accessors.
+     * Test setOidcIdentifiers. The subscriber is already associated with an OIDC identifier and interactions with
+     * this object are verified.
      */
     @Test
     public void testOidcIdentifierAccessors() {
         Subscriber subscriber = new Subscriber();
+        ReflectionTestUtils.setField(subscriber, "oidcIdentifiers",
+                new HashSet<>(Set.of(this.oidcIdentifier)));
+
         subscriber.setOidcIdentifiers(OIDC_IDENTIFIERS);
 
         assertThat(subscriber.getOidcIdentifiers(), contains(
@@ -88,5 +101,6 @@ public class SubscriberTest {
                         ))
                 )
         ));
+        Mockito.verify(this.oidcIdentifier).removeSubscriber();
     }
 }
