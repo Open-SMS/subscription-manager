@@ -364,7 +364,6 @@ public class SubscriberServiceTestITCase extends AbstractTransactionalTestNGSpri
                                         hasProperty("claimName", is("sub")),
                                         hasProperty("claimValue", is("347839447"))
                                 )
-
                         ))
                 )
         ));
@@ -396,6 +395,78 @@ public class SubscriberServiceTestITCase extends AbstractTransactionalTestNGSpri
                                         hasProperty("claimValue", is("347839447"))
                                 )
 
+                        ))
+                )
+        ));
+    }
+
+    /**
+     * Test setOidcIdentifiers when the subscriber is not associated with SAML or OIDC identifiers. There are two
+     * OIDC identifiers both with issuer https://accounts.google.com but with different claims. This test
+     * verifies both OIDC identifiers are persisted due to not being equal.
+     */
+    @Test
+    public void testSetOidcIdentifiersSameIssuer() {
+        Set<OidcIdentifierCommandDto> oidcIdentifiers = Set.of(
+                new OidcIdentifierCommandDto("https://accounts.google.com", List.of(
+                        new OidcIdentifierClaimCommandDto("sub", "3DA52E3")
+                )),
+                new OidcIdentifierCommandDto("https://accounts.google.com", List.of(
+                        new OidcIdentifierClaimCommandDto("sub", "FA14276")
+                ))
+        );
+        Optional<SubscriberResponseDto> responseDto
+                = this.subscriberService.setOidcIdentifiers(100000002L, oidcIdentifiers);
+        this.subscriberRepository.flush();
+
+        Assert.assertTrue(responseDto.isPresent());
+        Assert.assertEquals(responseDto.get().getId(), 100000002L);
+        Assert.assertTrue(responseDto.get().getSamlIdentifiers().isEmpty());
+        // Note, OidcIdentifierResponseDto objects are sorted by issuer. When issuer is the same the order in which
+        // they're returned is indeterminite.
+        assertThat(responseDto.get().getOidcIdentifiers(), containsInAnyOrder(
+                allOf(
+                        hasProperty("issuer", is("https://accounts.google.com")),
+                        hasProperty("oidcIdentifierClaims", contains(
+                                allOf(
+                                        hasProperty("claimName", is("sub")),
+                                        hasProperty("claimValue", is("3DA52E3"))
+                                )
+                        ))
+                ),
+                allOf(
+                        hasProperty("issuer", is("https://accounts.google.com")),
+                        hasProperty("oidcIdentifierClaims", contains(
+                                allOf(
+                                        hasProperty("claimName", is("sub")),
+                                        hasProperty("claimValue", is("FA14276"))
+                                )
+                        ))
+                )
+        ));
+
+        Optional<Subscriber> subscriber = this.subscriberRepository.findById(100000002L);
+        subscriber.ifPresent(s -> this.entityManager.refresh(s));
+
+        Assert.assertTrue(subscriber.isPresent());
+        Assert.assertTrue(subscriber.get().getSamlIdentifiers().isEmpty());
+        assertThat(subscriber.get().getOidcIdentifiers(), containsInAnyOrder(
+                allOf(
+                        hasProperty("issuer", is("https://accounts.google.com")),
+                        hasProperty("oidcIdentifierClaims", contains(
+                                allOf(
+                                        hasProperty("claimName", is("sub")),
+                                        hasProperty("claimValue", is("3DA52E3"))
+                                )
+                        ))
+                ),
+                allOf(
+                        hasProperty("issuer", is("https://accounts.google.com")),
+                        hasProperty("oidcIdentifierClaims", contains(
+                                allOf(
+                                        hasProperty("claimName", is("sub")),
+                                        hasProperty("claimValue", is("FA14276"))
+                                )
                         ))
                 )
         ));
