@@ -14,7 +14,7 @@ public class OidcIdentifierClaimCommandDto {
     private final String claimValue;
 
     /**
-     * Constructs a new OidcIdentifierClaimResponseDto.
+     * Constructs a new OidcIdentifierClaimCommandDto.
      * @param claimName the claim name
      * @param claimValue the claim value
      */
