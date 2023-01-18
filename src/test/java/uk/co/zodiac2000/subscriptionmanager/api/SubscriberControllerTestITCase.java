@@ -2,7 +2,7 @@ package uk.co.zodiac2000.subscriptionmanager.api;
 
 import com.jayway.jsonpath.JsonPath;
 import java.util.Optional;
-import java.util.Set;
+import javax.persistence.EntityManager;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,8 +22,6 @@ import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import uk.co.zodiac2000.subscriptionmanager.configuration.TestClockConfiguration;
-import uk.co.zodiac2000.subscriptionmanager.domain.subscriber.OidcIdentifier;
-import uk.co.zodiac2000.subscriptionmanager.domain.subscriber.OidcIdentifierClaim;
 import uk.co.zodiac2000.subscriptionmanager.domain.subscriber.SamlIdentifier;
 import uk.co.zodiac2000.subscriptionmanager.domain.subscriber.Subscriber;
 import uk.co.zodiac2000.subscriptionmanager.repository.SubscriberRepository;
@@ -39,6 +37,9 @@ public class SubscriberControllerTestITCase extends AbstractTransactionalTestNGS
 
     @Autowired
     private SubscriberRepository subscriberRepository;
+
+    @Autowired
+    private EntityManager entityManager;
 
     @Autowired
     private MockMvc mockMvc;
@@ -100,6 +101,7 @@ public class SubscriberControllerTestITCase extends AbstractTransactionalTestNGS
                 .expectStatus().isCreated()
                 .expectHeader().contentType(MediaType.APPLICATION_JSON)
                 .expectBody().returnResult();
+        this.subscriberRepository.flush();
 
         String responseBody = new String(result.getResponseBody());
         Integer id = JsonPath.read(responseBody, "$.id");
@@ -145,6 +147,7 @@ public class SubscriberControllerTestITCase extends AbstractTransactionalTestNGS
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
                 .expectStatus().isNoContent();
+        this.subscriberRepository.flush();
 
         Optional<Subscriber> subscriber = this.subscriberRepository.findById(100000004L);
         Assert.assertTrue(subscriber.isEmpty());
@@ -164,12 +167,15 @@ public class SubscriberControllerTestITCase extends AbstractTransactionalTestNGS
                 .expectStatus().isOk()
                 .expectHeader().contentType(MediaType.APPLICATION_JSON)
                 .expectBody().returnResult();
+        this.subscriberRepository.flush();
 
         String responseBody = new String(result.getResponseBody());
         Integer id = JsonPath.read(responseBody, "$.id");
         Assert.assertEquals(id, 100000004);
 
         Optional<Subscriber> subscriber = this.subscriberRepository.findById(100000004L);
+        subscriber.ifPresent(s -> this.entityManager.refresh(s));
+
         Assert.assertTrue(subscriber.isPresent());
         Assert.assertEquals(subscriber.get().getSubscriberName(), "Sheepcote University");
     }
@@ -224,12 +230,15 @@ public class SubscriberControllerTestITCase extends AbstractTransactionalTestNGS
                 .expectStatus().isOk()
                 .expectHeader().contentType(MediaType.APPLICATION_JSON)
                 .expectBody().returnResult();
+        this.subscriberRepository.flush();
 
         String responseBody = new String(result.getResponseBody());
         Integer id = JsonPath.read(responseBody, "$.id");
         Assert.assertEquals(id, 100000004);
 
         Optional<Subscriber> subscriber = this.subscriberRepository.findById(100000004L);
+        subscriber.ifPresent(s -> this.entityManager.refresh(s));
+
         Assert.assertTrue(subscriber.isPresent());
         assertThat(subscriber.get().getSamlIdentifiers(), containsInAnyOrder(
                 equalTo(new SamlIdentifier("http://saml.example.com", "student@example.com")),
@@ -263,12 +272,15 @@ public class SubscriberControllerTestITCase extends AbstractTransactionalTestNGS
                 .expectStatus().isOk()
                 .expectHeader().contentType(MediaType.APPLICATION_JSON)
                 .expectBody().returnResult();
+        this.subscriberRepository.flush();
 
         String responseBody = new String(result.getResponseBody());
         Integer id = JsonPath.read(responseBody, "$.id");
         Assert.assertEquals(id, 100000004);
 
         Optional<Subscriber> subscriber = this.subscriberRepository.findById(100000004L);
+        subscriber.ifPresent(s -> this.entityManager.refresh(s));
+
         Assert.assertTrue(subscriber.isPresent());
         assertThat(subscriber.get().getOidcIdentifiers(), contains(
                 allOf(
