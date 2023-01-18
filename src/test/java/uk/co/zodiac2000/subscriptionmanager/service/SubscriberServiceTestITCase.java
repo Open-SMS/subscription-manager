@@ -3,6 +3,7 @@ package uk.co.zodiac2000.subscriptionmanager.service;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import javax.persistence.EntityManager;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +41,9 @@ public class SubscriberServiceTestITCase extends AbstractTransactionalTestNGSpri
 
     @Autowired
     private SubscriberRepository subscriberRepository;
+
+    @Autowired
+    private EntityManager entityManager;
 
     @BeforeMethod
     public void loadTestData() {
@@ -150,6 +154,8 @@ public class SubscriberServiceTestITCase extends AbstractTransactionalTestNGSpri
         Assert.assertEquals(responseDto.get().getSubscriberName(), UPDATED_SUBSCRIBER_NAME);
 
         Optional<Subscriber> subscriber = this.subscriberRepository.findById(responseDto.get().getId());
+        subscriber.ifPresent(s -> this.entityManager.refresh(s));
+
         Assert.assertTrue(subscriber.isPresent());
         Assert.assertEquals(subscriber.get().getSubscriberName(), UPDATED_SUBSCRIBER_NAME);
     }
@@ -223,6 +229,8 @@ public class SubscriberServiceTestITCase extends AbstractTransactionalTestNGSpri
         Assert.assertTrue(responseDto.get().getOidcIdentifiers().isEmpty());
 
         Optional<Subscriber> subscriber = this.subscriberRepository.findById(100000004L);
+        subscriber.ifPresent(s -> this.entityManager.refresh(s));
+
         Assert.assertTrue(subscriber.isPresent());
         assertThat(subscriber.get().getSamlIdentifiers(), contains(
                 allOf(
@@ -272,6 +280,8 @@ public class SubscriberServiceTestITCase extends AbstractTransactionalTestNGSpri
         ));
 
         Optional<Subscriber> subscriber = this.subscriberRepository.findById(100000005L);
+        subscriber.ifPresent(s -> this.entityManager.refresh(s));
+
         Assert.assertTrue(subscriber.isPresent());
         Assert.assertEquals(subscriber.get().getSubscriberName(), "The Open University");
         assertThat(subscriber.get().getSamlIdentifiers(), contains(
@@ -360,6 +370,8 @@ public class SubscriberServiceTestITCase extends AbstractTransactionalTestNGSpri
         ));
 
         Optional<Subscriber> subscriber = this.subscriberRepository.findById(100000002L);
+        subscriber.ifPresent(s -> this.entityManager.refresh(s));
+
         Assert.assertTrue(subscriber.isPresent());
         Assert.assertTrue(subscriber.get().getSamlIdentifiers().isEmpty());
         assertThat(subscriber.get().getOidcIdentifiers(), containsInAnyOrder(
@@ -420,6 +432,8 @@ public class SubscriberServiceTestITCase extends AbstractTransactionalTestNGSpri
         ));
 
         Optional<Subscriber> subscriber = this.subscriberRepository.findById(100000001L);
+        subscriber.ifPresent(s -> this.entityManager.refresh(s));
+
         Assert.assertTrue(subscriber.isPresent());
         Assert.assertTrue(subscriber.get().getSamlIdentifiers().isEmpty());
         assertThat(subscriber.get().getOidcIdentifiers(), contains(
@@ -460,6 +474,8 @@ public class SubscriberServiceTestITCase extends AbstractTransactionalTestNGSpri
         ));
 
         Optional<Subscriber> subscriber = this.subscriberRepository.findById(100000002L);
+        subscriber.ifPresent(s -> this.entityManager.refresh(s));
+
         Assert.assertTrue(subscriber.isPresent());
         Assert.assertTrue(subscriber.get().getSamlIdentifiers().isEmpty());
         assertThat(subscriber.get().getOidcIdentifiers(), containsInAnyOrder(
