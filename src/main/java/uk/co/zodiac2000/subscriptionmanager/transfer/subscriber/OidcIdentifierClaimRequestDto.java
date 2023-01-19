@@ -1,5 +1,7 @@
 package uk.co.zodiac2000.subscriptionmanager.transfer.subscriber;
 
+import java.util.List;
+import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
 
 /**
@@ -11,16 +13,18 @@ public class OidcIdentifierClaimRequestDto {
     private final String claimName;
 
     @NotEmpty
-    private final String claimValue;
+    @Valid
+    private final List<OidcIdentifierClaimValueRequestDto> claimValues;
 
     /**
      * Constructs a new OidcIdentifierClaimRequestDto.
      * @param claimName the claim name
-     * @param claimValue the claim value
+     * @param claimValues one or more claim values
      */
-    public OidcIdentifierClaimRequestDto(final String claimName, final String claimValue) {
+    public OidcIdentifierClaimRequestDto(final String claimName,
+            final List<OidcIdentifierClaimValueRequestDto> claimValues) {
         this.claimName = claimName;
-        this.claimValue = claimValue;
+        this.claimValues = claimValues;
     }
 
     /**
@@ -31,9 +35,9 @@ public class OidcIdentifierClaimRequestDto {
     }
 
     /**
-     * @return the claim value
+     * @return one or more claim values
      */
-    public String getClaimValue() {
-        return this.claimValue;
+    public List<OidcIdentifierClaimValueRequestDto> getClaimValues() {
+        return this.claimValues;
     }
 }
