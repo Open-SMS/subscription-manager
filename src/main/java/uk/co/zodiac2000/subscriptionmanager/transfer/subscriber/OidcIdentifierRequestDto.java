@@ -57,7 +57,7 @@ public class OidcIdentifierRequestDto {
      * @param requiredClaimNames a set of claim names indicating the required claims
      * @return a new OidcIdentifierRequestDto object
      */
-    public OidcIdentifierRequestDto createFilteredRequest(Set<String> requiredClaimNames) {
+    public OidcIdentifierRequestDto createFilteredRequest(final Set<String> requiredClaimNames) {
         List<OidcIdentifierClaimRequestDto> filteredClaims = this.oidcIdentifierClaims.stream()
                 .filter(c -> requiredClaimNames.contains(c.getClaimName()))
                 .map(c -> new OidcIdentifierClaimRequestDto(c.getClaimName(), c.getClaimValues()))
