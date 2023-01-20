@@ -42,11 +42,26 @@ public class OidcIdentifierRequestDto {
     }
 
     /**
+     * This method may not be required.
      * @return a set of all the claim names used for claims in this request
      */
     public Set<String> getClaimNames() {
         return this.oidcIdentifierClaims.stream()
                 .map(OidcIdentifierClaimRequestDto::getClaimName)
                 .collect(Collectors.toSet());
+    }
+
+    /**
+     * Returns a new OidcIdentifierRequestDto containing only claims with claim names that occur in the
+     * {@code requiredClaimNames} argument.
+     * @param requiredClaimNames a set of claim names indicating the required claims
+     * @return a new OidcIdentifierRequestDto object
+     */
+    public OidcIdentifierRequestDto createFilteredRequest(Set<String> requiredClaimNames) {
+        List<OidcIdentifierClaimRequestDto> filteredClaims = this.oidcIdentifierClaims.stream()
+                .filter(c -> requiredClaimNames.contains(c.getClaimName()))
+                .map(c -> new OidcIdentifierClaimRequestDto(c.getClaimName(), c.getClaimValues()))
+                .collect(Collectors.toList());
+        return new OidcIdentifierRequestDto(this.getIssuer(), filteredClaims);
     }
 }

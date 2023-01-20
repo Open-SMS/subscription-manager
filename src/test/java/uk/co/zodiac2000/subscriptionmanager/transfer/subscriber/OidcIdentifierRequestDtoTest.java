@@ -1,6 +1,7 @@
 package uk.co.zodiac2000.subscriptionmanager.transfer.subscriber;
 
 import java.util.List;
+import java.util.Set;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import org.testng.Assert;
@@ -43,6 +44,28 @@ public class OidcIdentifierRequestDtoTest {
 
         assertThat(requestDto.getClaimNames(), containsInAnyOrder(
                 is(CLAIM_NAME_SUB), is(CLAIM_NAME_GROUPS)
+        ));
+    }
+
+    /**
+     * Test createFilteredRequest.
+     */
+    @Test
+    public void testCreateFilteredRequest() {
+        OidcIdentifierRequestDto requestDto = new OidcIdentifierRequestDto(ISSUER, CLAIMS);
+
+        OidcIdentifierRequestDto filteredRequestDto = requestDto.createFilteredRequest(Set.of(CLAIM_NAME_GROUPS));
+
+        assertThat(filteredRequestDto, allOf(
+                hasProperty("issuer", is(ISSUER)),
+                hasProperty("oidcIdentifierClaims", contains(
+                        allOf(
+                                hasProperty("claimName", is(CLAIM_NAME_GROUPS)),
+                                hasProperty("claimValues", contains(
+                                        hasProperty("claimValue", is("student"))
+                                ))
+                        )
+                ))
         ));
     }
 }
