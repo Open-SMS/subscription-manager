@@ -15,6 +15,7 @@ import javax.persistence.SequenceGenerator;
 import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
 import uk.co.zodiac2000.subscriptionmanager.transfer.subscriber.OidcIdentifierCommandDto;
+import uk.co.zodiac2000.subscriptionmanager.transfer.subscriber.OidcIdentifierRequestDto;
 import uk.co.zodiac2000.subscriptionmanager.transfer.subscriber.SamlIdentifierCommandDto;
 import uk.co.zodiac2000.subscriptionmanager.transfer.subscriber.SubscriberNameCommandDto;
 
@@ -118,5 +119,17 @@ public class Subscriber implements Serializable {
      */
     public Set<OidcIdentifier> getOidcIdentifiers() {
         return Set.copyOf(this.oidcIdentifiers);
+    }
+
+    /**
+     * Returns true if the claims in the {@code oidcIdentifierRequest} parameter can completely match the issuer and
+     * claims associated with an OIDC identifier which is associated with this subscriber.
+     * @param oidcIdentifierRequest request DTO the contains the issuer and claims
+     * @return true if claims requirements are met
+     */
+    public boolean claimsSatisfyRequirements(final OidcIdentifierRequestDto oidcIdentifierRequest) {
+        return this.oidcIdentifiers.stream()
+                .filter(i -> i.claimsSatisfyRequirements(oidcIdentifierRequest))
+                .findFirst().isPresent();
     }
 }

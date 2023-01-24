@@ -14,6 +14,7 @@ import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 import uk.co.zodiac2000.subscriptionmanager.transfer.subscriber.OidcIdentifierClaimCommandDto;
 import uk.co.zodiac2000.subscriptionmanager.transfer.subscriber.OidcIdentifierCommandDto;
+import uk.co.zodiac2000.subscriptionmanager.transfer.subscriber.OidcIdentifierRequestDto;
 import uk.co.zodiac2000.subscriptionmanager.transfer.subscriber.SamlIdentifierCommandDto;
 import uk.co.zodiac2000.subscriptionmanager.transfer.subscriber.SubscriberNameCommandDto;
 
@@ -102,5 +103,18 @@ public class SubscriberTest {
                 )
         ));
         Mockito.verify(this.oidcIdentifier).removeSubscriber();
+    }
+
+    /**
+     * Test claimsSatisfyRequirements.
+     */
+    @Test
+    public void testClaimsSatisfyRequirements() {
+        OidcIdentifierRequestDto oidcIdentifierRequest = new OidcIdentifierRequestDto(ISSUER, List.of());
+        Subscriber subscriber = new Subscriber();
+        ReflectionTestUtils.setField(subscriber, "oidcIdentifiers", new HashSet<>(Set.of(this.oidcIdentifier)));
+        Mockito.when(this.oidcIdentifier.claimsSatisfyRequirements(oidcIdentifierRequest)).thenReturn(true);
+
+        Assert.assertTrue(subscriber.claimsSatisfyRequirements(oidcIdentifierRequest));
     }
 }
