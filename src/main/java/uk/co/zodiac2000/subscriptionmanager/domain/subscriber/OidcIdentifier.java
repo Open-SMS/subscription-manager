@@ -14,6 +14,7 @@ import javax.persistence.SequenceGenerator;
 import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import uk.co.zodiac2000.subscriptionmanager.transfer.subscriber.OidcIdentifierRequestDto;
 
 /**
  * Value object representing an OpenID Connect issuer and a set of claims. The authorization request must satisfy
@@ -102,5 +103,22 @@ public class OidcIdentifier implements Serializable {
     @Override
     public int hashCode() {
         return Objects.hash(this.getIssuer(), this.getOidcIdentifierClaims());
+    }
+
+    /**
+     * Returns true if the issuer and claims represented by {@code oidcIdentifierRequest} match the issuer and claims
+     * represented by this OidcIdentifier.
+     * @param oidcIdentifierRequest a request containing claims submitted by the client
+     * @return true if  the request meets the requirements of this OidcIdentifier
+     */
+    public boolean claimsSatisfyRequirements(final OidcIdentifierRequestDto oidcIdentifierRequest) {
+        if (this.issuer.equals(oidcIdentifierRequest.getIssuer())) {
+            long claimsMatched = this.oidcIdentifierClaims.stream()
+                    .filter(c -> oidcIdentifierRequest.matchesClaims(c.getClaimName(), c.getClaimValue()))
+                    .count();
+            return claimsMatched == this.oidcIdentifierClaims.size();
+        } else {
+            return false;
+        }
     }
 }

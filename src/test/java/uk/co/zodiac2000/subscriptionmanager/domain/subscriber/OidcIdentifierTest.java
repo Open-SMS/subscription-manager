@@ -1,9 +1,13 @@
 package uk.co.zodiac2000.subscriptionmanager.domain.subscriber;
 
+import java.util.List;
 import java.util.Set;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.testng.Assert;
 import org.testng.annotations.Test;
+import uk.co.zodiac2000.subscriptionmanager.transfer.subscriber.OidcIdentifierClaimRequestDto;
+import uk.co.zodiac2000.subscriptionmanager.transfer.subscriber.OidcIdentifierClaimValueRequestDto;
+import uk.co.zodiac2000.subscriptionmanager.transfer.subscriber.OidcIdentifierRequestDto;
 
 /**
  * Unit tests for OidcIdentifier.
@@ -141,5 +145,51 @@ public class OidcIdentifierTest {
         identifier.removeSubscriber();
 
         Assert.assertNull(ReflectionTestUtils.getField(identifier, "subscriber"));
+    }
+
+    /**
+     * Test claimsSatisfyRequirements where the issuer associated with the request does not match the issuer
+     * associated with the OidcIdentifier.
+     */
+    @Test
+    public void testClaimsSatisfyRequirementsDifferentIssuer() {
+        OidcIdentifier identifier = new OidcIdentifier(ISSUER_ONE, OIDC_IDENTIFIER_CLAIMS_ONE, SUBSCRIBER);
+        OidcIdentifierRequestDto request = new OidcIdentifierRequestDto(ISSUER_TWO, List.of());
+
+        Assert.assertFalse(identifier.claimsSatisfyRequirements(request));
+    }
+
+    /**
+     * Test claimsSatisfyRequirements where the issuer associated with the request matches the issuer
+     * associated with the OidcIdentifier but the claims do not.
+     */
+    @Test
+    public void testClaimsSatisfyRequirementsDifferentClaims() {
+        OidcIdentifier identifier = new OidcIdentifier(ISSUER_ONE, OIDC_IDENTIFIER_CLAIMS_ONE, SUBSCRIBER);
+        OidcIdentifierRequestDto request = new OidcIdentifierRequestDto(ISSUER_ONE, List.of(
+                new OidcIdentifierClaimRequestDto("FOO", List.of())
+        ));
+
+        Assert.assertFalse(identifier.claimsSatisfyRequirements(request));
+    }
+
+    /**
+     * Test claimsSatisfyRequirements where the issuer associated with the request matches the issuer
+     * associated with the OidcIdentifier and the request contains claims which match all the required
+     * claims.
+     */
+    @Test
+    public void testClaimsSatisfyRequirements() {
+        OidcIdentifier identifier = new OidcIdentifier(ISSUER_ONE, OIDC_IDENTIFIER_CLAIMS_ONE, SUBSCRIBER);
+        OidcIdentifierRequestDto request = new OidcIdentifierRequestDto(ISSUER_ONE, List.of(
+                new OidcIdentifierClaimRequestDto(CLAIM_NAME_ONE, List.of(
+                        new OidcIdentifierClaimValueRequestDto(CLAIM_VALUE_ONE)
+                )),
+                new OidcIdentifierClaimRequestDto(CLAIM_NAME_TWO, List.of(
+                        new OidcIdentifierClaimValueRequestDto(CLAIM_VALUE_TWO)
+                ))
+        ));
+
+        Assert.assertTrue(identifier.claimsSatisfyRequirements(request));
     }
 }
