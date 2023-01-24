@@ -1,12 +1,24 @@
 {
  "oidcIdentifiers": [
   {
-   "issuer":"https://accounts.google.com",
-   "subject":""
+   "issuer":"https://open.ac.uk/auth",
+   "oidcIdentifierClaims":[
+     {"claimName":"derivedEduPersonScope", "claimValue":"open.ac.uk"},
+     {"claimName":"sub", "claimValue":"3748379"}
+   ]
   },
   {
-   "issuer":"https://www.facebook.com",
-   "subject":"d2liYmxlCg=="
+   "issuer":"https://open.ac.uk/auth",
+   "oidcIdentifierClaims":[
+     {"claimName":"derivedEduPersonScope", "claimValue":"open.ac.uk"},
+     {"claimName":"sub", "claimValue":"3748385"}
+   ]
+  },
+  {
+   "issuer":"https://accounts.google.com",
+   "oidcIdentifierClaims":[
+     {"claimName":"sub", "claimValue":"e489a83b2"}
+   ]
   }
  ]
 }
