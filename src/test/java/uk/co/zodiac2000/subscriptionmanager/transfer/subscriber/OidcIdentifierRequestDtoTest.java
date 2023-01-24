@@ -68,4 +68,36 @@ public class OidcIdentifierRequestDtoTest {
                 ))
         ));
     }
+
+    /**
+     * Test matchesClaims when the arguments match a claim associated with the OidcIdentifierRequestDto.
+     */
+    @Test
+    public void testMatchesClaims() {
+        OidcIdentifierRequestDto requestDto = new OidcIdentifierRequestDto(ISSUER, CLAIMS);
+
+        Assert.assertTrue(requestDto.matchesClaims(CLAIM_NAME_SUB, "e5389fa9123"));
+    }
+
+    /**
+     * Test matchesClaims when the arguments do not match a claim associated with the OidcIdentifierRequestDto
+     * because the claim name does not match.
+     */
+    @Test
+    public void testMatchesClaimsNoMatchClaimName() {
+        OidcIdentifierRequestDto requestDto = new OidcIdentifierRequestDto(ISSUER, CLAIMS);
+
+        Assert.assertFalse(requestDto.matchesClaims("FOO", "e5389fa9123"));
+    }
+
+    /**
+     * Test matchesClaims when the arguments do not match a claim associated with the OidcIdentifierRequestDto
+     * because the claim value does not match.
+     */
+    @Test
+    public void testMatchesClaimsNoMatchClaimValue() {
+        OidcIdentifierRequestDto requestDto = new OidcIdentifierRequestDto(ISSUER, CLAIMS);
+
+        Assert.assertFalse(requestDto.matchesClaims(CLAIM_NAME_SUB, "FOO"));
+    }
 }

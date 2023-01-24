@@ -64,4 +64,20 @@ public class OidcIdentifierRequestDto {
                 .collect(Collectors.toList());
         return new OidcIdentifierRequestDto(this.getIssuer(), filteredClaims);
     }
+
+
+    /**
+     * Returns true if the {@code requiredClaimName} argument matches claimName, and claimValues contains a value
+     * matching the {@code requiredClaimValue} argument.
+     * @param requiredClaimName the required claim name
+     * @param requiredClaimValue the required claim value
+     * @return true if the required claim was matched
+     */
+    public boolean matchesClaims(final String requiredClaimName, final String requiredClaimValue) {
+        return this.oidcIdentifierClaims.stream()
+                .filter(c -> c.getClaimName().equals(requiredClaimName)
+                        && c.getClaimValuesAsStrings().contains(requiredClaimValue)
+                )
+                .findFirst().isPresent();
+    }
 }
