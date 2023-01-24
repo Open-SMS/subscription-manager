@@ -3,12 +3,14 @@ package uk.co.zodiac2000.subscriptionmanager.repository;
 import java.util.Optional;
 import java.util.Set;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import uk.co.zodiac2000.subscriptionmanager.domain.subscriber.Subscriber;
 
 /**
  * Repository for Subscriber aggregates.
  */
-public interface SubscriberRepository extends JpaRepository<Subscriber, Long> {
+public interface SubscriberRepository extends JpaRepository<Subscriber, Long>,
+        JpaSpecificationExecutor<Subscriber> {
 
     /**
      * Returns subscribers associated with at least one SamlIdentifier matching the arguments.
