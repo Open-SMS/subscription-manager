@@ -11,7 +11,6 @@ import uk.co.zodiac2000.subscriptionmanager.factory.SubscriberResponseDtoFactory
 import uk.co.zodiac2000.subscriptionmanager.repository.SubscriberRepository;
 import uk.co.zodiac2000.subscriptionmanager.transfer.subscriber.NewSubscriberCommandDto;
 import uk.co.zodiac2000.subscriptionmanager.transfer.subscriber.OidcIdentifierCommandDto;
-import uk.co.zodiac2000.subscriptionmanager.transfer.subscriber.OidcIdentifierRequestDto;
 import uk.co.zodiac2000.subscriptionmanager.transfer.subscriber.SamlIdentifierCommandDto;
 import uk.co.zodiac2000.subscriptionmanager.transfer.subscriber.SamlIdentifierRequestDto;
 import uk.co.zodiac2000.subscriptionmanager.transfer.subscriber.SubscriberNameCommandDto;
@@ -53,17 +52,6 @@ public class SubscriberService {
      */
     public Optional<Long> getSubscriberIdBySubscriberName(final String subscriberName) {
         return this.subscriberRepository.findBySubscriberName(subscriberName).map(Subscriber::getId);
-    }
-
-    /**
-     * Returns subscribers associated with at least one OidcIdentifier matching the arguments.
-     * @param requestDto the OIDC claims being authorized
-     * @return a set of SubscriberResponseDto objects
-     */
-    public Set<SubscriberResponseDto> getSubscriberByOidcIdentifier(final OidcIdentifierRequestDto requestDto) {
-        Set<Subscriber> subscribers = this.subscriberRepository.findByOidcIdentifiersIssuerAndOidcIdentifiersSubject(
-                requestDto.getIssuer(), requestDto.getSubject());
-        return this.subscriberResponseDtoFactory.subscribersToSubscriberResponseDtos(subscribers);
     }
 
     /**
