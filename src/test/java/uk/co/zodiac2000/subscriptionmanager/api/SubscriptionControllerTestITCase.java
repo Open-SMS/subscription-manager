@@ -45,6 +45,7 @@ public class SubscriptionControllerTestITCase extends AbstractTransactionalTestN
 
     @BeforeMethod
     public void loadTestData() {
+        executeSqlScript("classpath:test_data/claim_name_test_data.sql", false);
         executeSqlScript("classpath:test_data/subscriber_test_data.sql", false);
         executeSqlScript("classpath:test_data/subscription_test_data.sql", false);
     }

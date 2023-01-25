@@ -4,15 +4,18 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
+import javax.persistence.CascadeType;
 import javax.persistence.CollectionTable;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
 import uk.co.zodiac2000.subscriptionmanager.transfer.subscriber.OidcIdentifierCommandDto;
+import uk.co.zodiac2000.subscriptionmanager.transfer.subscriber.OidcIdentifierRequestDto;
 import uk.co.zodiac2000.subscriptionmanager.transfer.subscriber.SamlIdentifierCommandDto;
 import uk.co.zodiac2000.subscriptionmanager.transfer.subscriber.SubscriberNameCommandDto;
 
@@ -38,8 +41,7 @@ public class Subscriber implements Serializable {
     private Set<SamlIdentifier> samlIdentifiers = new HashSet<>();
 
     @Valid
-    @ElementCollection
-    @CollectionTable(name = "oidc_identifier")
+    @OneToMany(mappedBy = "subscriber", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<OidcIdentifier> oidcIdentifiers = new HashSet<>();
 
     /**
@@ -99,9 +101,17 @@ public class Subscriber implements Serializable {
      * @param oidcIdentifiers the OIDC identifiers
      */
     public void setOidcIdentifiers(final Set<OidcIdentifierCommandDto> oidcIdentifiers) {
-        this.oidcIdentifiers = oidcIdentifiers.stream()
-                .map(i -> new OidcIdentifier(i.getIssuer(), i.getSubject()))
-                .collect(Collectors.toSet());
+        this.oidcIdentifiers.stream().forEach(i -> i.removeSubscriber());
+        this.oidcIdentifiers.clear();
+        this.oidcIdentifiers.addAll(
+                oidcIdentifiers.stream()
+                .map(i -> new OidcIdentifier(i.getIssuer(),
+                i.getOidcIdentifierClaims().stream()
+                        .map(c -> new OidcIdentifierClaim(c.getClaimName(), c.getClaimValue()))
+                        .collect(Collectors.toSet()),
+                this))
+                .collect(Collectors.toSet())
+        );
     }
 
     /**
@@ -109,5 +119,17 @@ public class Subscriber implements Serializable {
      */
     public Set<OidcIdentifier> getOidcIdentifiers() {
         return Set.copyOf(this.oidcIdentifiers);
+    }
+
+    /**
+     * Returns true if the claims in the {@code oidcIdentifierRequest} parameter can completely match the issuer and
+     * claims associated with an OIDC identifier which is associated with this subscriber.
+     * @param oidcIdentifierRequest request DTO the contains the issuer and claims
+     * @return true if claims requirements are met
+     */
+    public boolean claimsSatisfyRequirements(final OidcIdentifierRequestDto oidcIdentifierRequest) {
+        return this.oidcIdentifiers.stream()
+                .filter(i -> i.claimsSatisfyRequirements(oidcIdentifierRequest))
+                .findFirst().isPresent();
     }
 }

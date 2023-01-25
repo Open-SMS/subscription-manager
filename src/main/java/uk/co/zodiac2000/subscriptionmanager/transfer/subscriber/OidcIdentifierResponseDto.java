@@ -1,5 +1,7 @@
 package uk.co.zodiac2000.subscriptionmanager.transfer.subscriber;
 
+import java.util.List;
+
 /**
  * Response DTO representing an OIDC identifier.
  */
@@ -7,15 +9,17 @@ public class OidcIdentifierResponseDto {
 
     private final String issuer;
 
-    private final String subject;
+    private final List<OidcIdentifierClaimResponseDto> oidcIdentifierClaims;
 
     /**
+     * Constructs a new OidcIdentifierResponseDto.
      * @param issuer the iss claim
-     * @param subject the sub claim
+     * @param oidcIdentifierClaims a list of OIDC claims
      */
-    public OidcIdentifierResponseDto(final String issuer, final String subject) {
+    public OidcIdentifierResponseDto(final String issuer,
+            final List<OidcIdentifierClaimResponseDto> oidcIdentifierClaims) {
         this.issuer = issuer;
-        this.subject = subject;
+        this.oidcIdentifierClaims = oidcIdentifierClaims;
     }
 
     /**
@@ -26,9 +30,9 @@ public class OidcIdentifierResponseDto {
     }
 
     /**
-     * @return the sub claim
+     * @return the OIDC claims
      */
-    public String getSubject() {
-        return this.subject;
+    public List<OidcIdentifierClaimResponseDto> getOidcIdentifierClaims() {
+        return this.oidcIdentifierClaims;
     }
 }

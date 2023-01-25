@@ -1,26 +1,49 @@
 package uk.co.zodiac2000.subscriptionmanager.domain.subscriber;
 
 import java.io.Serializable;
-import java.util.Comparator;
 import java.util.Objects;
-import javax.persistence.Embeddable;
+import java.util.Set;
+import javax.persistence.CollectionTable;
+import javax.persistence.ElementCollection;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.SequenceGenerator;
+import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+import uk.co.zodiac2000.subscriptionmanager.transfer.subscriber.OidcIdentifierRequestDto;
 
 /**
- * Value object representing an OpenID Connect sub claim and the issuer. This will initially be how OIDC users are
- * identified because this claim will uniquely identify a user. In future more claims may be supported.
- * See https://openid.net/specs/openid-connect-core-1_0.html#ClaimStability
+ * Value object representing an OpenID Connect issuer and a set of claims. The authorization request must satisfy
+ * all claims for the specified issuer for the associated subscriber to be identified. Satisfaction of the claims
+ * requires all OIDC identifier claims associated with this object to be present in the authorization request.
  */
-@Embeddable
-public class OidcIdentifier implements Serializable, Comparable<OidcIdentifier> {
+@Entity
+public class OidcIdentifier implements Serializable {
 
     private static final long serialVersionUID = 1L;
+
+    @Id
+    @SequenceGenerator(name = "oidc_identifier_id_gen", sequenceName = "oidc_identifier_id_seq", allocationSize = 1)
+    @GeneratedValue(generator = "oidc_identifier_id_gen")
+    private Long id;
 
     @NotEmpty
     private String issuer;
 
+    @Valid
     @NotEmpty
-    private String subject;
+    @ElementCollection
+    @CollectionTable(name = "oidc_identifier_claim")
+    private Set<OidcIdentifierClaim> oidcIdentifierClaims;
+
+    @NotNull
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "subscriber_id")
+    private Subscriber subscriber;
 
     /**
      * Zero-args constructor for JPA.
@@ -28,12 +51,22 @@ public class OidcIdentifier implements Serializable, Comparable<OidcIdentifier> 
     public OidcIdentifier() { }
 
     /**
+     * Constructs a new OidcIdentifier with the supplied arguments. The {@code oidcIdentifierClaims}
+     * argument is required to contain at least one member.
      * @param issuer the iss claim
-     * @param subject the sub claim
+     * @param oidcIdentifierClaims the set of OIDC claims associated with this OIDC identifier
+     * @param subscriber the subscriber that this OidcIdentifier is associated with
+     * @throws NullPointerException if any argument is null
+     * @throws IllegalArgumentException if the oidcIdentifierClaims set does not contain at least one member
      */
-    public OidcIdentifier(final String issuer, final String subject) {
+    public OidcIdentifier(final String issuer, final Set<OidcIdentifierClaim> oidcIdentifierClaims,
+            final Subscriber subscriber) {
         this.issuer = Objects.requireNonNull(issuer);
-        this.subject = Objects.requireNonNull(subject);
+        this.oidcIdentifierClaims = Objects.requireNonNull(oidcIdentifierClaims);
+        this.subscriber = Objects.requireNonNull(subscriber);
+        if (this.oidcIdentifierClaims.isEmpty()) {
+            throw new IllegalArgumentException("The oidcIdentifierClaims argument must contain at least one member");
+        }
     }
 
     /**
@@ -44,10 +77,17 @@ public class OidcIdentifier implements Serializable, Comparable<OidcIdentifier> 
     }
 
     /**
-     * @return the sub claim
+     * @return the set of OIDC claims associated with this OIDC identifier
      */
-    public String getSubject() {
-        return subject;
+    public Set<OidcIdentifierClaim> getOidcIdentifierClaims() {
+        return Set.copyOf(this.oidcIdentifierClaims);
+    }
+
+    /**
+     * Removes the reference to the subscriber owning this OIDC identifier.
+     */
+    public void removeSubscriber() {
+        this.subscriber = null;
     }
 
     /**
@@ -61,7 +101,7 @@ public class OidcIdentifier implements Serializable, Comparable<OidcIdentifier> 
         return other != null
                 && this.getClass() == other.getClass()
                 && Objects.equals(this.getIssuer(), ((OidcIdentifier) other).getIssuer())
-                && Objects.equals(this.getSubject(), ((OidcIdentifier) other).getSubject());
+                && Objects.equals(this.getOidcIdentifierClaims(), ((OidcIdentifier) other).getOidcIdentifierClaims());
     }
 
     /**
@@ -70,21 +110,23 @@ public class OidcIdentifier implements Serializable, Comparable<OidcIdentifier> 
      */
     @Override
     public int hashCode() {
-        return Objects.hash(this.getIssuer(), this.getSubject());
+        return Objects.hash(this.getIssuer(), this.getOidcIdentifierClaims());
     }
 
     /**
-     * Compares this object with the specified object for order. Returns a negative integer, zero, or a positive
-     * integer as this object is less than, equal to, or greater than the specified object. Comparison is based
-     * on comparison of the {@code issuer} and then {@subject} fields.
-     * @param other the object to be compared.
-     * @return a negative integer, zero, or a positive integer as this object is less than, equal to, or greater than
-     * the specified object.
+     * Returns true if the issuer and claims represented by {@code oidcIdentifierRequest} match the issuer and claims
+     * represented by this OidcIdentifier.
+     * @param oidcIdentifierRequest a request containing claims submitted by the client
+     * @return true if  the request meets the requirements of this OidcIdentifier
      */
-    @Override
-    public int compareTo(final OidcIdentifier other) {
-        return Comparator.comparing(OidcIdentifier::getIssuer)
-                .thenComparing(OidcIdentifier::getSubject)
-                .compare(this, other);
+    public boolean claimsSatisfyRequirements(final OidcIdentifierRequestDto oidcIdentifierRequest) {
+        if (this.issuer.equals(oidcIdentifierRequest.getIssuer())) {
+            long claimsMatched = this.oidcIdentifierClaims.stream()
+                    .filter(c -> oidcIdentifierRequest.matchesClaims(c.getClaimName(), c.getClaimValue()))
+                    .count();
+            return claimsMatched == this.oidcIdentifierClaims.size();
+        } else {
+            return false;
+        }
     }
 }

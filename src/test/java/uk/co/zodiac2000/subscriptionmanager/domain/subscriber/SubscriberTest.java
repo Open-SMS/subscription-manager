@@ -1,18 +1,27 @@
 package uk.co.zodiac2000.subscriptionmanager.domain.subscriber;
 
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.testng.MockitoTestNGListener;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.testng.Assert;
+import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
+import uk.co.zodiac2000.subscriptionmanager.transfer.subscriber.OidcIdentifierClaimCommandDto;
 import uk.co.zodiac2000.subscriptionmanager.transfer.subscriber.OidcIdentifierCommandDto;
+import uk.co.zodiac2000.subscriptionmanager.transfer.subscriber.OidcIdentifierRequestDto;
 import uk.co.zodiac2000.subscriptionmanager.transfer.subscriber.SamlIdentifierCommandDto;
 import uk.co.zodiac2000.subscriptionmanager.transfer.subscriber.SubscriberNameCommandDto;
 
 /**
  * Unit tests for Subscriber.
  */
+@Listeners(MockitoTestNGListener.class)
 public class SubscriberTest {
 
     private static final Long SUBSCRIBER_ID = 65L;
@@ -22,9 +31,17 @@ public class SubscriberTest {
     private static final SamlIdentifierCommandDto SAML_IDENTIFIER = new SamlIdentifierCommandDto(ENTITY_ID, SCOPED_AFFILIATION);
     private static final Set<SamlIdentifierCommandDto> SAML_IDENTIFIERS = Set.of(SAML_IDENTIFIER);
     private static final String ISSUER = "https://accounts.google.com";
-    private static final String SUBJECT = "3204823904";
-    private static final OidcIdentifierCommandDto OIDC_IDENTIFIER = new OidcIdentifierCommandDto(ISSUER, SUBJECT);
+    private static final String CLAIM_NAME = "sub";
+    private static final String CLAIM_VALUE = "3204823904";
+    private static final List<OidcIdentifierClaimCommandDto> OIDC_IDENTIFIER_CLAIMS = List.of(
+            new OidcIdentifierClaimCommandDto(CLAIM_NAME, CLAIM_VALUE)
+    );
+    private static final OidcIdentifierCommandDto OIDC_IDENTIFIER
+            = new OidcIdentifierCommandDto(ISSUER, OIDC_IDENTIFIER_CLAIMS);
     private static final Set<OidcIdentifierCommandDto> OIDC_IDENTIFIERS = Set.of(OIDC_IDENTIFIER);
+
+    @Mock(lenient = true)
+    private OidcIdentifier oidcIdentifier;
 
     /**
      * Test constructor and accessors.
@@ -63,15 +80,41 @@ public class SubscriberTest {
     }
 
     /**
-     * Test OIDC identifier accessors.
+     * Test setOidcIdentifiers. The subscriber is already associated with an OIDC identifier and interactions with
+     * this object are verified.
      */
     @Test
     public void testOidcIdentifierAccessors() {
         Subscriber subscriber = new Subscriber();
+        ReflectionTestUtils.setField(subscriber, "oidcIdentifiers",
+                new HashSet<>(Set.of(this.oidcIdentifier)));
+
         subscriber.setOidcIdentifiers(OIDC_IDENTIFIERS);
 
         assertThat(subscriber.getOidcIdentifiers(), contains(
-                equalTo(new OidcIdentifier(ISSUER, SUBJECT))
+                allOf(
+                        hasProperty("issuer", is(ISSUER)),
+                        hasProperty("oidcIdentifierClaims", contains(
+                                allOf(
+                                        hasProperty("claimName", is(CLAIM_NAME)),
+                                        hasProperty("claimValue", is(CLAIM_VALUE))
+                                )
+                        ))
+                )
         ));
+        Mockito.verify(this.oidcIdentifier).removeSubscriber();
+    }
+
+    /**
+     * Test claimsSatisfyRequirements.
+     */
+    @Test
+    public void testClaimsSatisfyRequirements() {
+        OidcIdentifierRequestDto oidcIdentifierRequest = new OidcIdentifierRequestDto(ISSUER, List.of());
+        Subscriber subscriber = new Subscriber();
+        ReflectionTestUtils.setField(subscriber, "oidcIdentifiers", new HashSet<>(Set.of(this.oidcIdentifier)));
+        Mockito.when(this.oidcIdentifier.claimsSatisfyRequirements(oidcIdentifierRequest)).thenReturn(true);
+
+        Assert.assertTrue(subscriber.claimsSatisfyRequirements(oidcIdentifierRequest));
     }
 }

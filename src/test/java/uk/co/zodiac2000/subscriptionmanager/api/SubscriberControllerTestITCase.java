@@ -2,6 +2,7 @@ package uk.co.zodiac2000.subscriptionmanager.api;
 
 import com.jayway.jsonpath.JsonPath;
 import java.util.Optional;
+import javax.persistence.EntityManager;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +22,6 @@ import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import uk.co.zodiac2000.subscriptionmanager.configuration.TestClockConfiguration;
-import uk.co.zodiac2000.subscriptionmanager.domain.subscriber.OidcIdentifier;
 import uk.co.zodiac2000.subscriptionmanager.domain.subscriber.SamlIdentifier;
 import uk.co.zodiac2000.subscriptionmanager.domain.subscriber.Subscriber;
 import uk.co.zodiac2000.subscriptionmanager.repository.SubscriberRepository;
@@ -39,6 +39,9 @@ public class SubscriberControllerTestITCase extends AbstractTransactionalTestNGS
     private SubscriberRepository subscriberRepository;
 
     @Autowired
+    private EntityManager entityManager;
+
+    @Autowired
     private MockMvc mockMvc;
 
     private WebTestClient client;
@@ -50,6 +53,7 @@ public class SubscriberControllerTestITCase extends AbstractTransactionalTestNGS
 
     @BeforeMethod
     public void loadTestData() {
+        executeSqlScript("classpath:test_data/claim_name_test_data.sql", false);
         executeSqlScript("classpath:test_data/subscriber_test_data.sql", false);
     }
 
@@ -68,7 +72,8 @@ public class SubscriberControllerTestITCase extends AbstractTransactionalTestNGS
                 .jsonPath("$.subscriberName").isEqualTo("The Open University")
                 .jsonPath("$.samlIdentifiers").isEmpty()
                 .jsonPath("$.oidcIdentifiers[0].issuer").isEqualTo("https://oidc.open.ac.uk")
-                .jsonPath("$.oidcIdentifiers[0].subject").isEqualTo("343274");
+                .jsonPath("$.oidcIdentifiers[0].oidcIdentifierClaims[0].claimName").isEqualTo("sub")
+                .jsonPath("$.oidcIdentifiers[0].oidcIdentifierClaims[0].claimValue").isEqualTo("343274");
     }
 
     /**
@@ -96,6 +101,7 @@ public class SubscriberControllerTestITCase extends AbstractTransactionalTestNGS
                 .expectStatus().isCreated()
                 .expectHeader().contentType(MediaType.APPLICATION_JSON)
                 .expectBody().returnResult();
+        this.subscriberRepository.flush();
 
         String responseBody = new String(result.getResponseBody());
         Integer id = JsonPath.read(responseBody, "$.id");
@@ -141,6 +147,7 @@ public class SubscriberControllerTestITCase extends AbstractTransactionalTestNGS
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
                 .expectStatus().isNoContent();
+        this.subscriberRepository.flush();
 
         Optional<Subscriber> subscriber = this.subscriberRepository.findById(100000004L);
         Assert.assertTrue(subscriber.isEmpty());
@@ -160,12 +167,15 @@ public class SubscriberControllerTestITCase extends AbstractTransactionalTestNGS
                 .expectStatus().isOk()
                 .expectHeader().contentType(MediaType.APPLICATION_JSON)
                 .expectBody().returnResult();
+        this.subscriberRepository.flush();
 
         String responseBody = new String(result.getResponseBody());
         Integer id = JsonPath.read(responseBody, "$.id");
         Assert.assertEquals(id, 100000004);
 
         Optional<Subscriber> subscriber = this.subscriberRepository.findById(100000004L);
+        subscriber.ifPresent(s -> this.entityManager.refresh(s));
+
         Assert.assertTrue(subscriber.isPresent());
         Assert.assertEquals(subscriber.get().getSubscriberName(), "Sheepcote University");
     }
@@ -220,12 +230,15 @@ public class SubscriberControllerTestITCase extends AbstractTransactionalTestNGS
                 .expectStatus().isOk()
                 .expectHeader().contentType(MediaType.APPLICATION_JSON)
                 .expectBody().returnResult();
+        this.subscriberRepository.flush();
 
         String responseBody = new String(result.getResponseBody());
         Integer id = JsonPath.read(responseBody, "$.id");
         Assert.assertEquals(id, 100000004);
 
         Optional<Subscriber> subscriber = this.subscriberRepository.findById(100000004L);
+        subscriber.ifPresent(s -> this.entityManager.refresh(s));
+
         Assert.assertTrue(subscriber.isPresent());
         assertThat(subscriber.get().getSamlIdentifiers(), containsInAnyOrder(
                 equalTo(new SamlIdentifier("http://saml.example.com", "student@example.com")),
@@ -242,7 +255,12 @@ public class SubscriberControllerTestITCase extends AbstractTransactionalTestNGS
                 + " \"oidcIdentifiers\": ["
                 + "  {"
                 + "   \"issuer\":\"https://accounts.google.com\","
-                + "   \"subject\":\"d2liYmxlCg==\""
+                + "   \"oidcIdentifierClaims\" : ["
+                + "     {"
+                + "      \"claimValue\":\"d2liYmxlCg==\","
+                + "      \"claimName\" : \"sub\""
+                + "     }"
+                + "   ]"
                 + "  }"
                 + " ]"
                 + "}";
@@ -254,15 +272,27 @@ public class SubscriberControllerTestITCase extends AbstractTransactionalTestNGS
                 .expectStatus().isOk()
                 .expectHeader().contentType(MediaType.APPLICATION_JSON)
                 .expectBody().returnResult();
+        this.subscriberRepository.flush();
 
         String responseBody = new String(result.getResponseBody());
         Integer id = JsonPath.read(responseBody, "$.id");
         Assert.assertEquals(id, 100000004);
 
         Optional<Subscriber> subscriber = this.subscriberRepository.findById(100000004L);
+        subscriber.ifPresent(s -> this.entityManager.refresh(s));
+
         Assert.assertTrue(subscriber.isPresent());
         assertThat(subscriber.get().getOidcIdentifiers(), contains(
-                equalTo(new OidcIdentifier("https://accounts.google.com", "d2liYmxlCg=="))
+                allOf(
+                        hasProperty("issuer", is("https://accounts.google.com")),
+                        hasProperty("oidcIdentifierClaims", contains(
+                                allOf(
+                                        hasProperty("claimName", is("sub")),
+                                        hasProperty("claimValue", is("d2liYmxlCg=="))
+                                )
+                        ))
+                )
         ));
+
     }
 }

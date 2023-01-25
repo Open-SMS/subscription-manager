@@ -11,7 +11,6 @@ import uk.co.zodiac2000.subscriptionmanager.factory.SubscriberResponseDtoFactory
 import uk.co.zodiac2000.subscriptionmanager.repository.SubscriberRepository;
 import uk.co.zodiac2000.subscriptionmanager.transfer.subscriber.NewSubscriberCommandDto;
 import uk.co.zodiac2000.subscriptionmanager.transfer.subscriber.OidcIdentifierCommandDto;
-import uk.co.zodiac2000.subscriptionmanager.transfer.subscriber.OidcIdentifierRequestDto;
 import uk.co.zodiac2000.subscriptionmanager.transfer.subscriber.SamlIdentifierCommandDto;
 import uk.co.zodiac2000.subscriptionmanager.transfer.subscriber.SamlIdentifierRequestDto;
 import uk.co.zodiac2000.subscriptionmanager.transfer.subscriber.SubscriberNameCommandDto;
@@ -33,6 +32,9 @@ public class SubscriberService {
     @Autowired
     private SubscriberFactory subscriberFactory;
 
+    @Autowired
+    private ClaimNameService claimNameService;
+
     /**
      * Returns the Subscriber identified by id.
      * @param id the subscriber id
@@ -50,17 +52,6 @@ public class SubscriberService {
      */
     public Optional<Long> getSubscriberIdBySubscriberName(final String subscriberName) {
         return this.subscriberRepository.findBySubscriberName(subscriberName).map(Subscriber::getId);
-    }
-
-    /**
-     * Returns subscribers associated with at least one OidcIdentifier matching the arguments.
-     * @param requestDto the OIDC claims being authorized
-     * @return a set of SubscriberResponseDto objects
-     */
-    public Set<SubscriberResponseDto> getSubscriberByOidcIdentifier(final OidcIdentifierRequestDto requestDto) {
-        Set<Subscriber> subscribers = this.subscriberRepository.findByOidcIdentifiersIssuerAndOidcIdentifiersSubject(
-                requestDto.getIssuer(), requestDto.getSubject());
-        return this.subscriberResponseDtoFactory.subscribersToSubscriberResponseDtos(subscribers);
     }
 
     /**
@@ -137,7 +128,14 @@ public class SubscriberService {
     public Optional<SubscriberResponseDto> setOidcIdentifiers(final long id,
             final Set<OidcIdentifierCommandDto> oidcIdentifierCommandDtos) {
         Optional<Subscriber> subscriber = this.subscriberRepository.findById(id);
-        subscriber.ifPresent(p -> p.setOidcIdentifiers(oidcIdentifierCommandDtos));
+        // Only check claim names are present if a subscriber was found.
+        if (subscriber.isPresent()) {
+            oidcIdentifierCommandDtos.stream()
+                    .forEach(i -> i.getOidcIdentifierClaims().stream()
+                            .forEach(c -> this.claimNameService.ensurePresent(c.getClaimName()))
+                    );
+        }
+        subscriber.ifPresent(s -> s.setOidcIdentifiers(oidcIdentifierCommandDtos));
         return this.subscriberResponseDtoFactory.subscriberToSubscriberResponseDto(subscriber);
     }
 }
