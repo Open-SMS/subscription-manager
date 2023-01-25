@@ -1,16 +1,24 @@
 # Subscriber Identification
 
-The requirements for subscriber identification from OIDC Claims are being explored by
-[Issue #30](https://github.com/Open-SMS/subscription-manager/issues/30). The following document contains a summary
-of the requirements identified so far, and initial implementation ideas.
+The following document describes how subscribers are identified as a result of information from OIDC authentication
+supplied by a client.
 
 ## Requirements
 
 The claim names that might be included in an authorization request are unknown. It is expected that an RP may forward
 all the claims it receives or some arbitrary subset of them. The `iss` (issuer) and `sub` (subject) claims should
-always be included, although see note about OpenAthens Keystone and `sub` stability.
+always be included, although see note about OpenAthens Keystone and `sub` stability. An authorization request is
+required to include the issuer and at least one claim.
 
-The required claim names and associated values required by the system to identify a subscriber are also unknown.
+A subscriber is identified when an OIDC identifier associated with a subscriber has the same issuer, and all required
+claims associated with the OIDC identifier are matched. A subscriber may be associated with multiple OIDC identifiers
+or other authentication identifiers, any of which could identify the subscriber.
+
+The required claim names and associated values required by the system to identify a subscriber by OIDC identifier are
+also unknown. The only restriction is that each OidcIdentifier must be associated with at least one required claim.
+There may be multiple required claims with the same claim name but different values associated with an OIDC identifier.
+All of these claims must be matched.
+
 Although standard claim names exist, it is very common for non-standard claim names to be used. The claim names used by
 OpenAthens Keystone don't even exist in the IANA registration document.
 
@@ -30,13 +38,16 @@ iss = "https://free.ac.uk" AND groups = "member"
 
 This would identify the subscriber based on the `iss` and `groups` claims presented by the client.
 
+See [API docs AuthorizationService](../apidocs/uk/co/zodiac2000/subscriptionmanager/service/AuthorizationService.html)
+for more examples.
+
 ## Implementation
 
 The problem these requirements present is that identifying the subscriber is not possible with any data model and
 simple query that is based upon the claims provided in the authorization request. The code creating the query does not
 know that any value of `sub` would be allowed to identify Free College.
 
-An initial implementation idea might be:
+The initial implementation algorithm is:
 
 * Remove claims for all claim names that don't exist in the system.
 * Perform a query that returns subscribers that match `iss` and each claim.
@@ -46,16 +57,22 @@ In detail, using the example above this would result in the following actions.
 
 Remove claim with claim name `fc-user` because it is unknown to the system.
 
-Query subscribers (pseudo SQL)
+Query subscribers
 ```
 SELECT DISTINCT subscriber
-FROM subscriber_claim_requirements
-WHERE iss = 'https://free.ac.uk' AND claim_name = 'groups' AND claim_value = 'staff'
-OR iss = 'https://free.ac.uk' AND claim_name = 'groups' AND claim_value = 'member'
-OR iss = 'https://free.ac.uk' AND claim_name = 'sub' AND claim_value = 'bKMPRFo6L1ZqYNZ3'
+FROM subscriber s
+INNER JOIN oidc_identifier oi ON s.id = oi.subscriber_id
+INNER JOIN oidc_identifier_claim oc ON oi.id = oc.oidc_identifier_id
+WHERE (oc.claim_name = 'groups'
+       AND oc.claim_value = 'staff'
+       OR oc.claim_name = 'groups'
+       AND oc.claim_value = 'member'
+       OR oc.claim_name = 'sub'
+       AND oc.claim_value = 'bKMPRFo6L1ZqYNZ3')
+  AND oi.issuer = 'https://free.ac.uk'
 ```
 
-Filter subscribers by calling a method with the provided claims that returns true if the claims meet its requirements.
+Filter subscribers by calling a method with the provided claims that returns true if all required claims are matched.
 
 The performance of this approach in various scenarios should be considered, along with alternative approaches that
 may be more efficient.
@@ -104,4 +121,4 @@ about claim stability which state that it is a stable identifier.
 Derivations of eduPersonScopedAffiliation are provided as `derivedEduPersonAffiliation` and `derivedEduPersonScope`
 containing just the affiliation and scope respectively.
 
-Claims may be multi-valued, e.g. `{ "claimName" : [ "value1", "value2"] }`
+Claims may be multi-valued, e.g. `{ "derivedEduPersonScope" : [ "student", "staff"] }`
