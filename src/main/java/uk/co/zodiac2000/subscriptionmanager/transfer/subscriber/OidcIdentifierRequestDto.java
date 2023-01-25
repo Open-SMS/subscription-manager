@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 
 /**
  * Request DTO representing OIDC claims.
@@ -14,7 +13,7 @@ public class OidcIdentifierRequestDto {
     @NotEmpty
     private final String issuer;
 
-    @NotNull
+    @NotEmpty
     private final List<OidcIdentifierClaimRequestDto> oidcIdentifierClaims;
 
     /**

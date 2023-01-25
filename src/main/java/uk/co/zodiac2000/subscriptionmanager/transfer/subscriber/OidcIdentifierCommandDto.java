@@ -3,7 +3,6 @@ package uk.co.zodiac2000.subscriptionmanager.transfer.subscriber;
 import java.util.List;
 import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 
 /**
  * Command DTO representing an OIDC identifier.
@@ -13,7 +12,7 @@ public class OidcIdentifierCommandDto {
     @NotEmpty
     private final String issuer;
 
-    @NotNull
+    @NotEmpty
     @Valid
     private final List<OidcIdentifierClaimCommandDto> oidcIdentifierClaims;
 
