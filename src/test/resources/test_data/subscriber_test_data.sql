@@ -59,3 +59,41 @@ INSERT INTO oidc_identifier_claim (id, claim_name, claim_value, oidc_identifier_
     VALUES (100000008, 'sub', '21481', 100000008);
 INSERT INTO saml_identifier (id, entity_id, scoped_affiliation, subscriber_id)
     VALUES (100000006, 'https://mit.edu/shib', 'member@mit.edu', 100000011);
+
+INSERT INTO subscriber (id, subscriber_name) VALUES (100000012, 'Perching Down University');
+INSERT INTO oidc_identifier (id, issuer, subscriber_id) VALUES (100000009, 'https://accounts.google.com', 100000012);
+INSERT INTO oidc_identifier_claim (id, claim_name, claim_value, oidc_identifier_id)
+    VALUES (100000009, 'sub', '2385258', 100000009);
+INSERT INTO oidc_identifier (id, issuer, subscriber_id) VALUES (100000010, 'https://accounts.google.com', 100000012);
+INSERT INTO oidc_identifier_claim (id, claim_name, claim_value, oidc_identifier_id)
+    VALUES (100000010, 'sub', '234274983', 100000010);
+
+INSERT INTO subscriber (id, subscriber_name) VALUES (100000013, 'Balsdean Library');
+INSERT INTO oidc_identifier (id, issuer, subscriber_id)
+    VALUES (100000011, 'https://brighton-libraries.gov.uk', 100000013);
+INSERT INTO oidc_identifier_claim (id, claim_name, claim_value, oidc_identifier_id)
+    VALUES (100000011, 'groups', 'member', 100000011);
+INSERT INTO oidc_identifier_claim (id, claim_name, claim_value, oidc_identifier_id)
+    VALUES (100000012, 'branch-id', 'balsdean', 100000011);
+
+INSERT INTO subscriber (id, subscriber_name) VALUES (100000014, 'Hartington Road Library');
+INSERT INTO oidc_identifier (id, issuer, subscriber_id)
+    VALUES (100000012, 'https://brighton-libraries.gov.uk', 100000014);
+INSERT INTO oidc_identifier_claim (id, claim_name, claim_value, oidc_identifier_id)
+    VALUES (100000013, 'groups', 'member', 100000012);
+INSERT INTO oidc_identifier_claim (id, claim_name, claim_value, oidc_identifier_id)
+    VALUES (100000014, 'branch-id', 'hartington', 100000012);
+
+INSERT INTO subscriber (id, subscriber_name) VALUES (100000015, 'Westdene Library');
+INSERT INTO oidc_identifier (id, issuer, subscriber_id)
+    VALUES (100000013, 'https://brighton-libraries.gov.uk', 100000015);
+INSERT INTO oidc_identifier_claim (id, claim_name, claim_value, oidc_identifier_id)
+    VALUES (100000015, 'groups', 'staff', 100000013);
+
+INSERT INTO subscriber (id, subscriber_name) VALUES (100000016, 'Brighton Libraries Admin');
+INSERT INTO oidc_identifier (id, issuer, subscriber_id)
+    VALUES (100000014, 'https://brighton-libraries.gov.uk', 100000016);
+INSERT INTO oidc_identifier_claim (id, claim_name, claim_value, oidc_identifier_id)
+    VALUES (100000016, 'groups', 'hr', 100000014);
+INSERT INTO oidc_identifier_claim (id, claim_name, claim_value, oidc_identifier_id)
+    VALUES (100000017, 'groups', 'admin', 100000014);
