@@ -1,35 +1,73 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>OidcIdentifierRequestDto.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Subscription Manager</a> &gt; <a href="index.source.html" class="el_package">uk.co.zodiac2000.subscriptionmanager.transfer.subscriber</a> &gt; <span class="el_source">OidcIdentifierRequestDto.java</span></div><h1>OidcIdentifierRequestDto.java</h1><pre class="source lang-java linenums">package uk.co.zodiac2000.subscriptionmanager.transfer.subscriber;
 
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+import javax.validation.constraints.NotEmpty;
+
 /**
  * Request DTO representing OIDC claims.
  */
 public class OidcIdentifierRequestDto {
 
+    @NotEmpty
     private final String issuer;
 
-    private final String subject;
+    @NotEmpty
+    private final List&lt;OidcIdentifierClaimRequestDto&gt; oidcIdentifierClaims;
 
     /**
      * @param issuer the iss claim
-     * @param subject the sub claim
+     * @param oidcIdentifierClaims the claims associated with the issuer
      */
-<span class="fc" id="L16">    public OidcIdentifierRequestDto(final String issuer, final String subject) {</span>
-<span class="fc" id="L17">        this.issuer = issuer;</span>
-<span class="fc" id="L18">        this.subject = subject;</span>
-<span class="fc" id="L19">    }</span>
+    public OidcIdentifierRequestDto(final String issuer,
+<span class="fc" id="L24">            final List&lt;OidcIdentifierClaimRequestDto&gt; oidcIdentifierClaims) {</span>
+<span class="fc" id="L25">        this.issuer = issuer;</span>
+<span class="fc" id="L26">        this.oidcIdentifierClaims = oidcIdentifierClaims;</span>
+<span class="fc" id="L27">    }</span>
 
     /**
      * @return the iss claim
      */
     public String getIssuer() {
-<span class="fc" id="L25">        return this.issuer;</span>
+<span class="fc" id="L33">        return this.issuer;</span>
     }
 
     /**
-     * @return the sub claim
+     * @return the claims associated with the issuer
      */
-    public String getSubject() {
-<span class="fc" id="L32">        return this.subject;</span>
+    public List&lt;OidcIdentifierClaimRequestDto&gt; getOidcIdentifierClaims() {
+<span class="fc" id="L40">        return this.oidcIdentifierClaims;</span>
+    }
+
+    /**
+     * Returns a new OidcIdentifierRequestDto containing only claims with claim names that occur in the
+     * {@code requiredClaimNames} argument.
+     * @param requiredClaimNames a set of claim names indicating the required claims
+     * @return a new OidcIdentifierRequestDto object
+     */
+    public OidcIdentifierRequestDto createFilteredRequest(final Set&lt;String&gt; requiredClaimNames) {
+<span class="fc" id="L50">        List&lt;OidcIdentifierClaimRequestDto&gt; filteredClaims = this.oidcIdentifierClaims.stream()</span>
+<span class="fc" id="L51">                .filter(c -&gt; requiredClaimNames.contains(c.getClaimName()))</span>
+<span class="fc" id="L52">                .map(c -&gt; new OidcIdentifierClaimRequestDto(c.getClaimName(), c.getClaimValues()))</span>
+<span class="fc" id="L53">                .collect(Collectors.toList());</span>
+<span class="fc" id="L54">        return new OidcIdentifierRequestDto(this.getIssuer(), filteredClaims);</span>
+    }
+
+
+    /**
+     * Returns true if the {@code requiredClaimName} argument matches claimName, and claimValues contains a value
+     * matching the {@code requiredClaimValue} argument.
+     * @param requiredClaimName the required claim name
+     * @param requiredClaimValue the required claim value
+     * @return true if the required claim was matched
+     */
+    public boolean matchesClaims(final String requiredClaimName, final String requiredClaimValue) {
+<span class="fc" id="L66">        return this.oidcIdentifierClaims.stream()</span>
+<span class="fc bfc" id="L67" title="All 2 branches covered.">                .filter(c -&gt; c.getClaimName().equals(requiredClaimName)</span>
+<span class="fc bfc" id="L68" title="All 2 branches covered.">                        &amp;&amp; c.getClaimValuesAsStrings().contains(requiredClaimValue)</span>
+                )
+<span class="fc" id="L70">                .findFirst().isPresent();</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

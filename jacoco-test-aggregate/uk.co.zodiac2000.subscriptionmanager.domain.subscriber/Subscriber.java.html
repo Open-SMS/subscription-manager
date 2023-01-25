@@ -4,15 +4,18 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
+import javax.persistence.CascadeType;
 import javax.persistence.CollectionTable;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
 import uk.co.zodiac2000.subscriptionmanager.transfer.subscriber.OidcIdentifierCommandDto;
+import uk.co.zodiac2000.subscriptionmanager.transfer.subscriber.OidcIdentifierRequestDto;
 import uk.co.zodiac2000.subscriptionmanager.transfer.subscriber.SamlIdentifierCommandDto;
 import uk.co.zodiac2000.subscriptionmanager.transfer.subscriber.SubscriberNameCommandDto;
 
@@ -32,49 +35,48 @@ public class Subscriber implements Serializable {
     @NotEmpty
     private String subscriberName;
 
-<span class="fc" id="L35">    @Valid</span>
+<span class="fc" id="L38">    @Valid</span>
     @ElementCollection
     @CollectionTable(name = &quot;saml_identifier&quot;)
     private Set&lt;SamlIdentifier&gt; samlIdentifiers = new HashSet&lt;&gt;();
 
-<span class="fc" id="L40">    @Valid</span>
-    @ElementCollection
-    @CollectionTable(name = &quot;oidc_identifier&quot;)
+<span class="fc" id="L43">    @Valid</span>
+    @OneToMany(mappedBy = &quot;subscriber&quot;, cascade = CascadeType.ALL, orphanRemoval = true)
     private Set&lt;OidcIdentifier&gt; oidcIdentifiers = new HashSet&lt;&gt;();
 
     /**
      * Zero-args constructor for JPA.
      */
-<span class="fc" id="L48">    public Subscriber() { }</span>
+<span class="fc" id="L50">    public Subscriber() { }</span>
 
     /**
      * Constructs a new Subscriber using the supplied arguments.
      * @param subscriberName the subscriber's name
      */
-<span class="fc" id="L54">    public Subscriber(final String subscriberName) {</span>
-<span class="fc" id="L55">        this.subscriberName = subscriberName;</span>
-<span class="fc" id="L56">    }</span>
+<span class="fc" id="L56">    public Subscriber(final String subscriberName) {</span>
+<span class="fc" id="L57">        this.subscriberName = subscriberName;</span>
+<span class="fc" id="L58">    }</span>
 
     /**
      * Allows the subscriber name to be changed.
      * @param subscriberNameCommandDto the subscriber's name
      */
     public void setSubscriberName(final SubscriberNameCommandDto subscriberNameCommandDto) {
-<span class="fc" id="L63">        this.subscriberName = subscriberNameCommandDto.getSubscriberName();</span>
-<span class="fc" id="L64">    }</span>
+<span class="fc" id="L65">        this.subscriberName = subscriberNameCommandDto.getSubscriberName();</span>
+<span class="fc" id="L66">    }</span>
 
     /**
      * @return the subscriber identifier
      */
     public Long getId() {
-<span class="fc" id="L70">        return this.id;</span>
+<span class="fc" id="L72">        return this.id;</span>
     }
 
     /**
      * @return the subscriber's name
      */
     public String getSubscriberName() {
-<span class="fc" id="L77">        return this.subscriberName;</span>
+<span class="fc" id="L79">        return this.subscriberName;</span>
     }
 
     /**
@@ -82,16 +84,16 @@ public class Subscriber implements Serializable {
      * @param samlIdentifiers the SAML identifiers
      */
     public void setSamlIdentifiers(final Set&lt;SamlIdentifierCommandDto&gt; samlIdentifiers) {
-<span class="fc" id="L85">        this.samlIdentifiers = samlIdentifiers.stream()</span>
-<span class="fc" id="L86">                .map(i -&gt; new SamlIdentifier(i.getEntityId(), i.getScopedAffiliation()))</span>
-<span class="fc" id="L87">                .collect(Collectors.toSet());</span>
-<span class="fc" id="L88">    }</span>
+<span class="fc" id="L87">        this.samlIdentifiers = samlIdentifiers.stream()</span>
+<span class="fc" id="L88">                .map(i -&gt; new SamlIdentifier(i.getEntityId(), i.getScopedAffiliation()))</span>
+<span class="fc" id="L89">                .collect(Collectors.toSet());</span>
+<span class="fc" id="L90">    }</span>
 
     /**
      * @return the SAML identifiers associated with this subscriber
      */
     public Set&lt;SamlIdentifier&gt; getSamlIdentifiers() {
-<span class="fc" id="L94">        return Set.copyOf(this.samlIdentifiers);</span>
+<span class="fc" id="L96">        return Set.copyOf(this.samlIdentifiers);</span>
     }
 
     /**
@@ -99,16 +101,36 @@ public class Subscriber implements Serializable {
      * @param oidcIdentifiers the OIDC identifiers
      */
     public void setOidcIdentifiers(final Set&lt;OidcIdentifierCommandDto&gt; oidcIdentifiers) {
-<span class="fc" id="L102">        this.oidcIdentifiers = oidcIdentifiers.stream()</span>
-<span class="fc" id="L103">                .map(i -&gt; new OidcIdentifier(i.getIssuer(), i.getSubject()))</span>
-<span class="fc" id="L104">                .collect(Collectors.toSet());</span>
-<span class="fc" id="L105">    }</span>
+<span class="fc" id="L104">        this.oidcIdentifiers.stream().forEach(i -&gt; i.removeSubscriber());</span>
+<span class="fc" id="L105">        this.oidcIdentifiers.clear();</span>
+<span class="fc" id="L106">        this.oidcIdentifiers.addAll(</span>
+<span class="fc" id="L107">                oidcIdentifiers.stream()</span>
+<span class="fc" id="L108">                .map(i -&gt; new OidcIdentifier(i.getIssuer(),</span>
+<span class="fc" id="L109">                i.getOidcIdentifierClaims().stream()</span>
+<span class="fc" id="L110">                        .map(c -&gt; new OidcIdentifierClaim(c.getClaimName(), c.getClaimValue()))</span>
+<span class="fc" id="L111">                        .collect(Collectors.toSet()),</span>
+                this))
+<span class="fc" id="L113">                .collect(Collectors.toSet())</span>
+        );
+<span class="fc" id="L115">    }</span>
 
     /**
      * @return the OIDC identifiers associated with this subscriber
      */
     public Set&lt;OidcIdentifier&gt; getOidcIdentifiers() {
-<span class="fc" id="L111">        return Set.copyOf(this.oidcIdentifiers);</span>
+<span class="fc" id="L121">        return Set.copyOf(this.oidcIdentifiers);</span>
+    }
+
+    /**
+     * Returns true if the claims in the {@code oidcIdentifierRequest} parameter can completely match the issuer and
+     * claims associated with an OIDC identifier which is associated with this subscriber.
+     * @param oidcIdentifierRequest request DTO the contains the issuer and claims
+     * @return true if claims requirements are met
+     */
+    public boolean claimsSatisfyRequirements(final OidcIdentifierRequestDto oidcIdentifierRequest) {
+<span class="fc" id="L131">        return this.oidcIdentifiers.stream()</span>
+<span class="fc" id="L132">                .filter(i -&gt; i.claimsSatisfyRequirements(oidcIdentifierRequest))</span>
+<span class="fc" id="L133">                .findFirst().isPresent();</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

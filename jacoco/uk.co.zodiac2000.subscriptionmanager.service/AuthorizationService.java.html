@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AuthorizationService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Subscription Manager</a> &gt; <a href="index.source.html" class="el_package">uk.co.zodiac2000.subscriptionmanager.service</a> &gt; <span class="el_source">AuthorizationService.java</span></div><h1>AuthorizationService.java</h1><pre class="source lang-java linenums">package uk.co.zodiac2000.subscriptionmanager.service;
+
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import uk.co.zodiac2000.subscriptionmanager.domain.subscriber.Subscriber;
+import uk.co.zodiac2000.subscriptionmanager.factory.SubscriberResponseDtoFactory;
+import uk.co.zodiac2000.subscriptionmanager.repository.SubscriberRepository;
+import uk.co.zodiac2000.subscriptionmanager.specification.SubscriberSpecifications;
+import uk.co.zodiac2000.subscriptionmanager.transfer.subscriber.OidcIdentifierRequestDto;
+import uk.co.zodiac2000.subscriptionmanager.transfer.subscriber.SubscriberResponseDto;
+
+/**
+ * Service responsible for identifying subscribers where the authorization identification requirements
+ * are satisfied by the authentication identifiers supplied by the client.
+ */
+@Service
+@Transactional(readOnly = true)
+<span class="nc" id="L23">public class AuthorizationService {</span>
+
+    @Autowired
+    private ClaimNameService claimNameService;
+
+    @Autowired
+    private SubscriberSpecifications subscriberSpecifications;
+
+    @Autowired
+    private SubscriberRepository subscriberRepository;
+
+    @Autowired
+    private SubscriberResponseDtoFactory subscriberResponseDtoFactory;
+
+    /**
+     * Returns subscribers that are associated with an OIDC identifier where the issuer and all the OIDC claims match
+     * the values of those fields in {@code oidcIdentiferRequest}. Where the request contains multiple values
+     * then a match occurs if any value matches the value associated with the subscriber's OIDC identifier.
+     * &lt;br&gt;&lt;br&gt;
+     * For example, if a Subscriber's associated OIDC identifiers are:
+     * &lt;pre&gt;
+     * {@code [
+     *  {
+     *   issuer: &quot;http://example.com&quot;,
+     *   oidcIdentifierClaims: [
+     *    {claimName: &quot;groups&quot;, claimValue: &quot;staff&quot;},
+     *    {claimName: &quot;fs-site&quot;, claimValue: &quot;Brighton&quot;}
+     *   ]
+     *  },
+     *  {
+     *   issuer: &quot;http://example.com&quot;,
+     *   oidcIdentifierClaims: [
+     *    {claimName: &quot;groups&quot;, claimValue: &quot;admin&quot;}
+     *   ]
+     *  }
+     * ] }
+     * &lt;/pre&gt;
+     * This request representing the claims submitted by a client will match the subscriber because it
+     * includes the claims required to match the first OIDC identifier. Note that the {@code sub} claim was not
+     * required to identify the subscriber.
+     * &lt;pre&gt;
+     * {@code {
+     *  issuer: &quot;http://example.com&quot;,
+     *  oidcIdentifierClaims: [
+     *   {
+     *    claimName: &quot;groups&quot;,
+     *    claimValues: [&quot;staff&quot;, &quot;member&quot;]
+     *   },
+     *   {
+     *    claimName: &quot;fs-site&quot;,
+     *    claimValues: [&quot;Brighton&quot;]
+     *   },
+     *   {
+     *    claimName: &quot;sub&quot;,
+     *    claimValues: [&quot;43792473&quot;]
+     *   }
+     *  ]
+     * } }
+     * &lt;/pre&gt;
+     * This request representing the claims submitted by a client will match the subscriber because it
+     * includes the claims required to match the second OIDC identifier.
+     * &lt;pre&gt;
+     * {@code {
+     *  issuer: &quot;http://example.com&quot;,
+     *  oidcIdentifierClaims: [
+     *   {
+     *    claimName: &quot;groups&quot;,
+     *    claimValues: [&quot;staff&quot;, &quot;admin&quot;]
+     *   }
+     *  ]
+     * } }
+     * &lt;/pre&gt;
+     * This request representing the claims submitted by a client won't match the subscriber because it
+     * doesn't match the {@code fs-site} claim.
+     * &lt;pre&gt;
+     * {@code {
+     *  issuer: &quot;http://example.com&quot;,
+     *  oidcIdentifierClaims: [
+     *   {
+     *    claimName: &quot;groups&quot;,
+     *    claimValues: [&quot;staff&quot;, &quot;student&quot;]
+     *   },
+     *   {
+     *    claimName: &quot;fs-site&quot;,
+     *    claimValues: [&quot;Shoreham&quot;]
+     *   }
+     *  ]
+     * } }
+     * &lt;/pre&gt;
+     * &lt;i&gt;Note, the representations used above are to illustrate how a subscriber is identifier and are not exactly
+     * the same as the object model.&lt;/i&gt;
+     * @param oidcIdentifierRequest request DTO the contains the issuer and claims submitted by the client
+     * @return zero or more matching subscribers
+     */
+    public Set&lt;SubscriberResponseDto&gt; getSubscribersByOidcIdentifiers(
+            final OidcIdentifierRequestDto oidcIdentifierRequest) {
+        // Remove claims from the request where the claim name is unknown to the system.
+<span class="nc" id="L120">        OidcIdentifierRequestDto filteredRequest = this.claimNameService.filterClaimsRequest(oidcIdentifierRequest);</span>
+
+        // Retrieve subscribers where issuer and an associated claim match the issuer and one claim in the request.
+<span class="nc" id="L123">        Specification&lt;Subscriber&gt; querySpecification</span>
+<span class="nc" id="L124">                = this.subscriberSpecifications.oidcAuthorizationCriteria(filteredRequest);</span>
+<span class="nc" id="L125">        List&lt;Subscriber&gt; subscribers = this.subscriberRepository.findAll(querySpecification);</span>
+
+        // Filter retrieved subscribers removing those where all required claims are not satisfied by the request.
+<span class="nc" id="L128">        List&lt;Subscriber&gt; identifiedSubscribers = subscribers.stream()</span>
+<span class="nc" id="L129">                .filter(s -&gt; s.claimsSatisfyRequirements(oidcIdentifierRequest))</span>
+<span class="nc" id="L130">                .collect(Collectors.toList());</span>
+
+<span class="nc" id="L132">        return this.subscriberResponseDtoFactory.subscribersToSubscriberResponseDtos(Set.copyOf(identifiedSubscribers));</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

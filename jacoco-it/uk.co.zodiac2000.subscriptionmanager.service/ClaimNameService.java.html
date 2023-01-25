@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ClaimNameService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Subscription Manager</a> &gt; <a href="index.source.html" class="el_package">uk.co.zodiac2000.subscriptionmanager.service</a> &gt; <span class="el_source">ClaimNameService.java</span></div><h1>ClaimNameService.java</h1><pre class="source lang-java linenums">package uk.co.zodiac2000.subscriptionmanager.service;
+
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import uk.co.zodiac2000.subscriptionmanager.domain.oidcclaims.ClaimName;
+import uk.co.zodiac2000.subscriptionmanager.repository.ClaimNameRepository;
+import uk.co.zodiac2000.subscriptionmanager.transfer.subscriber.OidcIdentifierRequestDto;
+
+/**
+ * Service facade for {@code ClaimName} aggregates.
+ */
+@Service
+@Transactional(readOnly = true)
+<span class="fc" id="L18">public class ClaimNameService {</span>
+
+    @Autowired
+    private ClaimNameRepository repository;
+
+    /**
+     * Creates a {@code ClaimName} with {@code claimName} as its claim name if it does not already exist.
+     * @param claimName the claim name to check
+     */
+    @Transactional(readOnly = false)
+    public void ensurePresent(final String claimName) {
+<span class="fc" id="L29">        Optional&lt;ClaimName&gt; claimNameObject = this.repository.findByClaimName(claimName);</span>
+<span class="fc bfc" id="L30" title="All 2 branches covered.">        if (claimNameObject.isEmpty()) {</span>
+<span class="fc" id="L31">            ClaimName newClaimName = new ClaimName(claimName);</span>
+<span class="fc" id="L32">            this.repository.save(newClaimName);</span>
+        }
+<span class="fc" id="L34">    }</span>
+
+    /**
+     * Returns an OidcIdentifierRequestDto based on the state of the oidcIdentifierRequest argument but with any
+     * claims where the claim name is unknown to the system removed.
+     * @param oidcIdentifierRequest the request to be filtered
+     * @return an OidcIdentifierRequestDto containing only claims with names known to the system
+     */
+    public OidcIdentifierRequestDto filterClaimsRequest(final OidcIdentifierRequestDto oidcIdentifierRequest) {
+<span class="fc" id="L43">        Set&lt;String&gt; claimNames = this.repository.findAll().stream()</span>
+<span class="fc" id="L44">                .map(c -&gt; c.getClaimName())</span>
+<span class="fc" id="L45">                .collect(Collectors.toSet());</span>
+<span class="fc" id="L46">        return oidcIdentifierRequest.createFilteredRequest(Set.copyOf(claimNames));</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

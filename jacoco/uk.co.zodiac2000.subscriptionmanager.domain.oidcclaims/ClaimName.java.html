@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ClaimName.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Subscription Manager</a> &gt; <a href="index.source.html" class="el_package">uk.co.zodiac2000.subscriptionmanager.domain.oidcclaims</a> &gt; <span class="el_source">ClaimName.java</span></div><h1>ClaimName.java</h1><pre class="source lang-java linenums">package uk.co.zodiac2000.subscriptionmanager.domain.oidcclaims;
+
+import java.io.Serializable;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
+import javax.validation.constraints.NotEmpty;
+
+/**
+ * This class represents an OIDC Claim Name that is used by the system.
+ */
+@Entity
+public class ClaimName implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
+    @Id
+    @SequenceGenerator(name = &quot;claim_name_id_gen&quot;, sequenceName = &quot;claim_name_id_seq&quot;, allocationSize = 1)
+    @GeneratedValue(generator = &quot;claim_name_id_gen&quot;)
+    private Long id;
+
+    @NotEmpty
+    private String claimName;
+
+    /**
+     * Zero-args constructor for JPA.
+     */
+<span class="fc" id="L29">    public ClaimName() { }</span>
+
+    /**
+     * Constructs a new ClaimName using the supplied arguments.
+     * @param claimName the claim name
+     */
+<span class="fc" id="L35">    public ClaimName(final String claimName) {</span>
+<span class="fc" id="L36">        this.claimName = claimName;</span>
+<span class="fc" id="L37">    }</span>
+
+    /**
+     * @return the claim name identifier
+     */
+    public Long getId() {
+<span class="fc" id="L43">        return this.id;</span>
+    }
+
+    /**
+     * @return the claim name
+     */
+    public String getClaimName() {
+<span class="fc" id="L50">        return this.claimName;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

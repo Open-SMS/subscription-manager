@@ -1,6 +1,7 @@
 uk.co.zodiac2000.subscriptionmanager.api
 uk.co.zodiac2000.subscriptionmanager.configuration
 uk.co.zodiac2000.subscriptionmanager.constraint.validator
+uk.co.zodiac2000.subscriptionmanager.domain.oidcclaims
 uk.co.zodiac2000.subscriptionmanager.domain.subscriber
 uk.co.zodiac2000.subscriptionmanager.domain.subscription
 uk.co.zodiac2000.subscriptionmanager.factory

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>OidcIdentifierClaimRequestDto.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Subscription Manager</a> &gt; <a href="index.source.html" class="el_package">uk.co.zodiac2000.subscriptionmanager.transfer.subscriber</a> &gt; <span class="el_source">OidcIdentifierClaimRequestDto.java</span></div><h1>OidcIdentifierClaimRequestDto.java</h1><pre class="source lang-java linenums">package uk.co.zodiac2000.subscriptionmanager.transfer.subscriber;
+
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+import javax.validation.Valid;
+import javax.validation.constraints.NotEmpty;
+
+/**
+ * Request DTO representing a claim associated with an OIDC issuer.
+ */
+public class OidcIdentifierClaimRequestDto {
+
+    @NotEmpty
+    private final String claimName;
+
+    @NotEmpty
+    @Valid
+    private final List&lt;OidcIdentifierClaimValueRequestDto&gt; claimValues;
+
+    /**
+     * Constructs a new OidcIdentifierClaimRequestDto.
+     * @param claimName the claim name
+     * @param claimValues one or more claim values
+     */
+    public OidcIdentifierClaimRequestDto(final String claimName,
+<span class="fc" id="L27">            final List&lt;OidcIdentifierClaimValueRequestDto&gt; claimValues) {</span>
+<span class="fc" id="L28">        this.claimName = claimName;</span>
+<span class="fc" id="L29">        this.claimValues = claimValues;</span>
+<span class="fc" id="L30">    }</span>
+
+    /**
+     * @return the claim name
+     */
+    public String getClaimName() {
+<span class="fc" id="L36">        return this.claimName;</span>
+    }
+
+    /**
+     * @return one or more claim values
+     */
+    public List&lt;OidcIdentifierClaimValueRequestDto&gt; getClaimValues() {
+<span class="fc" id="L43">        return this.claimValues;</span>
+    }
+
+    /**
+     * @return one or claims values as a set of strings
+     */
+    public Set&lt;String&gt; getClaimValuesAsStrings() {
+<span class="fc" id="L50">        return this.claimValues.stream().map(v -&gt; v.getClaimValue()).collect(Collectors.toSet());</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>
