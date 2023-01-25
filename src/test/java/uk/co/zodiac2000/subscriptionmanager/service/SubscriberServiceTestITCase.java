@@ -522,39 +522,16 @@ public class SubscriberServiceTestITCase extends AbstractTransactionalTestNGSpri
 
     /**
      * Test setOidcIdentifiers when the subscriber is not associated with SAML or OIDC identifiers. There is one
-     * OIDC identifier that has no associated claims. This would be used when the subscriber should be identified
-     * in an authorization request for any successful authentication with the specified issuer.
+     * OIDC identifier that has no associated claims. This will result in an IllegalArgumentException because
+     * an OidcIdentifier must be associated with at least one claim.
      */
-    @Test
+    @Test(expectedExceptions = {IllegalArgumentException.class})
     public void testSetOidcIdentifiersNoClaims() {
         Set<OidcIdentifierCommandDto> oidcIdentifiers = Set.of(
                 new OidcIdentifierCommandDto("https://auth.open.ac.uk", List.of())
         );
         Optional<SubscriberResponseDto> responseDto
                 = this.subscriberService.setOidcIdentifiers(100000002L, oidcIdentifiers);
-        this.subscriberRepository.flush();
-
-        Assert.assertTrue(responseDto.isPresent());
-        Assert.assertEquals(responseDto.get().getId(), 100000002L);
-        Assert.assertTrue(responseDto.get().getSamlIdentifiers().isEmpty());
-        assertThat(responseDto.get().getOidcIdentifiers(), contains(
-                allOf(
-                        hasProperty("issuer", is("https://auth.open.ac.uk")),
-                        hasProperty("oidcIdentifierClaims", is(empty()))
-                )
-        ));
-
-        Optional<Subscriber> subscriber = this.subscriberRepository.findById(100000002L);
-        subscriber.ifPresent(s -> this.entityManager.refresh(s));
-
-        Assert.assertTrue(subscriber.isPresent());
-        Assert.assertTrue(subscriber.get().getSamlIdentifiers().isEmpty());
-        assertThat(subscriber.get().getOidcIdentifiers(), containsInAnyOrder(
-                allOf(
-                        hasProperty("issuer", is("https://auth.open.ac.uk")),
-                        hasProperty("oidcIdentifierClaims", is(empty()))
-                )
-        ));
     }
 
     /**

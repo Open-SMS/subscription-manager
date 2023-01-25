@@ -73,11 +73,19 @@ public class OidcIdentifierTest {
     }
 
     /**
+     * Test constructor when oidcIdentifierClaims collection is empty.
+     */
+    @Test(expectedExceptions = {IllegalArgumentException.class})
+    public void testConstructorOidcIdentifierClaimsEmpty() {
+        OidcIdentifier identifier = new OidcIdentifier(ISSUER_ONE, Set.of(), SUBSCRIBER);
+    }
+
+    /**
      * Test equals when argument is null.
      */
     @Test
     public void testEqualsNull() {
-        OidcIdentifier identifier = new OidcIdentifier(ISSUER_ONE, Set.of(), SUBSCRIBER);
+        OidcIdentifier identifier = new OidcIdentifier(ISSUER_ONE, OIDC_IDENTIFIER_CLAIMS_ONE, SUBSCRIBER);
 
         Assert.assertFalse(identifier.equals(null));
     }
@@ -87,7 +95,7 @@ public class OidcIdentifierTest {
      */
     @Test
     public void testEqualsDifferent() {
-        OidcIdentifier identifier = new OidcIdentifier(ISSUER_ONE, Set.of(), SUBSCRIBER);
+        OidcIdentifier identifier = new OidcIdentifier(ISSUER_ONE, OIDC_IDENTIFIER_CLAIMS_ONE, SUBSCRIBER);
 
         Assert.assertFalse(identifier.equals("foo"));
     }

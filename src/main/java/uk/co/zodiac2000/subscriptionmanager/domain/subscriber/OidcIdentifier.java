@@ -35,6 +35,7 @@ public class OidcIdentifier implements Serializable {
     private String issuer;
 
     @Valid
+    @NotEmpty
     @ElementCollection
     @CollectionTable(name = "oidc_identifier_claim")
     private Set<OidcIdentifierClaim> oidcIdentifierClaims;
@@ -50,15 +51,22 @@ public class OidcIdentifier implements Serializable {
     public OidcIdentifier() { }
 
     /**
+     * Constructs a new OidcIdentifier with the supplied arguments. The {@code oidcIdentifierClaims}
+     * argument is required to contain at least one member.
      * @param issuer the iss claim
      * @param oidcIdentifierClaims the set of OIDC claims associated with this OIDC identifier
-     * @param subscriber
+     * @param subscriber the subscriber that this OidcIdentifier is associated with
+     * @throws NullPointerException if any argument is null
+     * @throws IllegalArgumentException if the oidcIdentifierClaims set does not contain at least one member
      */
     public OidcIdentifier(final String issuer, final Set<OidcIdentifierClaim> oidcIdentifierClaims,
             final Subscriber subscriber) {
         this.issuer = Objects.requireNonNull(issuer);
         this.oidcIdentifierClaims = Objects.requireNonNull(oidcIdentifierClaims);
         this.subscriber = Objects.requireNonNull(subscriber);
+        if (this.oidcIdentifierClaims.isEmpty()) {
+            throw new IllegalArgumentException("The oidcIdentifierClaims argument must contain at least one member");
+        }
     }
 
     /**
