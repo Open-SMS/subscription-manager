@@ -36,18 +36,6 @@ public class OidcIdentifierRequestDtoTest {
     }
 
     /**
-     * Test getClaimNames.
-     */
-    @Test
-    public void testGetClaimNames() {
-        OidcIdentifierRequestDto requestDto = new OidcIdentifierRequestDto(ISSUER, CLAIMS);
-
-        assertThat(requestDto.getClaimNames(), containsInAnyOrder(
-                is(CLAIM_NAME_SUB), is(CLAIM_NAME_GROUPS)
-        ));
-    }
-
-    /**
      * Test createFilteredRequest.
      */
     @Test

@@ -41,16 +41,6 @@ public class OidcIdentifierRequestDto {
     }
 
     /**
-     * This method may not be required.
-     * @return a set of all the claim names used for claims in this request
-     */
-    public Set<String> getClaimNames() {
-        return this.oidcIdentifierClaims.stream()
-                .map(OidcIdentifierClaimRequestDto::getClaimName)
-                .collect(Collectors.toSet());
-    }
-
-    /**
      * Returns a new OidcIdentifierRequestDto containing only claims with claim names that occur in the
      * {@code requiredClaimNames} argument.
      * @param requiredClaimNames a set of claim names indicating the required claims
