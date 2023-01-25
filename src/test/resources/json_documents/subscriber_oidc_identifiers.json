@@ -10,6 +10,8 @@
   {
    "issuer":"https://open.ac.uk/auth",
    "oidcIdentifierClaims":[
+     {"claimName":"groups", "claimValue":"admin"},
+     {"claimName":"groups", "claimValue":"staff"},
      {"claimName":"derivedEduPersonScope", "claimValue":"open.ac.uk"},
      {"claimName":"sub", "claimValue":"3748385"}
    ]
