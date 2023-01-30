@@ -1,6 +1,8 @@
 package uk.co.zodiac2000.subscriptionmanager.transfer.subscriber;
 
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
 
@@ -38,5 +40,15 @@ public class OidcIdentifierCommandDto {
      */
     public List<OidcIdentifierClaimCommandDto> getOidcIdentifierClaims() {
         return this.oidcIdentifierClaims;
+    }
+
+    /**
+     * Returns a set of the claim names used in the associated {@code OidcIdentifierClaimCommandDto} objects.
+     * @return a set of claim names
+     */
+    public Set<String> getClaimNames() {
+        return this.oidcIdentifierClaims.stream()
+                .map(c -> c.getClaimName())
+                .collect(Collectors.toSet());
     }
 }
