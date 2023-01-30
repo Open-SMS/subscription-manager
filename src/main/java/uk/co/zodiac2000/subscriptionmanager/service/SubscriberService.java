@@ -2,6 +2,7 @@ package uk.co.zodiac2000.subscriptionmanager.service;
 
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -130,10 +131,10 @@ public class SubscriberService {
         Optional<Subscriber> subscriber = this.subscriberRepository.findById(id);
         // Only check claim names are present if a subscriber was found.
         if (subscriber.isPresent()) {
-            oidcIdentifierCommandDtos.stream()
-                    .forEach(i -> i.getClaimNames().stream()
-                            .forEach(claimName -> this.claimNameService.ensurePresent(claimName))
-                    );
+            Set<String> claimNames = oidcIdentifierCommandDtos.stream()
+                    .flatMap(i -> i.getClaimNames().stream())
+                    .collect(Collectors.toSet());
+            claimNames.stream().forEach(claimName -> this.claimNameService.ensurePresent(claimName));
         }
         subscriber.ifPresent(s -> s.setOidcIdentifiers(oidcIdentifierCommandDtos));
         return this.subscriberResponseDtoFactory.subscriberToSubscriberResponseDto(subscriber);
