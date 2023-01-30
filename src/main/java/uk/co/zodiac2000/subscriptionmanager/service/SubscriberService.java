@@ -131,8 +131,8 @@ public class SubscriberService {
         // Only check claim names are present if a subscriber was found.
         if (subscriber.isPresent()) {
             oidcIdentifierCommandDtos.stream()
-                    .forEach(i -> i.getOidcIdentifierClaims().stream()
-                            .forEach(c -> this.claimNameService.ensurePresent(c.getClaimName()))
+                    .forEach(i -> i.getClaimNames().stream()
+                            .forEach(claimName -> this.claimNameService.ensurePresent(claimName))
                     );
         }
         subscriber.ifPresent(s -> s.setOidcIdentifiers(oidcIdentifierCommandDtos));
