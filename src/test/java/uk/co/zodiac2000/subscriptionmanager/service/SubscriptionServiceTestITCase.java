@@ -2,6 +2,7 @@ package uk.co.zodiac2000.subscriptionmanager.service;
 
 import java.time.LocalDate;
 import java.util.Optional;
+import javax.persistence.EntityManager;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +37,9 @@ public class SubscriptionServiceTestITCase extends AbstractTransactionalTestNGSp
 
     @Autowired
     private SubscriptionRepository subscriptionRepository;
+
+    @Autowired
+    private EntityManager entityManager;
 
     @BeforeMethod
     public void loadTestData() {
@@ -317,6 +321,7 @@ public class SubscriptionServiceTestITCase extends AbstractTransactionalTestNGSp
     @Test
     public void testDeleteSubscription() {
         this.subscriptionService.deleteSubscription(100000010);
+        this.subscriptionRepository.flush();
 
         Optional<Subscription> subscription = this.subscriptionRepository.findById(100000010L);
         Assert.assertTrue(subscription.isEmpty());
@@ -338,6 +343,7 @@ public class SubscriptionServiceTestITCase extends AbstractTransactionalTestNGSp
         NewSubscriptionCommandDto commandDto
                 = new NewSubscriptionCommandDto(START_DATE, END_DATE, CONTENT_IDENTIFIER, SUBSCRIBER_ID.toString());
         Optional<SubscriptionResponseDto> responseDto = this.subscriptionService.createSubscription(commandDto);
+        this.subscriptionRepository.flush();
 
         Assert.assertTrue(responseDto.isPresent());
         Assert.assertTrue(responseDto.get().getId() != null);
@@ -362,6 +368,7 @@ public class SubscriptionServiceTestITCase extends AbstractTransactionalTestNGSp
         NewSubscriptionCommandDto commandDto = new NewSubscriptionCommandDto(Optional.empty(), Optional.empty(),
                 CONTENT_IDENTIFIER, SUBSCRIBER_ID.toString());
         Optional<SubscriptionResponseDto> responseDto = this.subscriptionService.createSubscription(commandDto);
+        this.subscriptionRepository.flush();
 
         Assert.assertTrue(responseDto.isPresent());
         Assert.assertTrue(responseDto.get().getId() != null);
@@ -394,13 +401,17 @@ public class SubscriptionServiceTestITCase extends AbstractTransactionalTestNGSp
     @Test
     public void testUpdateSubscriptionDates() {
         SubscriptionDatesCommandDto commandDto = new SubscriptionDatesCommandDto(START_DATE, END_DATE);
-        Optional<SubscriptionResponseDto> responseDto = this.subscriptionService.updateSubscriptionDates(100000006L, commandDto);
+        Optional<SubscriptionResponseDto> responseDto = this.subscriptionService.updateSubscriptionDates(100000006L,
+                commandDto);
+        this.subscriptionRepository.flush();
 
         Assert.assertTrue(responseDto.isPresent());
         Assert.assertEquals(responseDto.get().getStartDate(), START_DATE.map(LocalDate::parse));
         Assert.assertEquals(responseDto.get().getEndDate(), END_DATE.map(LocalDate::parse));
 
         Optional<Subscription> subscription = this.subscriptionRepository.findById(100000006L);
+        subscription.ifPresent(s -> this.entityManager.refresh(s));
+
         Assert.assertTrue(subscription.isPresent());
         Assert.assertEquals(subscription.get().getStartDate(), START_DATE.map(LocalDate::parse));
         Assert.assertEquals(subscription.get().getEndDate(), END_DATE.map(LocalDate::parse));
@@ -412,13 +423,17 @@ public class SubscriptionServiceTestITCase extends AbstractTransactionalTestNGSp
     @Test
     public void testUpdateSubscriptionDatesEmpty() {
         SubscriptionDatesCommandDto commandDto = new SubscriptionDatesCommandDto(Optional.empty(), Optional.empty());
-        Optional<SubscriptionResponseDto> responseDto = this.subscriptionService.updateSubscriptionDates(100000006L, commandDto);
+        Optional<SubscriptionResponseDto> responseDto = this.subscriptionService.updateSubscriptionDates(100000006L,
+                commandDto);
+        this.subscriptionRepository.flush();
 
         Assert.assertTrue(responseDto.isPresent());
         Assert.assertEquals(responseDto.get().getStartDate(), Optional.empty());
         Assert.assertEquals(responseDto.get().getEndDate(), Optional.empty());
 
         Optional<Subscription> subscription = this.subscriptionRepository.findById(100000006L);
+        subscription.ifPresent(s -> this.entityManager.refresh(s));
+
         Assert.assertTrue(subscription.isPresent());
         Assert.assertTrue(subscription.get().getStartDate().isEmpty());
         Assert.assertTrue(subscription.get().getEndDate().isEmpty());
@@ -430,7 +445,8 @@ public class SubscriptionServiceTestITCase extends AbstractTransactionalTestNGSp
     @Test(expectedExceptions = {IllegalArgumentException.class})
     public void testUpdateSubscriptionDatesInvalid() {
         SubscriptionDatesCommandDto commandDto = new SubscriptionDatesCommandDto(END_DATE, START_DATE);
-        Optional<SubscriptionResponseDto> responseDto = this.subscriptionService.updateSubscriptionDates(100000006L, commandDto);
+        Optional<SubscriptionResponseDto> responseDto = this.subscriptionService.updateSubscriptionDates(100000006L,
+                commandDto);
     }
 
     /**
@@ -439,7 +455,8 @@ public class SubscriptionServiceTestITCase extends AbstractTransactionalTestNGSp
     @Test
     public void testUpdateSubscriptionDatesNotExists() {
         SubscriptionDatesCommandDto commandDto = new SubscriptionDatesCommandDto(END_DATE, START_DATE);
-        Optional<SubscriptionResponseDto> responseDto = this.subscriptionService.updateSubscriptionDates(123L, commandDto);
+        Optional<SubscriptionResponseDto> responseDto = this.subscriptionService.updateSubscriptionDates(123L,
+                commandDto);
 
         Assert.assertTrue(responseDto.isEmpty());
     }
@@ -452,11 +469,14 @@ public class SubscriptionServiceTestITCase extends AbstractTransactionalTestNGSp
         SubscriptionContentIdentifierCommandDto commandDto = new SubscriptionContentIdentifierCommandDto("CONTENT-X");
         Optional<SubscriptionResponseDto> responseDto
                 = this.subscriptionService.updateSubscriptionContentIdentifier(100000006L, commandDto);
+        this.subscriptionRepository.flush();
 
         Assert.assertTrue(responseDto.isPresent());
         Assert.assertEquals(responseDto.get().getContentIdentifier(), "CONTENT-X");
 
         Optional<Subscription> subscription = this.subscriptionRepository.findById(100000006L);
+        subscription.ifPresent(s -> this.entityManager.refresh(s));
+
         Assert.assertTrue(subscription.isPresent());
         Assert.assertEquals(subscription.get().getContentIdentifier(), "CONTENT-X");
     }
@@ -480,6 +500,7 @@ public class SubscriptionServiceTestITCase extends AbstractTransactionalTestNGSp
     public void testSuspendSubscription() {
         final long subscriptionId = 100000001L;
         Optional<SubscriptionResponseDto> responseDto = this.subscriptionService.suspendSubscription(subscriptionId);
+        this.subscriptionRepository.flush();
 
         Assert.assertTrue(responseDto.isPresent());
         Assert.assertEquals(responseDto.get().getId(), subscriptionId);
@@ -488,6 +509,8 @@ public class SubscriptionServiceTestITCase extends AbstractTransactionalTestNGSp
         Assert.assertFalse(responseDto.get().isActive());
 
         Optional<Subscription> subscription = this.subscriptionRepository.findById(subscriptionId);
+        subscription.ifPresent(s -> this.entityManager.refresh(s));
+
         Assert.assertTrue(subscription.isPresent());
         Assert.assertTrue(subscription.get().isSuspended());
         Assert.assertFalse(subscription.get().isTerminated());
@@ -515,6 +538,8 @@ public class SubscriptionServiceTestITCase extends AbstractTransactionalTestNGSp
 
         // Suspended state of the subscription is unchanged.
         Optional<Subscription> subscription = this.subscriptionRepository.findById(subscriptionId);
+        subscription.ifPresent(s -> this.entityManager.refresh(s));
+
         Assert.assertTrue(subscription.isPresent());
         Assert.assertTrue(subscription.get().isSuspended());
     }
@@ -536,6 +561,7 @@ public class SubscriptionServiceTestITCase extends AbstractTransactionalTestNGSp
     public void testTerminateSubscription() {
         final long subscriptionId = 100000001L;
         Optional<SubscriptionResponseDto> responseDto = this.subscriptionService.terminateSubscription(subscriptionId);
+        this.subscriptionRepository.flush();
 
         Assert.assertTrue(responseDto.isPresent());
         Assert.assertEquals(responseDto.get().getId(), subscriptionId);
@@ -544,6 +570,8 @@ public class SubscriptionServiceTestITCase extends AbstractTransactionalTestNGSp
         Assert.assertFalse(responseDto.get().isActive());
 
         Optional<Subscription> subscription = this.subscriptionRepository.findById(subscriptionId);
+        subscription.ifPresent(s -> this.entityManager.refresh(s));
+
         Assert.assertTrue(subscription.isPresent());
         Assert.assertTrue(subscription.get().isSuspended());
         Assert.assertTrue(subscription.get().isTerminated());
@@ -558,6 +586,7 @@ public class SubscriptionServiceTestITCase extends AbstractTransactionalTestNGSp
     public void testTerminateSubscriptionAlreadySuspended() {
         final long subscriptionId = 100000014L;
         Optional<SubscriptionResponseDto> responseDto = this.subscriptionService.terminateSubscription(subscriptionId);
+        this.subscriptionRepository.flush();
 
         Assert.assertTrue(responseDto.isPresent());
         Assert.assertEquals(responseDto.get().getId(), subscriptionId);
@@ -566,6 +595,8 @@ public class SubscriptionServiceTestITCase extends AbstractTransactionalTestNGSp
         Assert.assertFalse(responseDto.get().isActive());
 
         Optional<Subscription> subscription = this.subscriptionRepository.findById(subscriptionId);
+        subscription.ifPresent(s -> this.entityManager.refresh(s));
+
         Assert.assertTrue(subscription.isPresent());
         Assert.assertTrue(subscription.get().isSuspended());
         Assert.assertTrue(subscription.get().isTerminated());
@@ -593,6 +624,8 @@ public class SubscriptionServiceTestITCase extends AbstractTransactionalTestNGSp
 
         // Suspended state of the subscription is unchanged.
         Optional<Subscription> subscription = this.subscriptionRepository.findById(subscriptionId);
+        subscription.ifPresent(s -> this.entityManager.refresh(s));
+
         Assert.assertTrue(subscription.isPresent());
         Assert.assertTrue(subscription.get().isSuspended());
         Assert.assertTrue(subscription.get().isTerminated());
@@ -616,6 +649,7 @@ public class SubscriptionServiceTestITCase extends AbstractTransactionalTestNGSp
     public void testUnsuspendSubscription() {
         final long subscriptionId = 100000014L;
         Optional<SubscriptionResponseDto> responseDto = this.subscriptionService.unsuspendSubscription(subscriptionId);
+        this.subscriptionRepository.flush();
 
         Assert.assertTrue(responseDto.isPresent());
         Assert.assertEquals(responseDto.get().getId(), subscriptionId);
@@ -624,6 +658,8 @@ public class SubscriptionServiceTestITCase extends AbstractTransactionalTestNGSp
         Assert.assertTrue(responseDto.get().isActive());
 
         Optional<Subscription> subscription = this.subscriptionRepository.findById(subscriptionId);
+        subscription.ifPresent(s -> this.entityManager.refresh(s));
+
         Assert.assertTrue(subscription.isPresent());
         Assert.assertFalse(subscription.get().isSuspended());
         Assert.assertFalse(subscription.get().isTerminated());
@@ -651,6 +687,8 @@ public class SubscriptionServiceTestITCase extends AbstractTransactionalTestNGSp
 
         // Suspended state of the subscription is unchanged.
         Optional<Subscription> subscription = this.subscriptionRepository.findById(subscriptionId);
+        subscription.ifPresent(s -> this.entityManager.refresh(s));
+
         Assert.assertTrue(subscription.isPresent());
         Assert.assertTrue(subscription.get().isSuspended());
         Assert.assertTrue(subscription.get().isTerminated());
@@ -677,6 +715,8 @@ public class SubscriptionServiceTestITCase extends AbstractTransactionalTestNGSp
 
         // Suspended state of the subscription is unchanged.
         Optional<Subscription> subscription = this.subscriptionRepository.findById(subscriptionId);
+        subscription.ifPresent(s -> this.entityManager.refresh(s));
+
         Assert.assertTrue(subscription.isPresent());
         Assert.assertFalse(subscription.get().isSuspended());
         Assert.assertFalse(subscription.get().isTerminated());

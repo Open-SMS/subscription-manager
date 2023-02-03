@@ -3,6 +3,7 @@ package uk.co.zodiac2000.subscriptionmanager.api;
 import com.jayway.jsonpath.JsonPath;
 import java.time.LocalDate;
 import java.util.Optional;
+import javax.persistence.EntityManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -32,6 +33,9 @@ public class SubscriptionControllerTestITCase extends AbstractTransactionalTestN
 
     @Autowired
     private SubscriptionRepository subscriptionRepository;
+
+    @Autowired
+    private EntityManager entityManager;
 
     @Autowired
     private MockMvc mockMvc;
@@ -93,13 +97,16 @@ public class SubscriptionControllerTestITCase extends AbstractTransactionalTestN
                 .expectStatus().isCreated()
                 .expectHeader().contentType(MediaType.APPLICATION_JSON)
                 .expectBody().returnResult();
+        this.subscriptionRepository.flush();
 
         String responseBody = new String(result.getResponseBody());
         Integer id = JsonPath.read(responseBody, "$.id");
 
         Assert.assertNotNull(id);
-        
+
         Optional<Subscription> subscription = this.subscriptionRepository.findById(id.longValue());
+        subscription.ifPresent(s -> this.entityManager.refresh(s));
+
         Assert.assertTrue(subscription.isPresent());
         Assert.assertTrue(subscription.get().getStartDate().isPresent());
         Assert.assertEquals(subscription.get().getStartDate().get(), LocalDate.parse("2012-01-01"));
@@ -118,6 +125,7 @@ public class SubscriptionControllerTestITCase extends AbstractTransactionalTestN
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
                 .expectStatus().isNoContent();
+        this.subscriptionRepository.flush();
 
         Optional<Subscription> subscription = this.subscriptionRepository.findById(100000004L);
         Assert.assertTrue(subscription.isEmpty());
@@ -140,12 +148,15 @@ public class SubscriptionControllerTestITCase extends AbstractTransactionalTestN
                 .expectStatus().isOk()
                 .expectHeader().contentType(MediaType.APPLICATION_JSON)
                 .expectBody().returnResult();
+        this.subscriptionRepository.flush();
 
         String responseBody = new String(result.getResponseBody());
         Integer id = JsonPath.read(responseBody, "$.id");
         Assert.assertEquals(id, 100000004);
 
         Optional<Subscription> subscription = this.subscriptionRepository.findById(100000004L);
+        subscription.ifPresent(s -> this.entityManager.refresh(s));
+
         Assert.assertTrue(subscription.isPresent());
         Assert.assertTrue(subscription.get().getStartDate().isPresent());
         Assert.assertEquals(subscription.get().getStartDate().get(), LocalDate.parse("2014-01-01"));
@@ -169,12 +180,15 @@ public class SubscriptionControllerTestITCase extends AbstractTransactionalTestN
                 .expectStatus().isOk()
                 .expectHeader().contentType(MediaType.APPLICATION_JSON)
                 .expectBody().returnResult();
+        this.subscriptionRepository.flush();
 
         String responseBody = new String(result.getResponseBody());
         Integer id = JsonPath.read(responseBody, "$.id");
         Assert.assertEquals(id, 100000004);
 
         Optional<Subscription> subscription = this.subscriptionRepository.findById(100000004L);
+        subscription.ifPresent(s -> this.entityManager.refresh(s));
+
         Assert.assertTrue(subscription.isPresent());
         Assert.assertEquals(subscription.get().getContentIdentifier(), "CONTENT-Z");
     }
@@ -191,12 +205,15 @@ public class SubscriptionControllerTestITCase extends AbstractTransactionalTestN
                 .expectStatus().isOk()
                 .expectHeader().contentType(MediaType.APPLICATION_JSON)
                 .expectBody().returnResult();
+        this.subscriptionRepository.flush();
 
         String responseBody = new String(result.getResponseBody());
         Integer id = JsonPath.read(responseBody, "$.id");
         Assert.assertEquals(id, 100000004);
 
         Optional<Subscription> subscription = this.subscriptionRepository.findById(100000004L);
+        subscription.ifPresent(s -> this.entityManager.refresh(s));
+
         Assert.assertTrue(subscription.isPresent());
         Assert.assertTrue(subscription.get().isSuspended());
     }
@@ -232,12 +249,15 @@ public class SubscriptionControllerTestITCase extends AbstractTransactionalTestN
                 .expectStatus().isOk()
                 .expectHeader().contentType(MediaType.APPLICATION_JSON)
                 .expectBody().returnResult();
+        this.subscriptionRepository.flush();
 
         String responseBody = new String(result.getResponseBody());
         Integer id = JsonPath.read(responseBody, "$.id");
         Assert.assertEquals(id, 100000004);
 
         Optional<Subscription> subscription = this.subscriptionRepository.findById(100000004L);
+        subscription.ifPresent(s -> this.entityManager.refresh(s));
+
         Assert.assertTrue(subscription.isPresent());
         Assert.assertTrue(subscription.get().isSuspended());
         Assert.assertTrue(subscription.get().isTerminated());
@@ -255,12 +275,15 @@ public class SubscriptionControllerTestITCase extends AbstractTransactionalTestN
                 .expectStatus().isOk()
                 .expectHeader().contentType(MediaType.APPLICATION_JSON)
                 .expectBody().returnResult();
+        this.subscriptionRepository.flush();
 
         String responseBody = new String(result.getResponseBody());
         Integer id = JsonPath.read(responseBody, "$.id");
         Assert.assertEquals(id, 100000014);
 
         Optional<Subscription> subscription = this.subscriptionRepository.findById(100000014L);
+        subscription.ifPresent(s -> this.entityManager.refresh(s));
+
         Assert.assertTrue(subscription.isPresent());
         Assert.assertFalse(subscription.get().isSuspended());
     }
