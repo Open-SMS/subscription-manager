@@ -21,17 +21,26 @@ import uk.co.zodiac2000.subscriptionmanager.transfer.subscriber.OidcIdentifierRe
     private ClaimNameRepository repository;
 
     /**
-     * Creates a {@code ClaimName} with {@code claimName} as its claim name if it does not already exist.
+     * Creates a new {@code ClaimName} with {@code claimName} as its claim name if it does not already exist.
      * @param claimName the claim name to check
      */
     @Transactional(readOnly = false)
     public void ensurePresent(final String claimName) {
 <span class="nc" id="L29">        Optional&lt;ClaimName&gt; claimNameObject = this.repository.findByClaimName(claimName);</span>
 <span class="nc bnc" id="L30" title="All 2 branches missed.">        if (claimNameObject.isEmpty()) {</span>
-<span class="nc" id="L31">            ClaimName newClaimName = new ClaimName(claimName);</span>
-<span class="nc" id="L32">            this.repository.save(newClaimName);</span>
+<span class="nc" id="L31">            this.repository.insertIntoClaimName(claimName);</span>
         }
-<span class="nc" id="L34">    }</span>
+<span class="nc" id="L33">    }</span>
+
+    /**
+     * Creates new {@code ClaimName} rows with claim names from the {@code claimNames} collection if they do not
+     * already exist.
+     * @param claimNames the claim names to check
+     */
+    @Transactional(readOnly = false)
+    public void ensurePresent(final Set&lt;String&gt; claimNames) {
+<span class="nc" id="L42">        claimNames.stream().forEach(claimName -&gt; ensurePresent(claimName));</span>
+<span class="nc" id="L43">    }</span>
 
     /**
      * Returns an OidcIdentifierRequestDto based on the state of the oidcIdentifierRequest argument but with any
@@ -40,10 +49,10 @@ import uk.co.zodiac2000.subscriptionmanager.transfer.subscriber.OidcIdentifierRe
      * @return an OidcIdentifierRequestDto containing only claims with names known to the system
      */
     public OidcIdentifierRequestDto filterClaimsRequest(final OidcIdentifierRequestDto oidcIdentifierRequest) {
-<span class="nc" id="L43">        Set&lt;String&gt; claimNames = this.repository.findAll().stream()</span>
-<span class="nc" id="L44">                .map(c -&gt; c.getClaimName())</span>
-<span class="nc" id="L45">                .collect(Collectors.toSet());</span>
-<span class="nc" id="L46">        return oidcIdentifierRequest.createFilteredRequest(Set.copyOf(claimNames));</span>
+<span class="nc" id="L52">        Set&lt;String&gt; claimNames = this.repository.findAll().stream()</span>
+<span class="nc" id="L53">                .map(c -&gt; c.getClaimName())</span>
+<span class="nc" id="L54">                .collect(Collectors.toSet());</span>
+<span class="nc" id="L55">        return oidcIdentifierRequest.createFilteredRequest(Set.copyOf(claimNames));</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

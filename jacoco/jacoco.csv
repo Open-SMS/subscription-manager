@@ -1,6 +1,6 @@
 GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
-Subscription Manager,uk.co.zodiac2000.subscriptionmanager.service,SubscriberService,139,0,2,0,26,0,15,0,14,0
-Subscription Manager,uk.co.zodiac2000.subscriptionmanager.service,ClaimNameService,40,0,2,0,10,0,5,0,4,0
+Subscription Manager,uk.co.zodiac2000.subscriptionmanager.service,SubscriberService,134,0,2,0,27,0,13,0,12,0
+Subscription Manager,uk.co.zodiac2000.subscriptionmanager.service,ClaimNameService,44,0,2,0,11,0,7,0,6,0
 Subscription Manager,uk.co.zodiac2000.subscriptionmanager.service,SubscriptionService,131,0,0,0,23,0,14,0,14,0
 Subscription Manager,uk.co.zodiac2000.subscriptionmanager.service,AuthorizationService,37,0,0,0,9,0,3,0,3,0
 Subscription Manager,uk.co.zodiac2000.subscriptionmanager.specification,SubscriberSpecifications,78,0,0,0,15,0,6,0,6,0
@@ -23,7 +23,7 @@ Subscription Manager,uk.co.zodiac2000.subscriptionmanager.transfer.subscriber,Ne
 Subscription Manager,uk.co.zodiac2000.subscriptionmanager.transfer.subscriber,OidcIdentifierClaimValueRequestDto,0,9,0,0,0,4,0,2,0,2
 Subscription Manager,uk.co.zodiac2000.subscriptionmanager.transfer.subscriber,SamlIdentifierRequestDto,0,15,0,0,0,6,0,3,0,3
 Subscription Manager,uk.co.zodiac2000.subscriptionmanager.transfer.subscriber,SubscriberResponseDto,0,27,0,0,0,10,0,5,0,5
-Subscription Manager,uk.co.zodiac2000.subscriptionmanager.transfer.subscriber,OidcIdentifierCommandDto,0,15,0,0,0,6,0,3,0,3
+Subscription Manager,uk.co.zodiac2000.subscriptionmanager.transfer.subscriber,OidcIdentifierCommandDto,0,27,0,0,0,9,0,5,0,5
 Subscription Manager,uk.co.zodiac2000.subscriptionmanager.transfer.subscriber,OidcIdentifiersCommandDto,0,12,0,0,0,5,0,3,0,3
 Subscription Manager,uk.co.zodiac2000.subscriptionmanager.transfer.subscriber,OidcIdentifierClaimRequestDto,0,27,0,0,0,7,0,5,0,5
 Subscription Manager,uk.co.zodiac2000.subscriptionmanager.transfer.subscriber,SamlIdentifiersCommandDto,0,12,0,0,0,5,0,3,0,3

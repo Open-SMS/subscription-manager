@@ -2,6 +2,7 @@
 
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,7 +22,7 @@ import uk.co.zodiac2000.subscriptionmanager.transfer.subscriber.SubscriberRespon
  */
 @Service
 @Transactional(readOnly = true)
-<span class="fc" id="L24">public class SubscriberService {</span>
+<span class="fc" id="L25">public class SubscriberService {</span>
 
     @Autowired
     private SubscriberRepository subscriberRepository;
@@ -41,8 +42,8 @@ import uk.co.zodiac2000.subscriptionmanager.transfer.subscriber.SubscriberRespon
      * @return an Optional that contains a SubscriberResponseDto, if found
      */
     public Optional&lt;SubscriberResponseDto&gt; getSubscriberById(final Long id) {
-<span class="fc" id="L44">        Optional&lt;Subscriber&gt; subscriber = this.subscriberRepository.findById(id);</span>
-<span class="fc" id="L45">        return this.subscriberResponseDtoFactory.subscriberToSubscriberResponseDto(subscriber);</span>
+<span class="fc" id="L45">        Optional&lt;Subscriber&gt; subscriber = this.subscriberRepository.findById(id);</span>
+<span class="fc" id="L46">        return this.subscriberResponseDtoFactory.subscriberToSubscriberResponseDto(subscriber);</span>
     }
 
     /**
@@ -51,7 +52,7 @@ import uk.co.zodiac2000.subscriptionmanager.transfer.subscriber.SubscriberRespon
      * @return the subscriber identifier
      */
     public Optional&lt;Long&gt; getSubscriberIdBySubscriberName(final String subscriberName) {
-<span class="fc" id="L54">        return this.subscriberRepository.findBySubscriberName(subscriberName).map(Subscriber::getId);</span>
+<span class="fc" id="L55">        return this.subscriberRepository.findBySubscriberName(subscriberName).map(Subscriber::getId);</span>
     }
 
     /**
@@ -60,10 +61,10 @@ import uk.co.zodiac2000.subscriptionmanager.transfer.subscriber.SubscriberRespon
      * @return a set of SubscriberResponseDto objects
      */
     public Set&lt;SubscriberResponseDto&gt; getSubscriberBySamlIdentifier(final SamlIdentifierRequestDto requestDto) {
-<span class="fc" id="L63">        Set&lt;Subscriber&gt; subscribers</span>
-<span class="fc" id="L64">                = this.subscriberRepository.findBySamlIdentifiersEntityIdAndSamlIdentifiersScopedAffiliation(</span>
-<span class="fc" id="L65">                        requestDto.getEntityId(), requestDto.getScopedAffiliation());</span>
-<span class="fc" id="L66">        return this.subscriberResponseDtoFactory.subscribersToSubscriberResponseDtos(subscribers);</span>
+<span class="fc" id="L64">        Set&lt;Subscriber&gt; subscribers</span>
+<span class="fc" id="L65">                = this.subscriberRepository.findBySamlIdentifiersEntityIdAndSamlIdentifiersScopedAffiliation(</span>
+<span class="fc" id="L66">                        requestDto.getEntityId(), requestDto.getScopedAffiliation());</span>
+<span class="fc" id="L67">        return this.subscriberResponseDtoFactory.subscribersToSubscriberResponseDtos(subscribers);</span>
     }
 
     /**
@@ -73,9 +74,9 @@ import uk.co.zodiac2000.subscriptionmanager.transfer.subscriber.SubscriberRespon
      */
     @Transactional(readOnly = false)
     public Optional&lt;SubscriberResponseDto&gt; createSubscriber(final NewSubscriberCommandDto newSubscriberCommandDto) {
-<span class="fc" id="L76">        Subscriber subscriber = this.subscriberRepository.save(</span>
-<span class="fc" id="L77">                this.subscriberFactory.newSubscriberCommandDtoToSubscriber(newSubscriberCommandDto));</span>
-<span class="fc" id="L78">        return this.subscriberResponseDtoFactory.subscriberToSubscriberResponseDto(Optional.of(subscriber));</span>
+<span class="fc" id="L77">        Subscriber subscriber = this.subscriberRepository.save(</span>
+<span class="fc" id="L78">                this.subscriberFactory.newSubscriberCommandDtoToSubscriber(newSubscriberCommandDto));</span>
+<span class="fc" id="L79">        return this.subscriberResponseDtoFactory.subscriberToSubscriberResponseDto(Optional.of(subscriber));</span>
     }
 
     /**
@@ -88,9 +89,9 @@ import uk.co.zodiac2000.subscriptionmanager.transfer.subscriber.SubscriberRespon
     @Transactional(readOnly = false)
     public Optional&lt;SubscriberResponseDto&gt; updateSubscriberName(
             final SubscriberNameCommandDto subscriberNameCommandDto) {
-<span class="fc" id="L91">        Optional&lt;Subscriber&gt; subscriber = this.subscriberRepository.findById(subscriberNameCommandDto.getId());</span>
-<span class="fc" id="L92">        subscriber.ifPresent(p -&gt; p.setSubscriberName(subscriberNameCommandDto));</span>
-<span class="fc" id="L93">        return this.subscriberResponseDtoFactory.subscriberToSubscriberResponseDto(subscriber);</span>
+<span class="fc" id="L92">        Optional&lt;Subscriber&gt; subscriber = this.subscriberRepository.findById(subscriberNameCommandDto.getId());</span>
+<span class="fc" id="L93">        subscriber.ifPresent(p -&gt; p.setSubscriberName(subscriberNameCommandDto));</span>
+<span class="fc" id="L94">        return this.subscriberResponseDtoFactory.subscriberToSubscriberResponseDto(subscriber);</span>
     }
 
     /**
@@ -99,8 +100,8 @@ import uk.co.zodiac2000.subscriptionmanager.transfer.subscriber.SubscriberRespon
      */
     @Transactional(readOnly = false)
     public void deleteSubscriber(final long id) {
-<span class="fc" id="L102">        this.subscriberRepository.findById(id).ifPresent(this.subscriberRepository::delete);</span>
-<span class="fc" id="L103">    }</span>
+<span class="fc" id="L103">        this.subscriberRepository.findById(id).ifPresent(this.subscriberRepository::delete);</span>
+<span class="fc" id="L104">    }</span>
 
     /**
      * Set the SAML Identifiers associated with the subscriber identified by id. If the subscriber doesn't exist then an
@@ -112,9 +113,9 @@ import uk.co.zodiac2000.subscriptionmanager.transfer.subscriber.SubscriberRespon
     @Transactional(readOnly = false)
     public Optional&lt;SubscriberResponseDto&gt; setSamlIdentifiers(final long id,
             final Set&lt;SamlIdentifierCommandDto&gt; samlIdentifierCommandDtos) {
-<span class="fc" id="L115">        Optional&lt;Subscriber&gt; subscriber = this.subscriberRepository.findById(id);</span>
-<span class="fc" id="L116">        subscriber.ifPresent(p -&gt; p.setSamlIdentifiers(samlIdentifierCommandDtos));</span>
-<span class="fc" id="L117">        return this.subscriberResponseDtoFactory.subscriberToSubscriberResponseDto(subscriber);</span>
+<span class="fc" id="L116">        Optional&lt;Subscriber&gt; subscriber = this.subscriberRepository.findById(id);</span>
+<span class="fc" id="L117">        subscriber.ifPresent(p -&gt; p.setSamlIdentifiers(samlIdentifierCommandDtos));</span>
+<span class="fc" id="L118">        return this.subscriberResponseDtoFactory.subscriberToSubscriberResponseDto(subscriber);</span>
     }
 
     /**
@@ -127,16 +128,16 @@ import uk.co.zodiac2000.subscriptionmanager.transfer.subscriber.SubscriberRespon
     @Transactional(readOnly = false)
     public Optional&lt;SubscriberResponseDto&gt; setOidcIdentifiers(final long id,
             final Set&lt;OidcIdentifierCommandDto&gt; oidcIdentifierCommandDtos) {
-<span class="fc" id="L130">        Optional&lt;Subscriber&gt; subscriber = this.subscriberRepository.findById(id);</span>
+<span class="fc" id="L131">        Optional&lt;Subscriber&gt; subscriber = this.subscriberRepository.findById(id);</span>
         // Only check claim names are present if a subscriber was found.
-<span class="fc bfc" id="L132" title="All 2 branches covered.">        if (subscriber.isPresent()) {</span>
-<span class="fc" id="L133">            oidcIdentifierCommandDtos.stream()</span>
-<span class="fc" id="L134">                    .forEach(i -&gt; i.getOidcIdentifierClaims().stream()</span>
-<span class="fc" id="L135">                            .forEach(c -&gt; this.claimNameService.ensurePresent(c.getClaimName()))</span>
-                    );
+<span class="fc bfc" id="L133" title="All 2 branches covered.">        if (subscriber.isPresent()) {</span>
+<span class="fc" id="L134">            Set&lt;String&gt; claimNames = oidcIdentifierCommandDtos.stream()</span>
+<span class="fc" id="L135">                    .flatMap(i -&gt; i.getClaimNames().stream())</span>
+<span class="fc" id="L136">                    .collect(Collectors.toSet());</span>
+<span class="fc" id="L137">            this.claimNameService.ensurePresent(claimNames);</span>
+<span class="fc" id="L138">            subscriber.get().setOidcIdentifiers(oidcIdentifierCommandDtos);</span>
         }
-<span class="fc" id="L138">        subscriber.ifPresent(s -&gt; s.setOidcIdentifiers(oidcIdentifierCommandDtos));</span>
-<span class="fc" id="L139">        return this.subscriberResponseDtoFactory.subscriberToSubscriberResponseDto(subscriber);</span>
+<span class="fc" id="L140">        return this.subscriberResponseDtoFactory.subscriberToSubscriberResponseDto(subscriber);</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

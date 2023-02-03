@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>OidcIdentifierCommandDto.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Subscription Manager</a> &gt; <a href="index.source.html" class="el_package">uk.co.zodiac2000.subscriptionmanager.transfer.subscriber</a> &gt; <span class="el_source">OidcIdentifierCommandDto.java</span></div><h1>OidcIdentifierCommandDto.java</h1><pre class="source lang-java linenums">package uk.co.zodiac2000.subscriptionmanager.transfer.subscriber;
 
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
 
@@ -21,23 +23,33 @@ public class OidcIdentifierCommandDto {
      * @param oidcIdentifierClaims the the claims associated with this OIDC identifier
      */
     public OidcIdentifierCommandDto(final String issuer,
-<span class="fc" id="L24">            final List&lt;OidcIdentifierClaimCommandDto&gt; oidcIdentifierClaims) {</span>
-<span class="fc" id="L25">        this.issuer = issuer;</span>
-<span class="fc" id="L26">        this.oidcIdentifierClaims = oidcIdentifierClaims;</span>
-<span class="fc" id="L27">    }</span>
+<span class="fc" id="L26">            final List&lt;OidcIdentifierClaimCommandDto&gt; oidcIdentifierClaims) {</span>
+<span class="fc" id="L27">        this.issuer = issuer;</span>
+<span class="fc" id="L28">        this.oidcIdentifierClaims = oidcIdentifierClaims;</span>
+<span class="fc" id="L29">    }</span>
 
     /**
      * @return the iss claim
      */
     public String getIssuer() {
-<span class="fc" id="L33">        return this.issuer;</span>
+<span class="fc" id="L35">        return this.issuer;</span>
     }
 
     /**
      * @return the the claims associated with this OIDC identifier
      */
     public List&lt;OidcIdentifierClaimCommandDto&gt; getOidcIdentifierClaims() {
-<span class="fc" id="L40">        return this.oidcIdentifierClaims;</span>
+<span class="fc" id="L42">        return this.oidcIdentifierClaims;</span>
+    }
+
+    /**
+     * Returns a set of the claim names used in the associated {@code OidcIdentifierClaimCommandDto} objects.
+     * @return a set of claim names
+     */
+    public Set&lt;String&gt; getClaimNames() {
+<span class="fc" id="L50">        return this.oidcIdentifierClaims.stream()</span>
+<span class="fc" id="L51">                .map(c -&gt; c.getClaimName())</span>
+<span class="fc" id="L52">                .collect(Collectors.toSet());</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>
