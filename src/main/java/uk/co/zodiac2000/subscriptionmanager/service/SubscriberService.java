@@ -134,9 +134,9 @@ public class SubscriberService {
             Set<String> claimNames = oidcIdentifierCommandDtos.stream()
                     .flatMap(i -> i.getClaimNames().stream())
                     .collect(Collectors.toSet());
-            claimNames.stream().forEach(claimName -> this.claimNameService.ensurePresent(claimName));
+            this.claimNameService.ensurePresent(claimNames);
+            subscriber.get().setOidcIdentifiers(oidcIdentifierCommandDtos);
         }
-        subscriber.ifPresent(s -> s.setOidcIdentifiers(oidcIdentifierCommandDtos));
         return this.subscriberResponseDtoFactory.subscriberToSubscriberResponseDto(subscriber);
     }
 }

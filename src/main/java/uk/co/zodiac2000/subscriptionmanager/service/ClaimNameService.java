@@ -21,16 +21,25 @@ public class ClaimNameService {
     private ClaimNameRepository repository;
 
     /**
-     * Creates a {@code ClaimName} with {@code claimName} as its claim name if it does not already exist.
+     * Creates a new {@code ClaimName} with {@code claimName} as its claim name if it does not already exist.
      * @param claimName the claim name to check
      */
     @Transactional(readOnly = false)
     public void ensurePresent(final String claimName) {
         Optional<ClaimName> claimNameObject = this.repository.findByClaimName(claimName);
         if (claimNameObject.isEmpty()) {
-            ClaimName newClaimName = new ClaimName(claimName);
-            this.repository.save(newClaimName);
+            this.repository.insertIntoClaimName(claimName);
         }
+    }
+
+    /**
+     * Creates new {@code ClaimName} rows with claim names from the {@code claimNames} collection if they do not
+     * already exist.
+     * @param claimNames the claim names to check
+     */
+    @Transactional(readOnly = false)
+    public void ensurePresent(final Set<String> claimNames) {
+        claimNames.stream().forEach(claimName -> ensurePresent(claimName));
     }
 
     /**
