@@ -34,7 +34,7 @@ public class ContentIdentifier implements Serializable {
      * Constructs a new ContentIdentifier using the supplied arguments.
      * @param subscriptionResourceId the subscription resource the defines the scope of this content identifier
      */
-    public ContentIdentifier(Long subscriptionResourceId) {
+    public ContentIdentifier(final Long subscriptionResourceId) {
         this.subscriptionResourceId = subscriptionResourceId;
     }
 

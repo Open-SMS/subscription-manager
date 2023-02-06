@@ -17,7 +17,7 @@ public class SubscriptionResourceResponseDto {
      * @param resourceUri the resource URI
      * @param resourceDescription the resource description
      */
-    public SubscriptionResourceResponseDto(long id, String resourceUri, String resourceDescription) {
+    public SubscriptionResourceResponseDto(final long id, final String resourceUri, final String resourceDescription) {
         this.id = id;
         this.resourceUri = resourceUri;
         this.resourceDescription = resourceDescription;
