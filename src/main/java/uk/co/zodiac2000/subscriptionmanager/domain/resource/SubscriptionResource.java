@@ -22,8 +22,9 @@ public class SubscriptionResource implements Serializable {
     private static final int MAX_RESOURCE_DESCRIPTION_LENGTH = 1000;
 
     @Id
-    @SequenceGenerator(name = "subscription_id_gen", sequenceName = "subscription_id_seq", allocationSize = 1)
-    @GeneratedValue(generator = "subscription_id_gen")
+    @SequenceGenerator(name = "subscription_resource_id_gen", sequenceName = "subscription_resource_id_seq",
+            allocationSize = 1)
+    @GeneratedValue(generator = "subscription_resource_id_gen")
     private Long id;
 
     @NotEmpty
