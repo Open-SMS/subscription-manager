@@ -19,7 +19,7 @@ public class UriToStringConverter implements AttributeConverter<URI, String> {
      * @return a string representation of the URI.
      */
     @Override
-    public String convertToDatabaseColumn(URI uri) {
+    public String convertToDatabaseColumn(final URI uri) {
         if (uri == null) {
             return null;
         }
@@ -33,7 +33,7 @@ public class UriToStringConverter implements AttributeConverter<URI, String> {
      * @return a URI
      */
     @Override
-    public URI convertToEntityAttribute(String uriString) {
+    public URI convertToEntityAttribute(final String uriString) {
         if (uriString == null || uriString.isEmpty()) {
             return null;
         }
