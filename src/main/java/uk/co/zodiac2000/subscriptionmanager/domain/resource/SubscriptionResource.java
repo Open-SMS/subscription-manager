@@ -41,7 +41,7 @@ public class SubscriptionResource implements Serializable {
     public SubscriptionResource() { }
 
     /**
-     * Constructs a new Resource using the supplied arguments.
+     * Constructs a new SubscriptionResource using the supplied arguments.
      * @param resourceUri the resource URI
      * @param resourceDescription the resource description
      */
