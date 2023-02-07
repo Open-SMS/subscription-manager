@@ -16,7 +16,7 @@ public class ContentIdentifierResponseDto {
      * @param id the content identifier id
      * @param subscriptionResource the subscription resource associated with this content identifier
      */
-    public ContentIdentifierResponseDto(long id, SubscriptionResourceResponseDto subscriptionResource) {
+    public ContentIdentifierResponseDto(final long id, final SubscriptionResourceResponseDto subscriptionResource) {
         this.id = id;
         this.subscriptionResource = subscriptionResource;
     }
