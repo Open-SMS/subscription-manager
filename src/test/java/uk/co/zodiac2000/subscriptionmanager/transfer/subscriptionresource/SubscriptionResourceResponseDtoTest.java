@@ -1,4 +1,4 @@
-package uk.co.zodiac2000.subscriptionmanager.transfer.resource;
+package uk.co.zodiac2000.subscriptionmanager.transfer.subscriptionresource;
 
 import org.testng.Assert;
 import org.testng.annotations.Test;

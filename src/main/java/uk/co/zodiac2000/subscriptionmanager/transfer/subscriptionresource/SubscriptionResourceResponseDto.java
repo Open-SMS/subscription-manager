@@ -1,4 +1,4 @@
-package uk.co.zodiac2000.subscriptionmanager.transfer.resource;
+package uk.co.zodiac2000.subscriptionmanager.transfer.subscriptionresource;
 
 /**
  * Response DTO representing a subscription resource.

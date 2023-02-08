@@ -1,4 +1,4 @@
-package uk.co.zodiac2000.subscriptionmanager.domain.resource;
+package uk.co.zodiac2000.subscriptionmanager.domain.subscriptionresource;
 
 import java.net.URI;
 import org.testng.Assert;

@@ -12,16 +12,16 @@ import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
-import uk.co.zodiac2000.subscriptionmanager.domain.contentidentifier.ContentIdentifier;
+import uk.co.zodiac2000.subscriptionmanager.domain.subscriptioncontent.SubscriptionContent;
 import uk.co.zodiac2000.subscriptionmanager.service.SubscriptionResourceService;
-import uk.co.zodiac2000.subscriptionmanager.transfer.contentidentifier.ContentIdentifierResponseDto;
-import uk.co.zodiac2000.subscriptionmanager.transfer.resource.SubscriptionResourceResponseDto;
+import uk.co.zodiac2000.subscriptionmanager.transfer.subscriptioncontent.SubscriptionContentResponseDto;
+import uk.co.zodiac2000.subscriptionmanager.transfer.subscriptionresource.SubscriptionResourceResponseDto;
 
 /**
- * Unit tests for ContentIdentifierResponseDtoFactory.
+ * Unit tests for SubscriptionContentResponseDtoFactory.
  */
 @Listeners(MockitoTestNGListener.class)
-public class ContentIdentifierResponseDtoFactoryTest {
+public class SubscriptionContentResponseDtoFactoryTest {
 
     private static final Long ID = 42L;
     private static final Long SUBSCRIPTION_RESOURCE_ID = 87L;
@@ -31,13 +31,13 @@ public class ContentIdentifierResponseDtoFactoryTest {
     private final SubscriptionResourceResponseDto subscriptionResourceResponseDto
             = new SubscriptionResourceResponseDto(SUBSCRIPTION_RESOURCE_ID, RESOURCE_URI, RESOURCE_DESCRIPTION);
 
-    private ContentIdentifier contentIdentifier;
+    private SubscriptionContent subscriptionContent;
 
     @Mock
     private SubscriptionResourceService subscriptionResourceService;
 
     @InjectMocks
-    private ContentIdentifierResponseDtoFactory factory;
+    private SubscriptionContentResponseDtoFactory factory;
 
     @BeforeMethod
     public void setUpSubscriptionResourceService() {
@@ -46,18 +46,18 @@ public class ContentIdentifierResponseDtoFactoryTest {
     }
 
     @BeforeMethod
-    public void setUpContentIdentifier() {
-        this.contentIdentifier = new ContentIdentifier(SUBSCRIPTION_RESOURCE_ID);
-        ReflectionTestUtils.setField(this.contentIdentifier, "id", ID);
+    public void setUpSubscriptionContent() {
+        this.subscriptionContent = new SubscriptionContent(SUBSCRIPTION_RESOURCE_ID);
+        ReflectionTestUtils.setField(this.subscriptionContent, "id", ID);
     }
 
     /**
-     * Test contentIdentifierToResponseDto.
+     * Test subscriptionContentToResponseDto.
      */
     @Test
-    public void testContentIdentifierToResponseDto() {
-        Optional<ContentIdentifierResponseDto> responseDto
-                = this.factory.contentIdentifierToResponseDto(Optional.of(this.contentIdentifier));
+    public void testSubscriptionContentToResponseDto() {
+        Optional<SubscriptionContentResponseDto> responseDto
+                = this.factory.subscriptionContentToResponseDto(Optional.of(this.subscriptionContent));
 
         Assert.assertTrue(responseDto.isPresent());
         assertThat(responseDto.get(), allOf(

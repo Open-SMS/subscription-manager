@@ -8,8 +8,8 @@ import org.springframework.test.util.ReflectionTestUtils;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-import uk.co.zodiac2000.subscriptionmanager.domain.resource.SubscriptionResource;
-import uk.co.zodiac2000.subscriptionmanager.transfer.resource.SubscriptionResourceResponseDto;
+import uk.co.zodiac2000.subscriptionmanager.domain.subscriptionresource.SubscriptionResource;
+import uk.co.zodiac2000.subscriptionmanager.transfer.subscriptionresource.SubscriptionResourceResponseDto;
 
 /**
  * Unit tests for SubscriptionResourceResponseDtoFactory.

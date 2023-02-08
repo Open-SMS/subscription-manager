@@ -1,7 +1,7 @@
 package uk.co.zodiac2000.subscriptionmanager.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import uk.co.zodiac2000.subscriptionmanager.domain.resource.SubscriptionResource;
+import uk.co.zodiac2000.subscriptionmanager.domain.subscriptionresource.SubscriptionResource;
 
 /**
  * Repository for resource aggregates.

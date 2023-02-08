@@ -1,13 +1,13 @@
-package uk.co.zodiac2000.subscriptionmanager.transfer.contentidentifier;
+package uk.co.zodiac2000.subscriptionmanager.transfer.subscriptioncontent;
 
 import org.testng.Assert;
 import org.testng.annotations.Test;
-import uk.co.zodiac2000.subscriptionmanager.transfer.resource.SubscriptionResourceResponseDto;
+import uk.co.zodiac2000.subscriptionmanager.transfer.subscriptionresource.SubscriptionResourceResponseDto;
 
 /**
- * Unit tests for ContentIdentifierResponseDto.
+ * Unit tests for SubscriptionContentResponseDto.
  */
-public class ContentIdentifierResponseDtoTest {
+public class SubscriptionContentResponseDtoTest {
 
     private static final long ID = 42L;
     private static final SubscriptionResourceResponseDto SUBSCRIPTION_RESOURCE = new SubscriptionResourceResponseDto(
@@ -18,7 +18,7 @@ public class ContentIdentifierResponseDtoTest {
      */
     @Test
     public void testConstructor() {
-        ContentIdentifierResponseDto responseDto = new ContentIdentifierResponseDto(ID, SUBSCRIPTION_RESOURCE);
+        SubscriptionContentResponseDto responseDto = new SubscriptionContentResponseDto(ID, SUBSCRIPTION_RESOURCE);
 
         Assert.assertEquals(responseDto.getId(), ID);
         Assert.assertSame(responseDto.getSubscriptionResource(), SUBSCRIPTION_RESOURCE);

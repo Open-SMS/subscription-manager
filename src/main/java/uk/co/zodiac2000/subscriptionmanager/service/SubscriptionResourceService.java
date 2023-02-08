@@ -4,10 +4,10 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import uk.co.zodiac2000.subscriptionmanager.domain.resource.SubscriptionResource;
+import uk.co.zodiac2000.subscriptionmanager.domain.subscriptionresource.SubscriptionResource;
 import uk.co.zodiac2000.subscriptionmanager.factory.SubscriptionResourceResponseDtoFactory;
 import uk.co.zodiac2000.subscriptionmanager.repository.SubscriptionResourceRepository;
-import uk.co.zodiac2000.subscriptionmanager.transfer.resource.SubscriptionResourceResponseDto;
+import uk.co.zodiac2000.subscriptionmanager.transfer.subscriptionresource.SubscriptionResourceResponseDto;
 
 /**
  * Service facade for SubscriptionResource aggregates.

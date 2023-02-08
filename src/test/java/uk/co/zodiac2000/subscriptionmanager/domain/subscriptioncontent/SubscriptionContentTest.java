@@ -1,12 +1,12 @@
-package uk.co.zodiac2000.subscriptionmanager.domain.contentidentifier;
+package uk.co.zodiac2000.subscriptionmanager.domain.subscriptioncontent;
 
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
 /**
- * Unit tests for ContentIdentifier.
+ * Unit tests for SubscriptionContent.
  */
-public class ContentIdentifierTest {
+public class SubscriptionContentTest {
 
     private static final long SUBSCRIPTION_RESOURCE_ID = 42L;
 
@@ -15,7 +15,7 @@ public class ContentIdentifierTest {
      */
     @Test
     public void testConstructor() {
-        ContentIdentifier contentIdentifier = new ContentIdentifier(SUBSCRIPTION_RESOURCE_ID);
+        SubscriptionContent contentIdentifier = new SubscriptionContent(SUBSCRIPTION_RESOURCE_ID);
 
         Assert.assertNull(contentIdentifier.getId());
         Assert.assertEquals(contentIdentifier.getSubscriptionResourceId(), SUBSCRIPTION_RESOURCE_ID);
@@ -26,7 +26,7 @@ public class ContentIdentifierTest {
      */
     @Test
     public void testZeroArgsConstructor() {
-        ContentIdentifier contentIdentifier = new ContentIdentifier();
+        SubscriptionContent contentIdentifier = new SubscriptionContent();
 
         Assert.assertNotNull(contentIdentifier);
     }

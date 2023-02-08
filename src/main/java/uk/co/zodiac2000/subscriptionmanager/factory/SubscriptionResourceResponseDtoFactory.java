@@ -2,8 +2,8 @@ package uk.co.zodiac2000.subscriptionmanager.factory;
 
 import java.util.Optional;
 import org.springframework.stereotype.Component;
-import uk.co.zodiac2000.subscriptionmanager.domain.resource.SubscriptionResource;
-import uk.co.zodiac2000.subscriptionmanager.transfer.resource.SubscriptionResourceResponseDto;
+import uk.co.zodiac2000.subscriptionmanager.domain.subscriptionresource.SubscriptionResource;
+import uk.co.zodiac2000.subscriptionmanager.transfer.subscriptionresource.SubscriptionResourceResponseDto;
 
 /**
  * Factory responsible for producing SubscriptionResourceResponseDto objects.

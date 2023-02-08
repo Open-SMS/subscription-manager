@@ -1,4 +1,4 @@
-package uk.co.zodiac2000.subscriptionmanager.domain.contentidentifier;
+package uk.co.zodiac2000.subscriptionmanager.domain.subscriptioncontent;
 
 import java.io.Serializable;
 import javax.persistence.Entity;
@@ -8,11 +8,11 @@ import javax.persistence.SequenceGenerator;
 import javax.validation.constraints.NotNull;
 
 /**
- * Class representing the content that a subscription provides access to. The scope of a content identifier is defined
- * by the subscription resource indicated by {@code subscriptionResourceId}.
+ * Class representing the content that a subscription provides access to. The scope of subscription content is defined
+ * by the subscription resource referenced by {@code subscriptionResourceId}.
  */
 @Entity
-public class ContentIdentifier implements Serializable {
+public class SubscriptionContent implements Serializable {
 
     private static final long serialVersionUID = 31321L;
 
@@ -28,18 +28,18 @@ public class ContentIdentifier implements Serializable {
     /**
      * Zero-arg constructor for JPA.
      */
-    public ContentIdentifier() { }
+    public SubscriptionContent() { }
 
     /**
-     * Constructs a new ContentIdentifier using the supplied arguments.
-     * @param subscriptionResourceId the subscription resource the defines the scope of this content identifier
+     * Constructs a new SubscriptionContent using the supplied arguments.
+     * @param subscriptionResourceId the subscription resource the defines the scope of this subscription content
      */
-    public ContentIdentifier(final Long subscriptionResourceId) {
+    public SubscriptionContent(final Long subscriptionResourceId) {
         this.subscriptionResourceId = subscriptionResourceId;
     }
 
     /**
-     * @return the content identifier id
+     * @return the subscription content id
      */
     public Long getId() {
         return this.id;

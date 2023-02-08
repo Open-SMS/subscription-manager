@@ -10,31 +10,31 @@ import org.springframework.test.context.testng.AbstractTransactionalTestNGSpring
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-import uk.co.zodiac2000.subscriptionmanager.transfer.contentidentifier.ContentIdentifierResponseDto;
+import uk.co.zodiac2000.subscriptionmanager.transfer.subscriptioncontent.SubscriptionContentResponseDto;
 
 /**
- * Integration tests for ContentIdentifierService.
+ * Integration tests for SubscriptionContentService.
  */
 @SpringBootTest
 @TestPropertySource(locations = "classpath:application-integration.properties")
-public class ContentIdentifierServiceTestITCase extends AbstractTransactionalTestNGSpringContextTests {
+public class SubscriptionContentServiceTestITCase extends AbstractTransactionalTestNGSpringContextTests {
 
     @Autowired
-    private ContentIdentifierService contentIdentifierService;
+    private SubscriptionContentService subscriptionContentService;
 
     @BeforeMethod
     public void loadTestData() {
         executeSqlScript("classpath:test_data/subscription_resource_test_data.sql", false);
-        executeSqlScript("classpath:test_data/content_identifier_test_data.sql", false);
+        executeSqlScript("classpath:test_data/subscription_content_test_data.sql", false);
     }
 
     /**
-     * Test getContentIdentifier.
+     * Test getSubscriptionContent.
      */
     @Test
-    public void testGetContentIdentifier() {
-        Optional<ContentIdentifierResponseDto> responseDto
-                = this.contentIdentifierService.getContentIdentifier(100000004L);
+    public void testGetSubscriptionContent() {
+        Optional<SubscriptionContentResponseDto> responseDto
+                = this.subscriptionContentService.getSubscriptionContent(100000004L);
 
         Assert.assertTrue(responseDto.isPresent());
         assertThat(responseDto.get(), allOf(
@@ -48,12 +48,12 @@ public class ContentIdentifierServiceTestITCase extends AbstractTransactionalTes
     }
 
     /**
-     * Test getContentIdentifier when a content identifier is not found.
+     * Test getSubscriptionContent when not found.
      */
     @Test
-    public void testGetContentIdentifierNotFound() {
-        Optional<ContentIdentifierResponseDto> responseDto
-                = this.contentIdentifierService.getContentIdentifier(4321L);
+    public void testGetSubscriptionContentNotFound() {
+        Optional<SubscriptionContentResponseDto> responseDto
+                = this.subscriptionContentService.getSubscriptionContent(4321L);
 
         Assert.assertTrue(responseDto.isEmpty());
     }
