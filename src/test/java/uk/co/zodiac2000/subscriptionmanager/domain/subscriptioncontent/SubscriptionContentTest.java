@@ -8,6 +8,7 @@ import org.testng.annotations.Test;
  */
 public class SubscriptionContentTest {
 
+    private static final String SUBSCRIPTION_CONTENT_DESCRIPTION = "Example Content";
     private static final long SUBSCRIPTION_RESOURCE_ID = 42L;
 
     /**
@@ -15,9 +16,11 @@ public class SubscriptionContentTest {
      */
     @Test
     public void testConstructor() {
-        SubscriptionContent contentIdentifier = new SubscriptionContent(SUBSCRIPTION_RESOURCE_ID);
+        SubscriptionContent contentIdentifier = new SubscriptionContent(SUBSCRIPTION_CONTENT_DESCRIPTION,
+                SUBSCRIPTION_RESOURCE_ID);
 
         Assert.assertNull(contentIdentifier.getId());
+        Assert.assertEquals(contentIdentifier.getContentDescription(), SUBSCRIPTION_CONTENT_DESCRIPTION);
         Assert.assertEquals(contentIdentifier.getSubscriptionResourceId(), SUBSCRIPTION_RESOURCE_ID);
     }
 

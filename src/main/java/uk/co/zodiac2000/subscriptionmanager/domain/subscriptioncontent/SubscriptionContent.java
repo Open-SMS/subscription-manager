@@ -5,6 +5,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.SequenceGenerator;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 /**
@@ -22,6 +23,9 @@ public class SubscriptionContent implements Serializable {
     @GeneratedValue(generator = "content_identifier_id_gen")
     private Long id;
 
+    @NotEmpty
+    private String contentDescription;
+
     @NotNull
     private Long subscriptionResourceId;
 
@@ -32,9 +36,11 @@ public class SubscriptionContent implements Serializable {
 
     /**
      * Constructs a new SubscriptionContent using the supplied arguments.
+     * @param contentDescription description of this subscription content
      * @param subscriptionResourceId the subscription resource the defines the scope of this subscription content
      */
-    public SubscriptionContent(final Long subscriptionResourceId) {
+    public SubscriptionContent(final String contentDescription, final Long subscriptionResourceId) {
+        this.contentDescription = contentDescription;
         this.subscriptionResourceId = subscriptionResourceId;
     }
 
@@ -43,6 +49,13 @@ public class SubscriptionContent implements Serializable {
      */
     public Long getId() {
         return this.id;
+    }
+
+    /**
+     * @return description of this subscription content
+     */
+    public String getContentDescription() {
+        return this.contentDescription;
     }
 
     /**

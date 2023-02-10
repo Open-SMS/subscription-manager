@@ -24,6 +24,7 @@ import uk.co.zodiac2000.subscriptionmanager.transfer.subscriptionresource.Subscr
 public class SubscriptionContentResponseDtoFactoryTest {
 
     private static final Long ID = 42L;
+    private static final String SUBSCRIPTION_CONTENT_DESCRIPTION = "Example Content";
     private static final Long SUBSCRIPTION_RESOURCE_ID = 87L;
     private static final String RESOURCE_URI = "https://example.com";
     private static final String RESOURCE_DESCRIPTION = "Example";
@@ -47,7 +48,7 @@ public class SubscriptionContentResponseDtoFactoryTest {
 
     @BeforeMethod
     public void setUpSubscriptionContent() {
-        this.subscriptionContent = new SubscriptionContent(SUBSCRIPTION_RESOURCE_ID);
+        this.subscriptionContent = new SubscriptionContent(SUBSCRIPTION_CONTENT_DESCRIPTION, SUBSCRIPTION_RESOURCE_ID);
         ReflectionTestUtils.setField(this.subscriptionContent, "id", ID);
     }
 
@@ -62,6 +63,7 @@ public class SubscriptionContentResponseDtoFactoryTest {
         Assert.assertTrue(responseDto.isPresent());
         assertThat(responseDto.get(), allOf(
                 hasProperty("id", is(ID)),
+                hasProperty("contentDescription", is(SUBSCRIPTION_CONTENT_DESCRIPTION)),
                 hasProperty("subscriptionResource", allOf(
                         hasProperty("id", is(SUBSCRIPTION_RESOURCE_ID)),
                         hasProperty("resourceUri", is(RESOURCE_URI)),

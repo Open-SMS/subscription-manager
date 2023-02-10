@@ -9,15 +9,20 @@ public class SubscriptionContentResponseDto {
 
     private final long id;
 
+    private final String contentDescription;
+
     private final SubscriptionResourceResponseDto subscriptionResource;
 
     /**
      * Constructs a new SubscriptionContentResponseDto using the supplied arguments.
      * @param id the subscription content identifier
+     * @param contentDescription description of this subscription content
      * @param subscriptionResource the subscription resource associated with this subscription content
      */
-    public SubscriptionContentResponseDto(final long id, final SubscriptionResourceResponseDto subscriptionResource) {
+    public SubscriptionContentResponseDto(final long id, final String contentDescription,
+            final SubscriptionResourceResponseDto subscriptionResource) {
         this.id = id;
+        this.contentDescription = contentDescription;
         this.subscriptionResource = subscriptionResource;
     }
 
@@ -26,6 +31,13 @@ public class SubscriptionContentResponseDto {
      */
     public long getId() {
         return this.id;
+    }
+
+    /**
+     * @return description of this subscription content
+     */
+    public String getContentDescription() {
+        return this.contentDescription;
     }
 
     /**

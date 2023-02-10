@@ -23,12 +23,14 @@ public class SubscriptionResponseDtoTest {
     private static final boolean CAN_BE_TERMINATED = true;
     private static final boolean CAN_BE_UNSUSPENDED = true;
     private static final Long SUBSCRIPTION_CONTENT_ID = 293L;
+    private static final String SUBSCRIPTION_CONTENT_DESCRIPTION = "Example Content";
     private static final Long SUBSCRIPTION_RESOURCE_ID = 303L;
     private static final String SUBSCRIPTION_RESOURCE_URI = "https://example.com";
     private static final String SUBSCRIPTION_RESOURCE_DESCRIPTION = "Example";
     private static final SubscriptionContentResponseDto SUBSCRIPTION_CONTENT_RESPONSE_DTO
             = new SubscriptionContentResponseDto(
                     SUBSCRIPTION_CONTENT_ID,
+                    SUBSCRIPTION_CONTENT_DESCRIPTION,
                     new SubscriptionResourceResponseDto(SUBSCRIPTION_RESOURCE_ID, SUBSCRIPTION_RESOURCE_URI,
                             SUBSCRIPTION_RESOURCE_DESCRIPTION)
             );

@@ -27,6 +27,7 @@ public class SubscriptionContentResponseDtoFactory {
         return subscriptionContent
                 .map(c -> new SubscriptionContentResponseDto(
                         c.getId(),
+                        c.getContentDescription(),
                         this.subscriptionResourceService.getSubscriptionResource(c.getSubscriptionResourceId()).get()
                 ));
     }
