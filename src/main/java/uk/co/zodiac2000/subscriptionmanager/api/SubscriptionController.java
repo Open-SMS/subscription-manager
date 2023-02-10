@@ -22,7 +22,7 @@ import org.springframework.web.servlet.ModelAndView;
 import uk.co.zodiac2000.subscriptionmanager.domain.subscription.Subscription;
 import uk.co.zodiac2000.subscriptionmanager.service.SubscriptionService;
 import uk.co.zodiac2000.subscriptionmanager.transfer.subscription.NewSubscriptionCommandDto;
-import uk.co.zodiac2000.subscriptionmanager.transfer.subscription.SubscriptionContentIdentifierCommandDto;
+import uk.co.zodiac2000.subscriptionmanager.transfer.subscription.SubscriptionContentIdCommandDto;
 import uk.co.zodiac2000.subscriptionmanager.transfer.subscription.SubscriptionDatesCommandDto;
 import uk.co.zodiac2000.subscriptionmanager.transfer.subscription.SubscriptionResponseDto;
 
@@ -116,7 +116,7 @@ public class SubscriptionController {
     @PutMapping("/{id}/content-identifier")
     public ResponseEntity<SubscriptionResponseDto> updateSubscriptionContentIdentifier(
             @PathVariable("id") final long id,
-            @RequestBody @Valid final SubscriptionContentIdentifierCommandDto commandDto) {
+            @RequestBody @Valid final SubscriptionContentIdCommandDto commandDto) {
         return ResponseEntity.of(this.subscriptionService.updateSubscriptionContentIdentifier(id, commandDto));
     }
 
