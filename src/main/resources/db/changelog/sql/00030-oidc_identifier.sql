@@ -6,7 +6,7 @@ CREATE TABLE oidc_identifier (
     id SERIAL PRIMARY KEY,
     issuer VARCHAR(1000) NOT NULL,
     subject VARCHAR(1000) NOT NULL,
-    subscriber_id INTEGER NOT NULL,
+    subscriber_id BIGINT NOT NULL,
     CONSTRAINT oidc_identifier_fk_subscriber_id FOREIGN KEY (subscriber_id) REFERENCES subscriber(id)
 );
 

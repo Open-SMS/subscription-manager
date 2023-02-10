@@ -6,7 +6,7 @@ CREATE TABLE saml_identifier (
     id SERIAL PRIMARY KEY,
     entity_id VARCHAR(1000) NOT NULL,
     scoped_affiliation VARCHAR(1000) NOT NULL,
-    subscriber_id INTEGER NOT NULL,
+    subscriber_id BIGINT NOT NULL,
     CONSTRAINT saml_identifier_fk_subscriber_id FOREIGN KEY (subscriber_id) REFERENCES subscriber(id)
 );
 

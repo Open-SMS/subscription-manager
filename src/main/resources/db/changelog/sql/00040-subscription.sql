@@ -8,7 +8,7 @@ CREATE TABLE subscription (
     end_date DATE,
     terminated BOOLEAN NOT NULL DEFAULT FALSE,
     content_identifier VARCHAR(100) NOT NULL,
-    subscriber_id INTEGER NOT NULL,
+    subscriber_id BIGINT NOT NULL,
     CONSTRAINT subscription_fk_subscriber_id FOREIGN KEY (subscriber_id) REFERENCES subscriber (id)
 );
 
