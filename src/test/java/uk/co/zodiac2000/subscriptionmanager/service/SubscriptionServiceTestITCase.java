@@ -484,13 +484,13 @@ public class SubscriptionServiceTestITCase extends AbstractTransactionalTestNGSp
     }
 
     /**
-     * Test updateSubscriptionContentIdentifier.
+     * Test updateSubscriptionContentId.
      */
     @Test
-    public void testUpdateSubscriptionContentIdentifier() {
+    public void testUpdateSubscriptionContentId() {
         SubscriptionContentIdCommandDto commandDto = new SubscriptionContentIdCommandDto("100000004");
         Optional<SubscriptionResponseDto> responseDto
-                = this.subscriptionService.updateSubscriptionContentIdentifier(100000006L, commandDto);
+                = this.subscriptionService.updateSubscriptionContentId(100000006L, commandDto);
         this.subscriptionRepository.flush();
 
         Assert.assertTrue(responseDto.isPresent());
@@ -512,13 +512,13 @@ public class SubscriptionServiceTestITCase extends AbstractTransactionalTestNGSp
     }
 
     /**
-     * Test updateSubscriptionContentIdentifier when the subscription does not exist.
+     * Test updateSubscriptionContentId when the subscription does not exist.
      */
     @Test
-    public void testUpdateSubscriptionContentIdentifierNotExists() {
+    public void testUpdateSubscriptionContentIdNotExists() {
         SubscriptionContentIdCommandDto commandDto = new SubscriptionContentIdCommandDto("100000004");
         Optional<SubscriptionResponseDto> responseDto
-                = this.subscriptionService.updateSubscriptionContentIdentifier(123L, commandDto);
+                = this.subscriptionService.updateSubscriptionContentId(123L, commandDto);
 
         Assert.assertTrue(responseDto.isEmpty());
     }

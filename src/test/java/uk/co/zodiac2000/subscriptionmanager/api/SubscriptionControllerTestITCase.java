@@ -179,7 +179,7 @@ public class SubscriptionControllerTestITCase extends AbstractTransactionalTestN
         String updatedSubscriptionDatesJson = "{"
                 + "\"subscriptionContentId\":\"100000005\""
                 + "}";
-        EntityExchangeResult<byte[]> result = this.client.put().uri("/subscription/100000004/content-identifier")
+        EntityExchangeResult<byte[]> result = this.client.put().uri("/subscription/100000004/subscription-content-id")
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(updatedSubscriptionDatesJson)

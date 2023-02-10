@@ -80,15 +80,15 @@ public class SubscriptionService {
     }
 
     /**
-     * Updates the content identifier associated with the Subscription identified by id. Returns a response DTO
+     * Updates the subscription content id for the Subscription identified by id. Returns a response DTO
      * representing the updated subscription. If the subscription doesn't exist then an empty optional is returned and
      * no change is made to the state of the system.
      * @param id the subscription identifier
-     * @param commandDto command DTO representing the updated content identifier
+     * @param commandDto command DTO representing the updated subscription content id
      * @return a SubscriptionResponseDto
      */
     @Transactional(readOnly = false)
-    public Optional<SubscriptionResponseDto> updateSubscriptionContentIdentifier(final long id,
+    public Optional<SubscriptionResponseDto> updateSubscriptionContentId(final long id,
             final SubscriptionContentIdCommandDto commandDto) {
         Optional<Subscription> subscription = this.subscriptionRepository.findById(id);
         subscription.ifPresent(s -> s.setSubscriptionContentId(commandDto));
