@@ -50,6 +50,8 @@ public class SubscriptionControllerTestITCase extends AbstractTransactionalTestN
     @BeforeMethod
     public void loadTestData() {
         executeSqlScript("classpath:test_data/claim_name_test_data.sql", false);
+        executeSqlScript("classpath:test_data/subscription_resource_test_data.sql", false);
+        executeSqlScript("classpath:test_data/subscription_content_test_data.sql", false);
         executeSqlScript("classpath:test_data/subscriber_test_data.sql", false);
         executeSqlScript("classpath:test_data/subscription_test_data.sql", false);
     }
@@ -70,7 +72,12 @@ public class SubscriptionControllerTestITCase extends AbstractTransactionalTestN
                 .jsonPath("$.endDate").isEmpty()
                 .jsonPath("$.terminated").isEqualTo(false)
                 .jsonPath("$.suspended").isEqualTo(false)
-                .jsonPath("$.contentIdentifier").isEqualTo("CONTENT-2")
+                .jsonPath("$.subscriptionContent.id").isEqualTo("100000002")
+                .jsonPath("$.subscriptionContent.subscriptionResource.id").isEqualTo("100000002")
+                .jsonPath("$.subscriptionContent.subscriptionResource.resourceUri")
+                    .isEqualTo("https://universal-reference.com/music")
+                .jsonPath("$.subscriptionContent.subscriptionResource.resourceDescription")
+                    .isEqualTo("Universal Reference Music library")
                 .jsonPath("$.subscriberId").isEqualTo(100000010L)
                 .jsonPath("$.active").isEqualTo(false)
                 .jsonPath("$.canBeSuspended").isEqualTo(true)
@@ -86,7 +93,7 @@ public class SubscriptionControllerTestITCase extends AbstractTransactionalTestN
         String newSubscriptionJson = "{"
                 + "\"startDate\":\"2012-01-01\","
                 + "\"endDate\":\"2020-01-01\","
-                + "\"contentIdentifier\":\"CONTENT-X\","
+                + "\"subscriptionContentId\":\"100000004\","
                 + "\"subscriberId\":100000010"
                 + "}";
         EntityExchangeResult<byte[]> result = this.client.post().uri("/subscription")
@@ -112,7 +119,7 @@ public class SubscriptionControllerTestITCase extends AbstractTransactionalTestN
         Assert.assertEquals(subscription.get().getStartDate().get(), LocalDate.parse("2012-01-01"));
         Assert.assertTrue(subscription.get().getEndDate().isPresent());
         Assert.assertEquals(subscription.get().getEndDate().get(), LocalDate.parse("2020-01-01"));
-        Assert.assertEquals(subscription.get().getContentIdentifier(), "CONTENT-X");
+        Assert.assertEquals(subscription.get().getSubscriptionContentId(), 100000004L);
         Assert.assertEquals(subscription.get().getSubscriberId(), 100000010L);
     }
 
@@ -170,7 +177,7 @@ public class SubscriptionControllerTestITCase extends AbstractTransactionalTestN
     @Test
     public void testUpdateSubscriptionContentIdentifier() {
         String updatedSubscriptionDatesJson = "{"
-                + "\"contentIdentifier\":\"CONTENT-Z\""
+                + "\"subscriptionContentId\":\"100000005\""
                 + "}";
         EntityExchangeResult<byte[]> result = this.client.put().uri("/subscription/100000004/content-identifier")
                 .accept(MediaType.APPLICATION_JSON)
@@ -190,7 +197,7 @@ public class SubscriptionControllerTestITCase extends AbstractTransactionalTestN
         subscription.ifPresent(s -> this.entityManager.refresh(s));
 
         Assert.assertTrue(subscription.isPresent());
-        Assert.assertEquals(subscription.get().getContentIdentifier(), "CONTENT-Z");
+        Assert.assertEquals(subscription.get().getSubscriptionContentId(), 100000005L);
     }
 
     /**

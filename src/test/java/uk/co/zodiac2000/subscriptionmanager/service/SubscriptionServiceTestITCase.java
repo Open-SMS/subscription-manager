@@ -16,7 +16,7 @@ import uk.co.zodiac2000.subscriptionmanager.configuration.TestClockConfiguration
 import uk.co.zodiac2000.subscriptionmanager.domain.subscription.Subscription;
 import uk.co.zodiac2000.subscriptionmanager.repository.SubscriptionRepository;
 import uk.co.zodiac2000.subscriptionmanager.transfer.subscription.NewSubscriptionCommandDto;
-import uk.co.zodiac2000.subscriptionmanager.transfer.subscription.SubscriptionContentIdentifierCommandDto;
+import uk.co.zodiac2000.subscriptionmanager.transfer.subscription.SubscriptionContentIdCommandDto;
 import uk.co.zodiac2000.subscriptionmanager.transfer.subscription.SubscriptionDatesCommandDto;
 import uk.co.zodiac2000.subscriptionmanager.transfer.subscription.SubscriptionResponseDto;
 
@@ -29,7 +29,7 @@ public class SubscriptionServiceTestITCase extends AbstractTransactionalTestNGSp
 
     private static final Optional<String> START_DATE = Optional.of("2011-01-01");
     private static final Optional<String> END_DATE = Optional.of("2014-12-31");
-    private static final String CONTENT_IDENTIFIER = "CONTENT";
+    private static final Long SUBSCRIPTION_CONTENT_ID = 100000002L; // Universal Reference Music library
     private static final Long SUBSCRIBER_ID = 100000005L; // The Open University
 
     @Autowired
@@ -45,6 +45,8 @@ public class SubscriptionServiceTestITCase extends AbstractTransactionalTestNGSp
     public void loadTestData() {
         executeSqlScript("classpath:test_data/claim_name_test_data.sql", false);
         executeSqlScript("classpath:test_data/subscriber_test_data.sql", false);
+        executeSqlScript("classpath:test_data/subscription_resource_test_data.sql", false);
+        executeSqlScript("classpath:test_data/subscription_content_test_data.sql", false);
         executeSqlScript("classpath:test_data/subscription_test_data.sql", false);
     }
 
@@ -64,7 +66,14 @@ public class SubscriptionServiceTestITCase extends AbstractTransactionalTestNGSp
                         hasProperty("endDate", is(Optional.of(LocalDate.parse("2012-12-31")))),
                         hasProperty("terminated", is(false)),
                         hasProperty("suspended", is(false)),
-                        hasProperty("contentIdentifier", is("CONTENT-1")),
+                        hasProperty("subscriptionContent", allOf(
+                                hasProperty("id", is(100000002L)),
+                                hasProperty("subscriptionResource", allOf(
+                                        hasProperty("id", is(100000002L)),
+                                        hasProperty("resourceUri", is("https://universal-reference.com/music")),
+                                        hasProperty("resourceDescription", is("Universal Reference Music library"))
+                                ))
+                        )),
                         hasProperty("subscriberId", is(100000001L)),
                         hasProperty("active", is(true)),
                         hasProperty("canBeSuspended", is(true)),
@@ -99,7 +108,14 @@ public class SubscriptionServiceTestITCase extends AbstractTransactionalTestNGSp
                         hasProperty("endDate", is(Optional.of(LocalDate.parse("2012-12-31")))),
                         hasProperty("terminated", is(true)),
                         hasProperty("suspended", is(true)),
-                        hasProperty("contentIdentifier", is("CONTENT-1")),
+                        hasProperty("subscriptionContent", allOf(
+                                hasProperty("id", is(100000001L)),
+                                hasProperty("subscriptionResource", allOf(
+                                        hasProperty("id", is(100000001L)),
+                                        hasProperty("resourceUri", is("https://example.com")),
+                                        hasProperty("resourceDescription", is("Example"))
+                                ))
+                        )),
                         hasProperty("subscriberId", is(100000008L)),
                         hasProperty("active", is(false)),
                         hasProperty("canBeSuspended", is(false)),
@@ -124,7 +140,14 @@ public class SubscriptionServiceTestITCase extends AbstractTransactionalTestNGSp
                         hasProperty("endDate", is(Optional.of(LocalDate.parse("2012-12-31")))),
                         hasProperty("terminated", is(false)),
                         hasProperty("suspended", is(true)),
-                        hasProperty("contentIdentifier", is("CONTENT-3")),
+                        hasProperty("subscriptionContent", allOf(
+                                hasProperty("id", is(100000003L)),
+                                hasProperty("subscriptionResource", allOf(
+                                        hasProperty("id", is(100000003L)),
+                                        hasProperty("resourceUri", is("https://universal-reference.com/economics")),
+                                        hasProperty("resourceDescription", is("Universal Reference Economics library"))
+                                ))
+                        )),
                         hasProperty("subscriberId", is(100000010L)),
                         hasProperty("active", is(false)),
                         hasProperty("canBeSuspended", is(false)),
@@ -150,7 +173,6 @@ public class SubscriptionServiceTestITCase extends AbstractTransactionalTestNGSp
                         hasProperty("endDate", is(Optional.of(LocalDate.parse("2011-12-31")))),
                         hasProperty("terminated", is(false)),
                         hasProperty("suspended", is(false)),
-                        hasProperty("contentIdentifier", is("CONTENT-3")),
                         hasProperty("subscriberId", is(100000004L)),
                         hasProperty("active", is(false)),
                         hasProperty("canBeSuspended", is(true)),
@@ -176,7 +198,6 @@ public class SubscriptionServiceTestITCase extends AbstractTransactionalTestNGSp
                         hasProperty("endDate", is(Optional.of(LocalDate.parse("2012-12-31")))),
                         hasProperty("terminated", is(false)),
                         hasProperty("suspended", is(false)),
-                        hasProperty("contentIdentifier", is("CONTENT-2")),
                         hasProperty("subscriberId", is(100000008L)),
                         hasProperty("active", is(true)),
                         hasProperty("canBeSuspended", is(true)),
@@ -202,7 +223,6 @@ public class SubscriptionServiceTestITCase extends AbstractTransactionalTestNGSp
                         hasProperty("endDate", is(Optional.of(LocalDate.parse("2012-06-03")))),
                         hasProperty("terminated", is(false)),
                         hasProperty("suspended", is(false)),
-                        hasProperty("contentIdentifier", is("CONTENT-2")),
                         hasProperty("subscriberId", is(100000008L)),
                         hasProperty("active", is(true)),
                         hasProperty("canBeSuspended", is(true)),
@@ -228,7 +248,6 @@ public class SubscriptionServiceTestITCase extends AbstractTransactionalTestNGSp
                         hasProperty("endDate", is(Optional.of(LocalDate.parse("2012-12-31")))),
                         hasProperty("terminated", is(false)),
                         hasProperty("suspended", is(false)),
-                        hasProperty("contentIdentifier", is("CONTENT-1")),
                         hasProperty("subscriberId", is(100000009L)),
                         hasProperty("active", is(true)),
                         hasProperty("canBeSuspended", is(true)),
@@ -254,7 +273,6 @@ public class SubscriptionServiceTestITCase extends AbstractTransactionalTestNGSp
                         hasProperty("endDate", is(Optional.of(LocalDate.parse("2012-06-02")))),
                         hasProperty("terminated", is(false)),
                         hasProperty("suspended", is(false)),
-                        hasProperty("contentIdentifier", is("CONTENT-2")),
                         hasProperty("subscriberId", is(100000009L)),
                         hasProperty("active", is(false)),
                         hasProperty("canBeSuspended", is(true)),
@@ -280,7 +298,6 @@ public class SubscriptionServiceTestITCase extends AbstractTransactionalTestNGSp
                         hasProperty("endDate", is(Optional.empty())),
                         hasProperty("terminated", is(false)),
                         hasProperty("suspended", is(false)),
-                        hasProperty("contentIdentifier", is("CONTENT-1")),
                         hasProperty("subscriberId", is(100000010L)),
                         hasProperty("active", is(true)),
                         hasProperty("canBeSuspended", is(true)),
@@ -305,7 +322,6 @@ public class SubscriptionServiceTestITCase extends AbstractTransactionalTestNGSp
                         hasProperty("endDate", is(Optional.empty())),
                         hasProperty("terminated", is(false)),
                         hasProperty("suspended", is(false)),
-                        hasProperty("contentIdentifier", is("CONTENT-2")),
                         hasProperty("subscriberId", is(100000010L)),
                         hasProperty("active", is(false)),
                         hasProperty("canBeSuspended", is(true)),
@@ -340,8 +356,8 @@ public class SubscriptionServiceTestITCase extends AbstractTransactionalTestNGSp
      */
     @Test
     public void testCreateSubscription() {
-        NewSubscriptionCommandDto commandDto
-                = new NewSubscriptionCommandDto(START_DATE, END_DATE, CONTENT_IDENTIFIER, SUBSCRIBER_ID.toString());
+        NewSubscriptionCommandDto commandDto = new NewSubscriptionCommandDto(START_DATE, END_DATE,
+                SUBSCRIPTION_CONTENT_ID.toString(), SUBSCRIBER_ID.toString());
         Optional<SubscriptionResponseDto> responseDto = this.subscriptionService.createSubscription(commandDto);
         this.subscriptionRepository.flush();
 
@@ -349,14 +365,21 @@ public class SubscriptionServiceTestITCase extends AbstractTransactionalTestNGSp
         Assert.assertTrue(responseDto.get().getId() != null);
         Assert.assertEquals(responseDto.get().getStartDate(), START_DATE.map(LocalDate::parse));
         Assert.assertEquals(responseDto.get().getEndDate(), END_DATE.map(LocalDate::parse));
-        Assert.assertEquals(responseDto.get().getContentIdentifier(), CONTENT_IDENTIFIER);
+        assertThat(responseDto.get().getSubscriptionContent(), allOf(
+                hasProperty("id", is(SUBSCRIPTION_CONTENT_ID)),
+                hasProperty("subscriptionResource", allOf(
+                        hasProperty("id", is(100000002L)),
+                        hasProperty("resourceUri", is("https://universal-reference.com/music")),
+                        hasProperty("resourceDescription", is("Universal Reference Music library"))
+                ))
+        ));
         Assert.assertEquals(responseDto.get().getSubscriberId(), SUBSCRIBER_ID);
 
         Optional<Subscription> subscription = this.subscriptionRepository.findById(responseDto.get().getId());
         Assert.assertTrue(subscription.isPresent());
         Assert.assertEquals(subscription.get().getStartDate(), START_DATE.map(LocalDate::parse));
         Assert.assertEquals(subscription.get().getEndDate(), END_DATE.map(LocalDate::parse));
-        Assert.assertEquals(subscription.get().getContentIdentifier(), CONTENT_IDENTIFIER);
+        Assert.assertEquals(subscription.get().getSubscriptionContentId(), SUBSCRIPTION_CONTENT_ID);
         Assert.assertEquals(subscription.get().getSubscriberId(), SUBSCRIBER_ID);
     }
 
@@ -366,7 +389,7 @@ public class SubscriptionServiceTestITCase extends AbstractTransactionalTestNGSp
     @Test
     public void testCreateSubscriptionEmptyStartEnd() {
         NewSubscriptionCommandDto commandDto = new NewSubscriptionCommandDto(Optional.empty(), Optional.empty(),
-                CONTENT_IDENTIFIER, SUBSCRIBER_ID.toString());
+                SUBSCRIPTION_CONTENT_ID.toString(), SUBSCRIBER_ID.toString());
         Optional<SubscriptionResponseDto> responseDto = this.subscriptionService.createSubscription(commandDto);
         this.subscriptionRepository.flush();
 
@@ -374,14 +397,13 @@ public class SubscriptionServiceTestITCase extends AbstractTransactionalTestNGSp
         Assert.assertTrue(responseDto.get().getId() != null);
         Assert.assertEquals(responseDto.get().getStartDate(), Optional.empty());
         Assert.assertEquals(responseDto.get().getEndDate(), Optional.empty());
-        Assert.assertEquals(responseDto.get().getContentIdentifier(), CONTENT_IDENTIFIER);
         Assert.assertEquals(responseDto.get().getSubscriberId(), SUBSCRIBER_ID);
 
         Optional<Subscription> subscription = this.subscriptionRepository.findById(responseDto.get().getId());
         Assert.assertTrue(subscription.isPresent());
         Assert.assertEquals(subscription.get().getStartDate(), Optional.empty());
         Assert.assertEquals(subscription.get().getEndDate(), Optional.empty());
-        Assert.assertEquals(subscription.get().getContentIdentifier(), CONTENT_IDENTIFIER);
+        Assert.assertEquals(subscription.get().getSubscriptionContentId(), SUBSCRIPTION_CONTENT_ID);
         Assert.assertEquals(subscription.get().getSubscriberId(), SUBSCRIBER_ID);
     }
 
@@ -390,8 +412,8 @@ public class SubscriptionServiceTestITCase extends AbstractTransactionalTestNGSp
      */
     @Test(expectedExceptions = {IllegalArgumentException.class})
     public void testCreateSubscriptionInvalidDates() {
-        NewSubscriptionCommandDto commandDto
-                = new NewSubscriptionCommandDto(END_DATE, START_DATE, CONTENT_IDENTIFIER, SUBSCRIBER_ID.toString());
+        NewSubscriptionCommandDto commandDto = new NewSubscriptionCommandDto(END_DATE, START_DATE,
+                SUBSCRIPTION_CONTENT_ID.toString(), SUBSCRIBER_ID.toString());
         Optional<SubscriptionResponseDto> responseDto = this.subscriptionService.createSubscription(commandDto);
     }
 
@@ -466,19 +488,27 @@ public class SubscriptionServiceTestITCase extends AbstractTransactionalTestNGSp
      */
     @Test
     public void testUpdateSubscriptionContentIdentifier() {
-        SubscriptionContentIdentifierCommandDto commandDto = new SubscriptionContentIdentifierCommandDto("CONTENT-X");
+        SubscriptionContentIdCommandDto commandDto = new SubscriptionContentIdCommandDto("100000004");
         Optional<SubscriptionResponseDto> responseDto
                 = this.subscriptionService.updateSubscriptionContentIdentifier(100000006L, commandDto);
         this.subscriptionRepository.flush();
 
         Assert.assertTrue(responseDto.isPresent());
-        Assert.assertEquals(responseDto.get().getContentIdentifier(), "CONTENT-X");
+        assertThat(responseDto.get().getSubscriptionContent(), allOf(
+                hasProperty("id", is(100000004L)),
+                hasProperty("subscriptionResource", allOf(
+                        hasProperty("id", is(100000004L)),
+                        hasProperty("resourceUri", is("urn:zodiac2000.co.uk:data")),
+                        hasProperty("resourceDescription", is("Zodiac 2000 Data"))
+                ))
+        ));
+
 
         Optional<Subscription> subscription = this.subscriptionRepository.findById(100000006L);
         subscription.ifPresent(s -> this.entityManager.refresh(s));
 
         Assert.assertTrue(subscription.isPresent());
-        Assert.assertEquals(subscription.get().getContentIdentifier(), "CONTENT-X");
+        Assert.assertEquals(subscription.get().getSubscriptionContentId(), 100000004L);
     }
 
     /**
@@ -486,7 +516,7 @@ public class SubscriptionServiceTestITCase extends AbstractTransactionalTestNGSp
      */
     @Test
     public void testUpdateSubscriptionContentIdentifierNotExists() {
-        SubscriptionContentIdentifierCommandDto commandDto = new SubscriptionContentIdentifierCommandDto("CONTENT-X");
+        SubscriptionContentIdCommandDto commandDto = new SubscriptionContentIdCommandDto("100000004");
         Optional<SubscriptionResponseDto> responseDto
                 = this.subscriptionService.updateSubscriptionContentIdentifier(123L, commandDto);
 
