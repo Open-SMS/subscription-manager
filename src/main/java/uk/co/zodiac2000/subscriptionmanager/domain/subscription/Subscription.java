@@ -7,9 +7,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.SequenceGenerator;
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-import uk.co.zodiac2000.subscriptionmanager.transfer.subscription.SubscriptionContentIdentifierCommandDto;
+import uk.co.zodiac2000.subscriptionmanager.transfer.subscription.SubscriptionContentIdCommandDto;
 import uk.co.zodiac2000.subscriptionmanager.transfer.subscription.SubscriptionDatesCommandDto;
 
 /**
@@ -33,8 +32,8 @@ public class Subscription implements Serializable {
 
     private boolean terminated;
 
-    @NotEmpty
-    private String contentIdentifier;
+    @NotNull
+    private Long subscriptionContentId;
 
     @NotNull
     private Long subscriberId;
@@ -49,17 +48,18 @@ public class Subscription implements Serializable {
      * neither terminated nor suspended.
      * @param optionalStartDate the date from which this subscription is active
      * @param optionalEndDate the date until which this subscription is active
-     * @param contentIdentifier a string that describes the content that is the subject of this subscription
+     * @param subscriptionContentId the identifier of the subscription content that this subscription
+     * provides access to
      * @param subscriberId the identifier of the subscriber that is the beneficiary of this subscription
      */
     public Subscription(final Optional<LocalDate> optionalStartDate, final Optional<LocalDate> optionalEndDate,
-            final String contentIdentifier, final long subscriberId) {
+            final long subscriptionContentId, final long subscriberId) {
         if (!firstDateBeforeSecondDate(optionalStartDate, optionalEndDate)) {
             throw new IllegalArgumentException("startDate must be before or equal to endDate");
         }
         this.startDate = optionalStartDate.orElse(null);
         this.endDate = optionalEndDate.orElse(null);
-        this.contentIdentifier = contentIdentifier;
+        this.subscriptionContentId = subscriptionContentId;
         this.terminated = false;
         this.suspended = false;
         this.subscriberId = subscriberId;
@@ -167,10 +167,10 @@ public class Subscription implements Serializable {
     }
 
     /**
-     * @return a string that describes the content that is the subject of this subscription
+     * @return the identifier of the subscription content that this subscription provides access to
      */
-    public String getContentIdentifier() {
-        return contentIdentifier;
+    public Long getSubscriptionContentId() {
+        return subscriptionContentId;
     }
 
     /**
@@ -221,10 +221,10 @@ public class Subscription implements Serializable {
     }
 
     /**
-     * Sets the content identifier associated with this subscription.
-     * @param commandDto command DTO representing the new content identifier
+     * Sets the identifier of the subscription content associated with this subscription.
+     * @param commandDto command DTO representing the new subscription content identifier
      */
-    public void setContentIdentifier(final SubscriptionContentIdentifierCommandDto commandDto) {
-        this.contentIdentifier = commandDto.getContentIdentifier();
+    public void setSubscriptionContentId(final SubscriptionContentIdCommandDto commandDto) {
+        this.subscriptionContentId = Long.valueOf(commandDto.getSubscriptionContentId());
     }
 }
