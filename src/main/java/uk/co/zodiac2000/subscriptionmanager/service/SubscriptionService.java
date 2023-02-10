@@ -9,7 +9,7 @@ import uk.co.zodiac2000.subscriptionmanager.factory.SubscriptionFactory;
 import uk.co.zodiac2000.subscriptionmanager.factory.SubscriptionResponseDtoFactory;
 import uk.co.zodiac2000.subscriptionmanager.repository.SubscriptionRepository;
 import uk.co.zodiac2000.subscriptionmanager.transfer.subscription.NewSubscriptionCommandDto;
-import uk.co.zodiac2000.subscriptionmanager.transfer.subscription.SubscriptionContentIdentifierCommandDto;
+import uk.co.zodiac2000.subscriptionmanager.transfer.subscription.SubscriptionContentIdCommandDto;
 import uk.co.zodiac2000.subscriptionmanager.transfer.subscription.SubscriptionDatesCommandDto;
 import uk.co.zodiac2000.subscriptionmanager.transfer.subscription.SubscriptionResponseDto;
 
@@ -89,9 +89,9 @@ public class SubscriptionService {
      */
     @Transactional(readOnly = false)
     public Optional<SubscriptionResponseDto> updateSubscriptionContentIdentifier(final long id,
-            final SubscriptionContentIdentifierCommandDto commandDto) {
+            final SubscriptionContentIdCommandDto commandDto) {
         Optional<Subscription> subscription = this.subscriptionRepository.findById(id);
-        subscription.ifPresent(s -> s.setContentIdentifier(commandDto));
+        subscription.ifPresent(s -> s.setSubscriptionContentId(commandDto));
         return this.subscriptionResponseDtoFactory.subscriptionToSubscriptionResponseDto(subscription);
     }
 
