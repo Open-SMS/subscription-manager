@@ -1,7 +1,9 @@
 package uk.co.zodiac2000.subscriptionmanager.transfer.subscription;
 
 import java.util.Optional;
-import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Digits;
+import javax.validation.constraints.NotNull;
+import uk.co.zodiac2000.subscriptionmanager.ApplicationConstants;
 import uk.co.zodiac2000.subscriptionmanager.constraint.ValidDateRange;
 import uk.co.zodiac2000.subscriptionmanager.constraint.ValidDateString;
 
@@ -18,9 +20,12 @@ public class NewSubscriptionCommandDto {
     @ValidDateString
     private Optional<String> endDate;
 
-    @NotEmpty
-    private String contentIdentifier;
+    @NotNull
+    @Digits(integer = ApplicationConstants.MAX_LONG_DIGITS, fraction = 0)
+    private String subscriptionContentId;
 
+    @NotNull
+    @Digits(integer = ApplicationConstants.MAX_LONG_DIGITS, fraction = 0)
     private String subscriberId;
 
     /**
@@ -32,14 +37,14 @@ public class NewSubscriptionCommandDto {
      * Constructs a new NewSubscriptionCommandDto using the supplied arguments.
      * @param startDate the date from which the subscription is active
      * @param endDate the date until which the subscription is active
-     * @param contentIdentifier a string that describes the content that is the subject of the subscription
+     * @param subscriptionContentId the identifier of the subscription content that this subscription provides access to
      * @param subscriberId the subscriber that is the beneficiary of this subscription
      */
     public NewSubscriptionCommandDto(final Optional<String> startDate, final Optional<String> endDate,
-            final String contentIdentifier, final String subscriberId) {
+            final String subscriptionContentId, final String subscriberId) {
         this.startDate = startDate;
         this.endDate = endDate;
-        this.contentIdentifier = contentIdentifier;
+        this.subscriptionContentId = subscriptionContentId;
         this.subscriberId = subscriberId;
     }
 
@@ -58,10 +63,10 @@ public class NewSubscriptionCommandDto {
     }
 
     /**
-     * @return a string that describes the content that is the subject of the subscription
+     * @return the identifier of the subscription content that this subscription provides access to
      */
-    public String getContentIdentifier() {
-        return this.contentIdentifier;
+    public String getSubscriptionContentId() {
+        return this.subscriptionContentId;
     }
 
     /**

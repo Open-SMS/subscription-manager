@@ -4,20 +4,20 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 /**
- * Unit tests for SubscriptionContentIdentifierCommandDto.
+ * Unit tests for SubscriptionContentIdCommandDto.
  */
 public class SubscriptionContentIdentifierCommandDtoTest {
 
-    private final static String CONTENT_IDENTIFIER = "CONTENT";
+    private static final String SUBSCRIPTION_CONTENT_ID = "198";
 
     /**
      * Test constructor and accessors.
      */
     @Test
     public void testAccessors() {
-        SubscriptionContentIdentifierCommandDto commandDto = new SubscriptionContentIdentifierCommandDto(CONTENT_IDENTIFIER);
+        SubscriptionContentIdCommandDto commandDto = new SubscriptionContentIdCommandDto(SUBSCRIPTION_CONTENT_ID);
 
-        Assert.assertEquals(commandDto.getContentIdentifier(), CONTENT_IDENTIFIER);
+        Assert.assertEquals(commandDto.getSubscriptionContentId(), SUBSCRIPTION_CONTENT_ID);
     }
 
     /**
@@ -25,7 +25,7 @@ public class SubscriptionContentIdentifierCommandDtoTest {
      */
     @Test
     public void testZeroArgConstructor() {
-        SubscriptionContentIdentifierCommandDto commandDto = new SubscriptionContentIdentifierCommandDto();
+        SubscriptionContentIdCommandDto commandDto = new SubscriptionContentIdCommandDto();
 
         Assert.assertNotNull(commandDto);
     }
