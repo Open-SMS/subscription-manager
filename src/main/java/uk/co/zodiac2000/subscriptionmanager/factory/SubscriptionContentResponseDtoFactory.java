@@ -1,8 +1,12 @@
 package uk.co.zodiac2000.subscriptionmanager.factory;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import uk.co.zodiac2000.subscriptionmanager.domain.subscriptioncontent.ContentIdentifier;
 import uk.co.zodiac2000.subscriptionmanager.domain.subscriptioncontent.SubscriptionContent;
 import uk.co.zodiac2000.subscriptionmanager.service.SubscriptionResourceService;
 import uk.co.zodiac2000.subscriptionmanager.transfer.subscriptioncontent.SubscriptionContentResponseDto;
@@ -28,7 +32,21 @@ public class SubscriptionContentResponseDtoFactory {
                 .map(c -> new SubscriptionContentResponseDto(
                         c.getId(),
                         c.getContentDescription(),
+                        this.contentIdentifiersToResponseDto(c.getContentIdentifiers()),
                         this.subscriptionResourceService.getSubscriptionResource(c.getSubscriptionResourceId()).get()
                 ));
+    }
+
+    /**
+     * Return a list of strings representing content identifiers based on the argument. The content identifiers
+     * are returned in lexical order.
+     * @param contentIdentifiers a set of ContentIdentifier objects
+     * @return a list of strings representing content identifiers
+     */
+    public List<String> contentIdentifiersToResponseDto(final Set<ContentIdentifier> contentIdentifiers) {
+        return contentIdentifiers.stream()
+                .sorted()
+                .map(c -> c.getContentIdentifier())
+                .collect(Collectors.toList());
     }
 }

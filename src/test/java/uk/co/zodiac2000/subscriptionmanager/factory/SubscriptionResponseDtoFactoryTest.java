@@ -4,6 +4,7 @@ import java.time.Clock;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.util.List;
 import java.util.Optional;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
@@ -34,6 +35,7 @@ public class SubscriptionResponseDtoFactoryTest {
     private static final Optional<LocalDate> END_DATE = Optional.of(LocalDate.of(2012, 8, 23));
     private static final Long SUBSCRIPTION_CONTENT_ID = 293L;
     private static final String SUBSCRIPTION_CONTENT_DESCRIPTION = "Example Content";
+    private static final List<String> CONTENT_IDENTIFIERS = List.of("CONTENT-A", "CONTENT-X");
     private static final Long SUBSCRIPTION_RESOURCE_ID = 303L;
     private static final String SUBSCRIPTION_RESOURCE_URI = "https://example.com";
     private static final String SUBSCRIPTION_RESOURCE_DESCRIPTION = "Example";
@@ -44,6 +46,7 @@ public class SubscriptionResponseDtoFactoryTest {
             = new SubscriptionContentResponseDto(
                     SUBSCRIPTION_CONTENT_ID,
                     SUBSCRIPTION_CONTENT_DESCRIPTION,
+                    CONTENT_IDENTIFIERS,
                     new SubscriptionResourceResponseDto(SUBSCRIPTION_RESOURCE_ID, SUBSCRIPTION_RESOURCE_URI,
                             SUBSCRIPTION_RESOURCE_DESCRIPTION)
             );
@@ -110,6 +113,10 @@ public class SubscriptionResponseDtoFactoryTest {
                         hasProperty("subscriptionContent", allOf(
                                 hasProperty("id", is(SUBSCRIPTION_CONTENT_ID)),
                                 hasProperty("contentDescription", is(SUBSCRIPTION_CONTENT_DESCRIPTION)),
+                                hasProperty("contentIdentifiers", contains(
+                                        is("CONTENT-A"),
+                                        is("CONTENT-X")
+                                )),
                                 hasProperty("subscriptionResource", allOf(
                                         hasProperty("id", is(SUBSCRIPTION_RESOURCE_ID)),
                                         hasProperty("resourceUri", is(SUBSCRIPTION_RESOURCE_URI)),
@@ -145,6 +152,10 @@ public class SubscriptionResponseDtoFactoryTest {
                         hasProperty("subscriptionContent", allOf(
                                 hasProperty("id", is(SUBSCRIPTION_CONTENT_ID)),
                                 hasProperty("contentDescription", is(SUBSCRIPTION_CONTENT_DESCRIPTION)),
+                                hasProperty("contentIdentifiers", contains(
+                                        is("CONTENT-A"),
+                                        is("CONTENT-X")
+                                )),
                                 hasProperty("subscriptionResource", allOf(
                                         hasProperty("id", is(SUBSCRIPTION_RESOURCE_ID)),
                                         hasProperty("resourceUri", is(SUBSCRIPTION_RESOURCE_URI)),
