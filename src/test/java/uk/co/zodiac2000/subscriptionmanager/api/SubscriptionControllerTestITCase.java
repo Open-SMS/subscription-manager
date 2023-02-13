@@ -73,6 +73,8 @@ public class SubscriptionControllerTestITCase extends AbstractTransactionalTestN
                 .jsonPath("$.terminated").isEqualTo(false)
                 .jsonPath("$.suspended").isEqualTo(false)
                 .jsonPath("$.subscriptionContent.id").isEqualTo("100000002")
+                .jsonPath("$.subscriptionContent.contentDescription").isEqualTo("Universal Reference: Music")
+                .jsonPath("$.subscriptionContent.contentIdentifiers[0]").isEqualTo("MUSIC")
                 .jsonPath("$.subscriptionContent.subscriptionResource.id").isEqualTo("100000002")
                 .jsonPath("$.subscriptionContent.subscriptionResource.resourceUri")
                     .isEqualTo("https://universal-reference.com/music")
