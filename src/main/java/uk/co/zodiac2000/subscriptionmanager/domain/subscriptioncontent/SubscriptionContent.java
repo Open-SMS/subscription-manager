@@ -1,10 +1,15 @@
 package uk.co.zodiac2000.subscriptionmanager.domain.subscriptioncontent;
 
 import java.io.Serializable;
+import java.util.Objects;
+import java.util.Set;
+import javax.persistence.CollectionTable;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.SequenceGenerator;
+import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -29,6 +34,12 @@ public class SubscriptionContent implements Serializable {
     @Size(max = MAX_LENGTH_CONTENT_DESCRIPTION)
     private String contentDescription;
 
+    @Valid
+    @NotEmpty
+    @ElementCollection
+    @CollectionTable(name = "content_identifier")
+    private Set<ContentIdentifier> contentIdentifiers;
+
     @NotNull
     private Long subscriptionResourceId;
 
@@ -40,11 +51,14 @@ public class SubscriptionContent implements Serializable {
     /**
      * Constructs a new SubscriptionContent using the supplied arguments.
      * @param contentDescription description of this subscription content
+     * @param contentIdentifiers the content identifiers associated with this subscription content
      * @param subscriptionResourceId the subscription resource the defines the scope of this subscription content
      */
-    public SubscriptionContent(final String contentDescription, final Long subscriptionResourceId) {
-        this.contentDescription = contentDescription;
-        this.subscriptionResourceId = subscriptionResourceId;
+    public SubscriptionContent(final String contentDescription, final Set<ContentIdentifier> contentIdentifiers,
+            final Long subscriptionResourceId) {
+        this.contentDescription = Objects.requireNonNull(contentDescription);
+        this.contentIdentifiers = Objects.requireNonNull(contentIdentifiers);
+        this.subscriptionResourceId = Objects.requireNonNull(subscriptionResourceId);
     }
 
     /**
@@ -59,6 +73,13 @@ public class SubscriptionContent implements Serializable {
      */
     public String getContentDescription() {
         return this.contentDescription;
+    }
+
+    /**
+     * @return the content identifiers associated with this subscription content
+     */
+    public Set<ContentIdentifier> getContentIdentifiers() {
+        return Set.copyOf(this.contentIdentifiers);
     }
 
     /**
