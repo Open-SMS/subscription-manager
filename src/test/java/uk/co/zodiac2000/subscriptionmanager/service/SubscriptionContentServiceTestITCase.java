@@ -40,6 +40,7 @@ public class SubscriptionContentServiceTestITCase extends AbstractTransactionalT
         assertThat(responseDto.get(), allOf(
                 hasProperty("id", is(100000004L)),
                 hasProperty("contentDescription", is("Zodiac 2000 data: video")),
+                hasProperty("contentIdentifiers", contains(is("content-video"))),
                 hasProperty("subscriptionResource", allOf(
                         hasProperty("id", is(100000004L)),
                         hasProperty("resourceUri", is("urn:zodiac2000.co.uk:data")),
