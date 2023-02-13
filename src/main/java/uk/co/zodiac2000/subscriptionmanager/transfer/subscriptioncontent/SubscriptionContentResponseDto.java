@@ -1,6 +1,6 @@
 package uk.co.zodiac2000.subscriptionmanager.transfer.subscriptioncontent;
 
-import java.util.Set;
+import java.util.List;
 import uk.co.zodiac2000.subscriptionmanager.transfer.subscriptionresource.SubscriptionResourceResponseDto;
 
 /**
@@ -12,7 +12,7 @@ public class SubscriptionContentResponseDto {
 
     private final String contentDescription;
 
-    private final Set<String> contentIdentifiers;
+    private final List<String> contentIdentifiers;
 
     private final SubscriptionResourceResponseDto subscriptionResource;
 
@@ -24,7 +24,7 @@ public class SubscriptionContentResponseDto {
      * @param subscriptionResource the subscription resource associated with this subscription content
      */
     public SubscriptionContentResponseDto(final long id, final String contentDescription,
-            final Set<String> contentIdentifiers,
+            final List<String> contentIdentifiers,
             final SubscriptionResourceResponseDto subscriptionResource) {
         this.id = id;
         this.contentDescription = contentDescription;
@@ -42,7 +42,7 @@ public class SubscriptionContentResponseDto {
     /**
      * @return the content identifiers associated with this subscription content
      */
-    public Set<String> getContentIdentifiers() {
+    public List<String> getContentIdentifiers() {
         return this.contentIdentifiers;
     }
 

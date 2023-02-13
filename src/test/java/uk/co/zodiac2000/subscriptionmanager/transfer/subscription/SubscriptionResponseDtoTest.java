@@ -1,8 +1,8 @@
 package uk.co.zodiac2000.subscriptionmanager.transfer.subscription;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 import uk.co.zodiac2000.subscriptionmanager.transfer.subscriptioncontent.SubscriptionContentResponseDto;
@@ -32,7 +32,7 @@ public class SubscriptionResponseDtoTest {
             = new SubscriptionContentResponseDto(
                     SUBSCRIPTION_CONTENT_ID,
                     SUBSCRIPTION_CONTENT_DESCRIPTION,
-                    Set.of(),
+                    List.of(),
                     new SubscriptionResourceResponseDto(SUBSCRIPTION_RESOURCE_ID, SUBSCRIPTION_RESOURCE_URI,
                             SUBSCRIPTION_RESOURCE_DESCRIPTION)
             );
