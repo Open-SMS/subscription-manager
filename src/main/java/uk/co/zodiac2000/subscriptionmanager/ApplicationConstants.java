@@ -15,4 +15,9 @@ public final class ApplicationConstants {
      * ids over the lifetime of the application.
      */
     public static final int MAX_LONG_DIGITS = 18;
+
+    /**
+     * Defines the maximum length of subscription content description strings.
+     */
+    public static final int MAX_LENGTH_CONTENT_DESCRIPTION = 1000;
 }

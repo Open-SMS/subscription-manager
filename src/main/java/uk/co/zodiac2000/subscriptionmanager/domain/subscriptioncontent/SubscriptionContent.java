@@ -7,6 +7,8 @@ import javax.persistence.Id;
 import javax.persistence.SequenceGenerator;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+import static uk.co.zodiac2000.subscriptionmanager.ApplicationConstants.MAX_LENGTH_CONTENT_DESCRIPTION;
 
 /**
  * Class representing the content that a subscription provides access to. The scope of subscription content is defined
@@ -24,6 +26,7 @@ public class SubscriptionContent implements Serializable {
     private Long id;
 
     @NotEmpty
+    @Size(max = MAX_LENGTH_CONTENT_DESCRIPTION)
     private String contentDescription;
 
     @NotNull
