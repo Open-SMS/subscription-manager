@@ -4,6 +4,7 @@
 
 CREATE TABLE subscription_content (
     id SERIAL PRIMARY KEY,
+    content_description VARCHAR(1000) NOT NULL,
     subscription_resource_id BIGINT NOT NULL,
     CONSTRAINT subscription_content_fk_subscription_resource_id
         FOREIGN KEY (subscription_resource_id) REFERENCES subscription_resource (id)
