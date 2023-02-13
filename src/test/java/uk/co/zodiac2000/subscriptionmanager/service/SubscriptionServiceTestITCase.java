@@ -68,6 +68,7 @@ public class SubscriptionServiceTestITCase extends AbstractTransactionalTestNGSp
                         hasProperty("suspended", is(false)),
                         hasProperty("subscriptionContent", allOf(
                                 hasProperty("id", is(100000002L)),
+                                hasProperty("contentDescription", is("Universal Reference: Music")),
                                 hasProperty("subscriptionResource", allOf(
                                         hasProperty("id", is(100000002L)),
                                         hasProperty("resourceUri", is("https://universal-reference.com/music")),
@@ -110,6 +111,7 @@ public class SubscriptionServiceTestITCase extends AbstractTransactionalTestNGSp
                         hasProperty("suspended", is(true)),
                         hasProperty("subscriptionContent", allOf(
                                 hasProperty("id", is(100000001L)),
+                                hasProperty("contentDescription", is("Example Content")),
                                 hasProperty("subscriptionResource", allOf(
                                         hasProperty("id", is(100000001L)),
                                         hasProperty("resourceUri", is("https://example.com")),
@@ -142,6 +144,7 @@ public class SubscriptionServiceTestITCase extends AbstractTransactionalTestNGSp
                         hasProperty("suspended", is(true)),
                         hasProperty("subscriptionContent", allOf(
                                 hasProperty("id", is(100000003L)),
+                                hasProperty("contentDescription", is("Universal Reference: Economics")),
                                 hasProperty("subscriptionResource", allOf(
                                         hasProperty("id", is(100000003L)),
                                         hasProperty("resourceUri", is("https://universal-reference.com/economics")),
@@ -367,6 +370,7 @@ public class SubscriptionServiceTestITCase extends AbstractTransactionalTestNGSp
         Assert.assertEquals(responseDto.get().getEndDate(), END_DATE.map(LocalDate::parse));
         assertThat(responseDto.get().getSubscriptionContent(), allOf(
                 hasProperty("id", is(SUBSCRIPTION_CONTENT_ID)),
+                hasProperty("contentDescription", is("Universal Reference: Music")),
                 hasProperty("subscriptionResource", allOf(
                         hasProperty("id", is(100000002L)),
                         hasProperty("resourceUri", is("https://universal-reference.com/music")),
@@ -496,6 +500,7 @@ public class SubscriptionServiceTestITCase extends AbstractTransactionalTestNGSp
         Assert.assertTrue(responseDto.isPresent());
         assertThat(responseDto.get().getSubscriptionContent(), allOf(
                 hasProperty("id", is(100000004L)),
+                hasProperty("contentDescription", is("Zodiac 2000 data: video")),
                 hasProperty("subscriptionResource", allOf(
                         hasProperty("id", is(100000004L)),
                         hasProperty("resourceUri", is("urn:zodiac2000.co.uk:data")),
