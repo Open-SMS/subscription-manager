@@ -20,4 +20,9 @@ public final class ApplicationConstants {
      * Defines the maximum length of subscription content description strings.
      */
     public static final int MAX_LENGTH_CONTENT_DESCRIPTION = 1000;
+
+    /**
+     * Defines the maximum length of content identifier strings.
+     */
+    public static final int MAX_LENGTH_CONTENT_IDENTIFIER = 1000;
 }
