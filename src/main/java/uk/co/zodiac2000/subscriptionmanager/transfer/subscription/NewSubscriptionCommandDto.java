@@ -4,6 +4,7 @@ import java.util.Optional;
 import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotNull;
 import uk.co.zodiac2000.subscriptionmanager.ApplicationConstants;
+import uk.co.zodiac2000.subscriptionmanager.constraint.Exists;
 import uk.co.zodiac2000.subscriptionmanager.constraint.ValidDateRange;
 import uk.co.zodiac2000.subscriptionmanager.constraint.ValidDateString;
 
@@ -22,6 +23,7 @@ public class NewSubscriptionCommandDto {
 
     @NotNull
     @Digits(integer = ApplicationConstants.MAX_LONG_DIGITS, fraction = 0)
+    @Exists(expression = "@subscriptionContentService.isPresent(#this)")
     private String subscriptionContentId;
 
     @NotNull

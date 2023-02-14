@@ -15,6 +15,8 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.client.MockMvcWebTestClient;
+import org.springframework.validation.BindException;
+import org.springframework.validation.FieldError;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -126,6 +128,36 @@ public class SubscriptionControllerTestITCase extends AbstractTransactionalTestN
     }
 
     /**
+     * Test createSubscription when the subscription content referenced in the command DTO does not exist.
+     */
+    @Test
+    public void testCreateSubscriptionUnknownSubscriptionContent() {
+        String newSubscriptionJson = "{"
+                + "\"startDate\":\"2012-01-01\","
+                + "\"endDate\":\"2020-01-01\","
+                + "\"subscriptionContentId\":\"444\","
+                + "\"subscriberId\":100000010"
+                + "}";
+        this.client.post().uri("/subscription")
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(newSubscriptionJson)
+                .exchange()
+                .expectStatus().isBadRequest()
+                .expectBody()
+                .consumeWith(res -> {
+                    BindException ex = (BindException) ((MvcResult) res.getMockServerResult()).getResolvedException();
+                    Assert.assertNotNull(ex);
+                    Assert.assertEquals(ex.getErrorCount(), 1);
+                    FieldError error = ex.getFieldError();
+                    Assert.assertNotNull(error);
+                    Assert.assertEquals(error.getField(), "subscriptionContentId");
+                    Assert.assertEquals(error.getDefaultMessage(),
+                            "{uk.co.zodiac2000.subscriptionmanager.constraint.Exists}");
+                });
+    }
+
+    /**
      * Test deleteSubscription.
      */
     @Test
@@ -177,7 +209,7 @@ public class SubscriptionControllerTestITCase extends AbstractTransactionalTestN
      * Test updateSubscriptionContentIdentifier.
      */
     @Test
-    public void testUpdateSubscriptionContentIdentifier() {
+    public void testUpdateSubscriptionSubscriptionContentId() {
         String updatedSubscriptionDatesJson = "{"
                 + "\"subscriptionContentId\":\"100000005\""
                 + "}";
@@ -200,6 +232,33 @@ public class SubscriptionControllerTestITCase extends AbstractTransactionalTestN
 
         Assert.assertTrue(subscription.isPresent());
         Assert.assertEquals(subscription.get().getSubscriptionContentId(), 100000005L);
+    }
+
+    /**
+     * Test updateSubscriptionContentIdentifier.
+     */
+    @Test
+    public void testUpdateUnknownSubscriptionContentId() {
+        String updatedSubscriptionDatesJson = "{"
+                + "\"subscriptionContentId\":\"333\""
+                + "}";
+        this.client.put().uri("/subscription/100000004/subscription-content-id")
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(updatedSubscriptionDatesJson)
+                .exchange()
+                .expectStatus().isBadRequest()
+                .expectBody()
+                .consumeWith(res -> {
+                    BindException ex = (BindException) ((MvcResult) res.getMockServerResult()).getResolvedException();
+                    Assert.assertNotNull(ex);
+                    Assert.assertEquals(ex.getErrorCount(), 1);
+                    FieldError error = ex.getFieldError();
+                    Assert.assertNotNull(error);
+                    Assert.assertEquals(error.getField(), "subscriptionContentId");
+                    Assert.assertEquals(error.getDefaultMessage(),
+                            "{uk.co.zodiac2000.subscriptionmanager.constraint.Exists}");
+                });
     }
 
     /**
