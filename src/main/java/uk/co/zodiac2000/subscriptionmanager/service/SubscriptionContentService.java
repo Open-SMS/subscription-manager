@@ -30,4 +30,12 @@ public class SubscriptionContentService {
         return this.subscriptionContentResponseDtoFactory.subscriptionContentToResponseDto(contentIdentifier);
     }
 
+    /**
+     * Returns true if the SubscriptionContent object identified by id exists in the system.
+     * @param id the subscription content identifier
+     * @return true if the object exists
+     */
+    public boolean isPresent(final long id) {
+        return this.subscriptionContentRepository.existsById(id);
+    }
 }

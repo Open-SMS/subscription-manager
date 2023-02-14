@@ -59,4 +59,12 @@ public class SubscriptionContentServiceTestITCase extends AbstractTransactionalT
 
         Assert.assertTrue(responseDto.isEmpty());
     }
+
+    /**
+     * Test isPresent.
+     */
+    @Test
+    public void testIsPresent() {
+        Assert.assertTrue(this.subscriptionContentService.isPresent(100000004L));
+    }
 }
