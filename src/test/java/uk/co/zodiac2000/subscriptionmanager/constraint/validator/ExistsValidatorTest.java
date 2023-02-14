@@ -48,11 +48,11 @@ public class ExistsValidatorTest {
     @BeforeMethod
     public void setUpVerificationExpression() {
         Mockito.when(this.verificationExpression.getValue(Mockito.eq(this.evaluationContext),
-                Mockito.eq(EXISTING_ID)))
+                Mockito.eq(EXISTING_ID), Mockito.eq(Boolean.class)))
                 .thenReturn(true);
 
         Mockito.when(this.verificationExpression.getValue(Mockito.eq(this.evaluationContext),
-                Mockito.eq(NOT_EXISTING_ID)))
+                Mockito.eq(NOT_EXISTING_ID), Mockito.eq(Boolean.class)))
                 .thenReturn(false);
     }
 
@@ -90,6 +90,7 @@ public class ExistsValidatorTest {
     /**
      * Test isValid when the verificationExpression returns false.
      */
+    @Test
     public void testIsValidExpressionReturnsFalse() {
         Assert.assertFalse(this.validator.isValid(NOT_EXISTING_ID, this.validatorContext));
     }
@@ -97,7 +98,8 @@ public class ExistsValidatorTest {
     /**
      * Test isValid when the verificationExpression returns true.
      */
+    @Test
     public void testIsValidExpressionReturnsTrue() {
-        Assert.assertFalse(this.validator.isValid(EXISTING_ID, this.validatorContext));
+        Assert.assertTrue(this.validator.isValid(EXISTING_ID, this.validatorContext));
     }
 }
