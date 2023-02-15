@@ -8,6 +8,8 @@ import javax.persistence.Id;
 import javax.persistence.SequenceGenerator;
 import javax.validation.constraints.NotEmpty;
 import org.hibernate.validator.constraints.Length;
+import static uk.co.zodiac2000.subscriptionmanager.ApplicationConstants.MAX_RESOURCE_DESCRIPTION_LENGTH;
+import static uk.co.zodiac2000.subscriptionmanager.ApplicationConstants.MAX_RESOURCE_URI_LENGTH;
 
 /**
  * Class representing a subscribeable resource, for example a website that provides content available to subscribers.
@@ -18,8 +20,6 @@ import org.hibernate.validator.constraints.Length;
 public class SubscriptionResource implements Serializable {
 
     private static final long serialVersionUID = 21412L;
-    private static final int MAX_RESOURCE_URI_LENGTH = 1000;
-    private static final int MAX_RESOURCE_DESCRIPTION_LENGTH = 1000;
 
     @Id
     @SequenceGenerator(name = "subscription_resource_id_gen", sequenceName = "subscription_resource_id_seq",

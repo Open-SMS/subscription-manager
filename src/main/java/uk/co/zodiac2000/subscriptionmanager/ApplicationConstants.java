@@ -25,4 +25,15 @@ public final class ApplicationConstants {
      * Defines the maximum length of content identifier strings.
      */
     public static final int MAX_LENGTH_CONTENT_IDENTIFIER = 1000;
+
+    /**
+     * Defines the maximum length of subscription resource URIs.
+     */
+    public static final int MAX_RESOURCE_URI_LENGTH = 1000;
+
+    /**
+     * Defines the maximum length of subscription resource descriptions.
+     */
+    public static final int MAX_RESOURCE_DESCRIPTION_LENGTH = 1000;
+
 }
