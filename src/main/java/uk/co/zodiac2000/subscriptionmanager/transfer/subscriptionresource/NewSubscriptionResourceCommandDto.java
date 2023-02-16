@@ -5,6 +5,7 @@ import org.hibernate.validator.constraints.Length;
 import static uk.co.zodiac2000.subscriptionmanager.ApplicationConstants.MAX_RESOURCE_DESCRIPTION_LENGTH;
 import static uk.co.zodiac2000.subscriptionmanager.ApplicationConstants.MAX_RESOURCE_URI_LENGTH;
 import uk.co.zodiac2000.subscriptionmanager.constraint.DoesNotExist;
+import uk.co.zodiac2000.subscriptionmanager.constraint.ValidUriString;
 
 /**
  * Command DTO representing a new subscription resource.
@@ -13,7 +14,7 @@ import uk.co.zodiac2000.subscriptionmanager.constraint.DoesNotExist;
         propertyName = "resourceUri")
 public class NewSubscriptionResourceCommandDto {
 
-    // TODO: will also require a valid URI constraint.
+    @ValidUriString
     @NotEmpty
     @Length(max = MAX_RESOURCE_URI_LENGTH)
     private String resourceUri;
