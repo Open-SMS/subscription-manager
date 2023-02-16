@@ -10,7 +10,7 @@ import uk.co.zodiac2000.subscriptionmanager.constraint.ValidUriString;
 /**
  * Command DTO representing a new subscription resource.
  */
-@DoesNotExist(expression = "@subscriptionResourceService.getSubscriptionResource(#this.resourceUri)",
+@DoesNotExist(expression = "@subscriptionResourceService.getSubscriptionResourceByUri(#this.resourceUri)",
         propertyName = "resourceUri")
 public class NewSubscriptionResourceCommandDto {
 
