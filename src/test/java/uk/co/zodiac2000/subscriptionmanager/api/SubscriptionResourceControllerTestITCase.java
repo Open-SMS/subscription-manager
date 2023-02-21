@@ -21,7 +21,6 @@ import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import uk.co.zodiac2000.subscriptionmanager.configuration.TestClockConfiguration;
-import uk.co.zodiac2000.subscriptionmanager.domain.subscription.Subscription;
 import uk.co.zodiac2000.subscriptionmanager.domain.subscriptionresource.SubscriptionResource;
 import uk.co.zodiac2000.subscriptionmanager.repository.SubscriptionResourceRepository;
 
