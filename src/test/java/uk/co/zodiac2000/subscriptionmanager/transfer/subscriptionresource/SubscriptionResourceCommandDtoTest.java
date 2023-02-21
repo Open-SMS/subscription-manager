@@ -34,4 +34,15 @@ public class SubscriptionResourceCommandDtoTest {
 
         Assert.assertNotNull(commandDto);
     }
+
+    /**
+     * Test setId.
+     */
+    @Test
+    public void testSetId() {
+        SubscriptionResourceCommandDto commandDto = new SubscriptionResourceCommandDto();
+        commandDto.setId(ID);
+
+        Assert.assertEquals(commandDto.getId(), ID);
+    }
 }
