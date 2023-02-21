@@ -10,6 +10,7 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import org.hibernate.validator.constraints.Length;
 import static uk.co.zodiac2000.subscriptionmanager.ApplicationConstants.MAX_RESOURCE_DESCRIPTION_LENGTH;
+import uk.co.zodiac2000.subscriptionmanager.transfer.subscriptionresource.SubscriptionResourceCommandDto;
 
 /**
  * Class representing a subscribeable resource, for example a website that provides content available to subscribers.
@@ -68,5 +69,14 @@ public class SubscriptionResource implements Serializable {
      */
     public String getResourceDescription() {
         return this.resourceDescription;
+    }
+
+    /**
+     * Updates the resourceUri and resourceDescription properties of this subscription resource.
+     * @param commandDto command DTO representing the updated fields
+     */
+    public void updateSubscriptionResource(final SubscriptionResourceCommandDto commandDto) {
+        this.resourceUri = URI.create(commandDto.getResourceUri());
+        this.resourceDescription = commandDto.getResourceDescription();
     }
 }
