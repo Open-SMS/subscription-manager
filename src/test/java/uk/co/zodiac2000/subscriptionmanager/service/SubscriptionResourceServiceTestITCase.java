@@ -14,6 +14,7 @@ import org.testng.annotations.Test;
 import uk.co.zodiac2000.subscriptionmanager.domain.subscriptionresource.SubscriptionResource;
 import uk.co.zodiac2000.subscriptionmanager.repository.SubscriptionResourceRepository;
 import uk.co.zodiac2000.subscriptionmanager.transfer.subscriptionresource.NewSubscriptionResourceCommandDto;
+import uk.co.zodiac2000.subscriptionmanager.transfer.subscriptionresource.SubscriptionResourceCommandDto;
 import uk.co.zodiac2000.subscriptionmanager.transfer.subscriptionresource.SubscriptionResourceResponseDto;
 
 /**
@@ -106,6 +107,43 @@ public class SubscriptionResourceServiceTestITCase extends AbstractTransactional
     public void testGetSubscriptionResourceByUriNotFound() {
         Optional<SubscriptionResourceResponseDto> responseDto
                 = this.service.getSubscriptionResourceByUri("http://foo.com");
+
+        Assert.assertTrue(responseDto.isEmpty());
+    }
+
+    /**
+     * Test updateSubscriptionResource.
+     */
+    @Test
+    public void testUpdateSubscriptionResource() {
+        SubscriptionResourceCommandDto commandDto
+                = new SubscriptionResourceCommandDto(100000004L, "urn:zodiac2000.co.uk:info", "Information");
+        Optional<SubscriptionResourceResponseDto> responseDto = this.service.updateSubscriptionResource(commandDto);
+        this.subscriptionResourceRepository.flush();
+
+        Assert.assertTrue(responseDto.isPresent());
+        assertThat(responseDto.get(), allOf(
+                hasProperty("id", is(100000004L)),
+                hasProperty("resourceUri", is("urn:zodiac2000.co.uk:info")),
+                hasProperty("resourceDescription", is("Information"))
+        ));
+
+        Optional<SubscriptionResource> subscriptionResource
+                = this.subscriptionResourceRepository.findById(100000004L);
+        Assert.assertTrue(subscriptionResource.isPresent());
+        Assert.assertEquals(subscriptionResource.get().getResourceUri(), URI.create("urn:zodiac2000.co.uk:info"));
+        Assert.assertEquals(subscriptionResource.get().getResourceDescription(), "Information");
+    }
+
+    /**
+     * Test updateSubscriptionResource when the identified subscription resource does not exist.
+     */
+    @Test
+    public void testUpdateSubscriptionResourceNotFound() {
+        SubscriptionResourceCommandDto commandDto
+                = new SubscriptionResourceCommandDto(99944L, "urn:zodiac2000.co.uk:info", "Information");
+        Optional<SubscriptionResourceResponseDto> responseDto = this.service.updateSubscriptionResource(commandDto);
+        this.subscriptionResourceRepository.flush();
 
         Assert.assertTrue(responseDto.isEmpty());
     }

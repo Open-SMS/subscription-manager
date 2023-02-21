@@ -10,6 +10,7 @@ import uk.co.zodiac2000.subscriptionmanager.factory.SubscriptionResourceFactory;
 import uk.co.zodiac2000.subscriptionmanager.factory.SubscriptionResourceResponseDtoFactory;
 import uk.co.zodiac2000.subscriptionmanager.repository.SubscriptionResourceRepository;
 import uk.co.zodiac2000.subscriptionmanager.transfer.subscriptionresource.NewSubscriptionResourceCommandDto;
+import uk.co.zodiac2000.subscriptionmanager.transfer.subscriptionresource.SubscriptionResourceCommandDto;
 import uk.co.zodiac2000.subscriptionmanager.transfer.subscriptionresource.SubscriptionResourceResponseDto;
 
 /**
@@ -64,5 +65,21 @@ public class SubscriptionResourceService {
         );
         return this.subscriptionResourceResponseDtoFactory.subscriptionResourceToResponseDto(
                 Optional.of(subscriptionResource));
+    }
+
+    /**
+     * Updates the SubscriptionResource resourceUri and resourceDescription fields of the object identified by
+     * id in commandDto. The command DTO contains the updated state of the SubscriptionResource fields. The updated
+     * SubscriptionResource is returned. If the SubscriptionResource does not exist then an empty optional is
+     * returned.
+     * @param commandDto command DTO representing the updated state of the subscription resource
+     * @return the updated subscription resource
+     */
+    @Transactional(readOnly = false)
+    public Optional<SubscriptionResourceResponseDto> updateSubscriptionResource(
+            final SubscriptionResourceCommandDto commandDto) {
+        Optional<SubscriptionResource> resource = this.subscriptionResourceRepository.findById(commandDto.getId());
+        resource.ifPresent(r -> r.updateSubscriptionResource(commandDto));
+        return this.subscriptionResourceResponseDtoFactory.subscriptionResourceToResponseDto(resource);
     }
 }
