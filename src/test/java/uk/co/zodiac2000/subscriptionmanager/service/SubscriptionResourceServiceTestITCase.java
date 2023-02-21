@@ -21,7 +21,7 @@ import uk.co.zodiac2000.subscriptionmanager.transfer.subscriptionresource.Subscr
  */
 @SpringBootTest
 @TestPropertySource(locations = "classpath:application-integration.properties")
-public class SubscriptionResourceTestITCase extends AbstractTransactionalTestNGSpringContextTests {
+public class SubscriptionResourceServiceTestITCase extends AbstractTransactionalTestNGSpringContextTests {
 
     private static final URI NEW_RESOURCE_URI = URI.create("https://zodiac2000.co.uk");
     private static final String NEW_RESOURCE_DESCRIPTION = "Zodiac 2000";
