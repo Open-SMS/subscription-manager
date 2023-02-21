@@ -38,6 +38,7 @@ public class SubscriptionResourceTest {
     /**
      * Test updateSubscriptionResource.
      */
+    @Test
     public void testUpdateSubscriptionResource() {
         SubscriptionResource resource = new SubscriptionResource(RESOURCE_URI, RESOURCE_DESCRIPTION);
         resource.updateSubscriptionResource(new SubscriptionResourceCommandDto(42L, "http://foo.com", "Foo"));
