@@ -45,10 +45,9 @@ public class SubscriptionResourceService {
      * @param uriString the URI that identifies a subscription resource represented as a string
      * @return a subscription resource
      */
-    public Optional<SubscriptionResourceResponseDto> getSubscriptionResourceByUri(final String uriString) {
+    public Optional<Long> getSubscriptionResourceIdByUri(final String uriString) {
         URI uri = URI.create(uriString);
-        Optional<SubscriptionResource> resource = this.subscriptionResourceRepository.findByResourceUri(uri);
-        return this.subscriptionResourceResponseDtoFactory.subscriptionResourceToResponseDto(resource);
+        return this.subscriptionResourceRepository.findByResourceUri(uri).map(SubscriptionResource::getId);
     }
 
     /**

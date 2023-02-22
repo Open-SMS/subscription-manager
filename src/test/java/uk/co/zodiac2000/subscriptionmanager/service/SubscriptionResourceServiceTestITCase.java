@@ -89,15 +89,10 @@ public class SubscriptionResourceServiceTestITCase extends AbstractTransactional
      */
     @Test
     public void testGetSubscriptionResourceByUri() {
-        Optional<SubscriptionResourceResponseDto> responseDto
-                = this.service.getSubscriptionResourceByUri("urn:zodiac2000.co.uk:data");
+        Optional<Long> id = this.service.getSubscriptionResourceIdByUri("urn:zodiac2000.co.uk:data");
 
-        Assert.assertTrue(responseDto.isPresent());
-        assertThat(responseDto.get(), allOf(
-                hasProperty("id", is(100000004L)),
-                hasProperty("resourceUri", is("urn:zodiac2000.co.uk:data")),
-                hasProperty("resourceDescription", is("Zodiac 2000 Data"))
-        ));
+        Assert.assertTrue(id.isPresent());
+        Assert.assertEquals(id.get(), 100000004L);
     }
 
     /**
@@ -105,10 +100,9 @@ public class SubscriptionResourceServiceTestITCase extends AbstractTransactional
      */
     @Test
     public void testGetSubscriptionResourceByUriNotFound() {
-        Optional<SubscriptionResourceResponseDto> responseDto
-                = this.service.getSubscriptionResourceByUri("http://foo.com");
+        Optional<Long> id = this.service.getSubscriptionResourceIdByUri("http://foo.com");
 
-        Assert.assertTrue(responseDto.isEmpty());
+        Assert.assertTrue(id.isEmpty());
     }
 
     /**
