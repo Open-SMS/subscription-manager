@@ -39,6 +39,6 @@ public class ValidUriStringValidatorTest {
      */
     @Test
     public void testIsValidNotValidSyntax() {
-        Assert.assertFalse(this.validator.isValid("https//?/foo", this.validatorContext));
+        Assert.assertFalse(this.validator.isValid(":https//?/foo", this.validatorContext));
     }
 }
