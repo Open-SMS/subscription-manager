@@ -13,6 +13,7 @@ public class NewSubscriptionContentCommandDtoTest {
     private static final List<ContentIdentifierCommandDto> CONTENT_IDENTIFIERS = List.of(
             new ContentIdentifierCommandDto("CONTENT-ONE")
     );
+    private static final String SUBSCRIPTION_RESOURCE_ID = "42";
 
     /**
      * Test constructor and accessors.
@@ -20,10 +21,11 @@ public class NewSubscriptionContentCommandDtoTest {
     @Test
     public void testConstructor() {
         NewSubscriptionContentCommandDto commandDto = new NewSubscriptionContentCommandDto(
-                SUBSCRIPTION_CONTENT_DESCRIPTION, CONTENT_IDENTIFIERS);
+                SUBSCRIPTION_CONTENT_DESCRIPTION, CONTENT_IDENTIFIERS, SUBSCRIPTION_RESOURCE_ID);
 
         Assert.assertEquals(commandDto.getContentDescription(), SUBSCRIPTION_CONTENT_DESCRIPTION);
         Assert.assertEquals(commandDto.getContentIdentifiers(), CONTENT_IDENTIFIERS);
+        Assert.assertEquals(commandDto.getSubscriptionResourceId(), SUBSCRIPTION_RESOURCE_ID);
     }
 
     /**
