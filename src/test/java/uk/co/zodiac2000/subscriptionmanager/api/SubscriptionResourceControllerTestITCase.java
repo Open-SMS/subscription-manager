@@ -159,4 +159,129 @@ public class SubscriptionResourceControllerTestITCase extends AbstractTransactio
                             "{uk.co.zodiac2000.subscriptionmanager.constraint.ValidUriString}");
                 });
     }
+
+    /**
+     * Test updateSubscriptionResource.
+     */
+    @Test
+    public void testUpdateSubscriptionResource() {
+        String updatedSubscriptionResourceJson = "{"
+                + "\"resourceUri\":\"https://www.camford-research.uk\","
+                + "\"resourceDescription\":\"Camford Research\""
+                + "}";
+        EntityExchangeResult<byte[]> result = this.client.put().uri("/subscription-resource/100000001")
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(updatedSubscriptionResourceJson)
+                .exchange()
+                .expectStatus().isOk()
+                .expectHeader().contentType(MediaType.APPLICATION_JSON)
+                .expectBody().returnResult();
+        this.subscriptionResourceRepository.flush();
+
+        String responseBody = new String(result.getResponseBody());
+        Integer id = JsonPath.read(responseBody, "$.id");
+
+        Assert.assertEquals(id, 100000001);
+
+        Optional<SubscriptionResource> subscriptionResource
+                = this.subscriptionResourceRepository.findById(id.longValue());
+        subscriptionResource.ifPresent(s -> this.entityManager.refresh(s));
+
+        Assert.assertTrue(subscriptionResource.isPresent());
+        Assert.assertEquals(subscriptionResource.get().getResourceUri(), URI.create("https://www.camford-research.uk"));
+        Assert.assertEquals(subscriptionResource.get().getResourceDescription(), "Camford Research");
+    }
+
+    /**
+     * Test updateSubscriptionResource when the resourceUri is not a valid URI.
+     */
+    @Test
+    public void testUpdateSubscriptionResourceInvalidUri() {
+        String updatedSubscriptionResourceJson = "{"
+                + "\"resourceUri\":\"urnzodiac2000.co.uk#data\","
+                + "\"resourceDescription\":\"Camford Research\""
+                + "}";
+        this.client.put().uri("/subscription-resource/100000001")
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(updatedSubscriptionResourceJson)
+                .exchange()
+                .expectStatus().isBadRequest()
+                .expectBody()
+                .consumeWith(res -> {
+                    BindException ex = (BindException) ((MvcResult) res.getMockServerResult()).getResolvedException();
+                    Assert.assertNotNull(ex);
+                    Assert.assertEquals(ex.getErrorCount(), 1);
+                    FieldError error = ex.getFieldError();
+                    Assert.assertNotNull(error);
+                    Assert.assertEquals(error.getField(), "resourceUri");
+                    Assert.assertEquals(error.getDefaultMessage(),
+                            "{uk.co.zodiac2000.subscriptionmanager.constraint.ValidUriString}");
+                });
+    }
+
+    /**
+     * Test updateSubscriptionResource when a subscription resource already exists with this resource URI.
+     */
+    @Test
+    public void testUpdateSubscriptionResourceDuplicateUri() {
+        String updatedSubscriptionResourceJson = "{"
+                + "\"resourceUri\":\"https://universal-reference.com/music\","
+                + "\"resourceDescription\":\"Camford Research\""
+                + "}";
+        this.client.put().uri("/subscription-resource/100000001")
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(updatedSubscriptionResourceJson)
+                .exchange()
+                .expectStatus().isBadRequest()
+                .expectBody()
+                .consumeWith(res -> {
+                    BindException ex = (BindException) ((MvcResult) res.getMockServerResult()).getResolvedException();
+                    Assert.assertNotNull(ex);
+                    Assert.assertEquals(ex.getErrorCount(), 1);
+                    FieldError error = ex.getFieldError();
+                    Assert.assertNotNull(error);
+                    Assert.assertEquals(error.getField(), "resourceUri");
+                    Assert.assertEquals(error.getDefaultMessage(),
+                            "{uk.co.zodiac2000.subscriptionmanager.constraint.DoesNotExist}");
+                });
+    }
+
+
+    /**
+     * Test updateSubscriptionResource when the resourceUri already exists in the system but is associated with
+     * the object being updated.
+     */
+    @Test
+    public void testUpdateSubscriptionResourceSameObject() {
+        String updatedSubscriptionResourceJson = "{"
+                + "\"resourceUri\":\"https://example.com\","
+                + "\"resourceDescription\":\"Camford Research\""
+                + "}";
+        EntityExchangeResult<byte[]> result = this.client.put().uri("/subscription-resource/100000001")
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(updatedSubscriptionResourceJson)
+                .exchange()
+                .expectStatus().isOk()
+                .expectHeader().contentType(MediaType.APPLICATION_JSON)
+                .expectBody().returnResult();
+        this.subscriptionResourceRepository.flush();
+
+        String responseBody = new String(result.getResponseBody());
+        Integer id = JsonPath.read(responseBody, "$.id");
+
+        Assert.assertEquals(id, 100000001);
+
+        Optional<SubscriptionResource> subscriptionResource
+                = this.subscriptionResourceRepository.findById(id.longValue());
+        subscriptionResource.ifPresent(s -> this.entityManager.refresh(s));
+
+        Assert.assertTrue(subscriptionResource.isPresent());
+        Assert.assertEquals(subscriptionResource.get().getResourceUri(), URI.create("https://example.com"));
+        Assert.assertEquals(subscriptionResource.get().getResourceDescription(), "Camford Research");
+    }
+
 }
