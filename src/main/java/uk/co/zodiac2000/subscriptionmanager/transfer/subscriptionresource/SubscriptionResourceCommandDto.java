@@ -46,7 +46,7 @@ public class SubscriptionResourceCommandDto {
      * Sets the subscription resource identifier.
      * @param id the subscription resource identifier
      */
-    public void setId(long id) {
+    public void setId(final long id) {
         this.id = id;
     }
 
