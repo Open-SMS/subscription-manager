@@ -81,4 +81,13 @@ public class SubscriptionResourceService {
         resource.ifPresent(r -> r.updateSubscriptionResource(commandDto));
         return this.subscriptionResourceResponseDtoFactory.subscriptionResourceToResponseDto(resource);
     }
+
+    /**
+     * Returns true if the SubscriptionResource object identified by id exists in the system.
+     * @param id the subscription resource identifier
+     * @return true if the object exists
+     */
+    public boolean isPresent(final long id) {
+        return this.subscriptionResourceRepository.existsById(id);
+    }
 }

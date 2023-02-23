@@ -141,4 +141,20 @@ public class SubscriptionResourceServiceTestITCase extends AbstractTransactional
 
         Assert.assertTrue(responseDto.isEmpty());
     }
+
+    /**
+     * Test isPresent.
+     */
+    @Test
+    public void testIsPresent() {
+        Assert.assertTrue(this.service.isPresent(100000003L));
+    }
+
+    /**
+     * Test isPresent when the object doesn't exist.
+     */
+    @Test
+    public void testIsPresentNotFound() {
+        Assert.assertFalse(this.service.isPresent(333L));
+    }
 }
