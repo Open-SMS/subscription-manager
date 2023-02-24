@@ -15,6 +15,7 @@ import uk.co.zodiac2000.subscriptionmanager.transfer.subscriptioncontent.NewSubs
  * Service facade for SubscriptionContent aggregates.
  */
 @Service
+@Transactional(readOnly = true)
 public class SubscriptionContentService {
 
     @Autowired
