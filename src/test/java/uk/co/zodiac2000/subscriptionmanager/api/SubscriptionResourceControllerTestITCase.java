@@ -68,7 +68,17 @@ public class SubscriptionResourceControllerTestITCase extends AbstractTransactio
                 .jsonPath("$.id").isEqualTo(100000003L)
                 .jsonPath("$.resourceDescription").isEqualTo("Universal Reference Economics library")
                 .jsonPath("$.resourceUri").isEqualTo("https://universal-reference.com/economics");
+    }
 
+    /**
+     * Test getSubscriptionResource when the subscription resource is not found.
+     */
+    @Test
+    public void testGetSubscriptionResourceNotFound() {
+        this.client.get().uri("/subscription-resource/2332")
+                .accept(MediaType.APPLICATION_JSON)
+                .exchange()
+                .expectStatus().isNotFound();
     }
 
     /**
