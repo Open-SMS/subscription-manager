@@ -1,9 +1,12 @@
 package uk.co.zodiac2000.subscriptionmanager.transfer.subscription;
 
 import java.util.Optional;
+import javax.validation.GroupSequence;
 import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotNull;
 import uk.co.zodiac2000.subscriptionmanager.ApplicationConstants;
+import uk.co.zodiac2000.subscriptionmanager.constraint.DataConsistencyChecks;
+import uk.co.zodiac2000.subscriptionmanager.constraint.DataFormatChecks;
 import uk.co.zodiac2000.subscriptionmanager.constraint.Exists;
 import uk.co.zodiac2000.subscriptionmanager.constraint.ValidDateRange;
 import uk.co.zodiac2000.subscriptionmanager.constraint.ValidDateString;
@@ -12,22 +15,24 @@ import uk.co.zodiac2000.subscriptionmanager.constraint.ValidDateString;
  * Command DTO representing a new subscription. Dates are represented as an string formatted as
  * {@link java.time.format.DateTimeFormatter#ISO_LOCAL_DATE}, or an empty string if not set.
  */
-@ValidDateRange(firstDatePropertyName = "startDate", secondDatePropertyName = "endDate")
+@GroupSequence({DataFormatChecks.class, DataConsistencyChecks.class, NewSubscriptionCommandDto.class})
+@ValidDateRange(firstDatePropertyName = "startDate", secondDatePropertyName = "endDate",
+        groups = DataConsistencyChecks.class)
 public class NewSubscriptionCommandDto {
 
-    @ValidDateString
+    @ValidDateString(groups = DataFormatChecks.class)
     private Optional<String> startDate;
 
-    @ValidDateString
+    @ValidDateString(groups = DataFormatChecks.class)
     private Optional<String> endDate;
 
-    @NotNull
-    @Digits(integer = ApplicationConstants.MAX_LONG_DIGITS, fraction = 0)
-    @Exists(expression = "@subscriptionContentService.isPresent(#this)")
+    @NotNull(groups = DataFormatChecks.class)
+    @Digits(integer = ApplicationConstants.MAX_LONG_DIGITS, fraction = 0, groups = DataFormatChecks.class)
+    @Exists(expression = "@subscriptionContentService.isPresent(#this)", groups = DataConsistencyChecks.class)
     private String subscriptionContentId;
 
     @NotNull
-    @Digits(integer = ApplicationConstants.MAX_LONG_DIGITS, fraction = 0)
+    @Digits(integer = ApplicationConstants.MAX_LONG_DIGITS, fraction = 0, groups = DataFormatChecks.class)
     private String subscriberId;
 
     /**

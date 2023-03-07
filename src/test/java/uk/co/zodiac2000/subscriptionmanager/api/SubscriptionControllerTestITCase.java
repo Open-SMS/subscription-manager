@@ -158,6 +158,36 @@ public class SubscriptionControllerTestITCase extends AbstractTransactionalTestN
     }
 
     /**
+     * Test createSubscription when subscriptionContentId is not an integer.
+     */
+    @Test
+    public void testCreateSubscriptionSubscriptionContentIdNotInteger() {
+        String newSubscriptionJson = "{"
+                + "\"startDate\":\"2012-01-01\","
+                + "\"endDate\":\"2020-01-01\","
+                + "\"subscriptionContentId\":\"foo\","
+                + "\"subscriberId\":100000010"
+                + "}";
+        this.client.post().uri("/subscription")
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(newSubscriptionJson)
+                .exchange()
+                .expectStatus().isBadRequest()
+                .expectBody()
+                .consumeWith(res -> {
+                    BindException ex = (BindException) ((MvcResult) res.getMockServerResult()).getResolvedException();
+                    Assert.assertNotNull(ex);
+                    Assert.assertEquals(ex.getErrorCount(), 1);
+                    FieldError error = ex.getFieldError();
+                    Assert.assertNotNull(error);
+                    Assert.assertEquals(error.getField(), "subscriptionContentId");
+                    Assert.assertEquals(error.getDefaultMessage(),
+                            "numeric value out of bounds (<18 digits>.<0 digits> expected)");
+                });
+    }
+
+    /**
      * Test deleteSubscription.
      */
     @Test
