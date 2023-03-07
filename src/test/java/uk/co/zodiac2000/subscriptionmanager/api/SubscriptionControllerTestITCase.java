@@ -265,7 +265,8 @@ public class SubscriptionControllerTestITCase extends AbstractTransactionalTestN
     }
 
     /**
-     * Test updateSubscriptionContentIdentifier.
+     * Test updateSubscriptionContentIdentifier when subscriptionContentId does not reference subscription content
+     * known to the system.
      */
     @Test
     public void testUpdateUnknownSubscriptionContentId() {
@@ -288,6 +289,33 @@ public class SubscriptionControllerTestITCase extends AbstractTransactionalTestN
                     Assert.assertEquals(error.getField(), "subscriptionContentId");
                     Assert.assertEquals(error.getDefaultMessage(),
                             "{uk.co.zodiac2000.subscriptionmanager.constraint.Exists}");
+                });
+    }
+
+    /**
+     * Test updateSubscriptionContentIdentifier when subscriptionContentId is not an integer.
+     */
+    @Test
+    public void testUpdateSubscriptionContentIdNotInteger() {
+        String updatedSubscriptionDatesJson = "{"
+                + "\"subscriptionContentId\":\"foo\""
+                + "}";
+        this.client.put().uri("/subscription/100000004/subscription-content-id")
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(updatedSubscriptionDatesJson)
+                .exchange()
+                .expectStatus().isBadRequest()
+                .expectBody()
+                .consumeWith(res -> {
+                    BindException ex = (BindException) ((MvcResult) res.getMockServerResult()).getResolvedException();
+                    Assert.assertNotNull(ex);
+                    Assert.assertEquals(ex.getErrorCount(), 1);
+                    FieldError error = ex.getFieldError();
+                    Assert.assertNotNull(error);
+                    Assert.assertEquals(error.getField(), "subscriptionContentId");
+                    Assert.assertEquals(error.getDefaultMessage(),
+                            "numeric value out of bounds (<18 digits>.<0 digits> expected)");
                 });
     }
 
