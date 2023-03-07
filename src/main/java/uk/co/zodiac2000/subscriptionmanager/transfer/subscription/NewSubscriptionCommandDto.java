@@ -1,5 +1,6 @@
 package uk.co.zodiac2000.subscriptionmanager.transfer.subscription;
 
+import java.io.Serializable;
 import java.util.Optional;
 import javax.validation.GroupSequence;
 import javax.validation.constraints.Digits;
@@ -18,7 +19,9 @@ import uk.co.zodiac2000.subscriptionmanager.constraint.ValidDateString;
 @GroupSequence({DataFormatChecks.class, DataConsistencyChecks.class, NewSubscriptionCommandDto.class})
 @ValidDateRange(firstDatePropertyName = "startDate", secondDatePropertyName = "endDate",
         groups = DataConsistencyChecks.class)
-public class NewSubscriptionCommandDto {
+public class NewSubscriptionCommandDto implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     @ValidDateString(groups = DataFormatChecks.class)
     private Optional<String> startDate;

@@ -1,9 +1,13 @@
 package uk.co.zodiac2000.subscriptionmanager.transfer.subscriptionresource;
 
+import java.io.Serializable;
+
 /**
  * Response DTO representing a subscription resource.
  */
-public class SubscriptionResourceResponseDto {
+public class SubscriptionResourceResponseDto implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private final long id;
 

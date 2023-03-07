@@ -1,5 +1,6 @@
 package uk.co.zodiac2000.subscriptionmanager.transfer.subscriptionresource;
 
+import java.io.Serializable;
 import javax.validation.constraints.NotEmpty;
 import org.hibernate.validator.constraints.Length;
 import static uk.co.zodiac2000.subscriptionmanager.ApplicationConstants.MAX_RESOURCE_DESCRIPTION_LENGTH;
@@ -12,7 +13,9 @@ import uk.co.zodiac2000.subscriptionmanager.constraint.ValidUriString;
  */
 @DoesNotExist(expression = "@subscriptionResourceService.getSubscriptionResourceIdByUri(#this.resourceUri)",
         propertyName = "resourceUri")
-public class SubscriptionResourceCommandDto {
+public class SubscriptionResourceCommandDto implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private Long id = null;
 

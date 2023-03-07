@@ -1,5 +1,6 @@
 package uk.co.zodiac2000.subscriptionmanager.transfer.subscription;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Optional;
 import uk.co.zodiac2000.subscriptionmanager.transfer.subscriptioncontent.SubscriptionContentResponseDto;
@@ -7,7 +8,9 @@ import uk.co.zodiac2000.subscriptionmanager.transfer.subscriptioncontent.Subscri
 /**
  * Response DTO representing a subscription.
  */
-public class SubscriptionResponseDto {
+public class SubscriptionResponseDto implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private final Long id;
 

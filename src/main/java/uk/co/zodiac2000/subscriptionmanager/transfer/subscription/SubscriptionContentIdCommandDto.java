@@ -1,5 +1,6 @@
 package uk.co.zodiac2000.subscriptionmanager.transfer.subscription;
 
+import java.io.Serializable;
 import javax.validation.GroupSequence;
 import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotNull;
@@ -12,7 +13,9 @@ import uk.co.zodiac2000.subscriptionmanager.constraint.Exists;
  * Command DTO representing subscription content to be associated with a subscription.
  */
 @GroupSequence({DataFormatChecks.class, DataConsistencyChecks.class, SubscriptionContentIdCommandDto.class})
-public class SubscriptionContentIdCommandDto {
+public class SubscriptionContentIdCommandDto implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     @NotNull(groups = DataFormatChecks.class)
     @Digits(integer = ApplicationConstants.MAX_LONG_DIGITS, fraction = 0, groups = DataFormatChecks.class)
