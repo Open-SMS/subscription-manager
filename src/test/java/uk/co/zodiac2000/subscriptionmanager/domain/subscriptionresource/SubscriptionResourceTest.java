@@ -3,7 +3,7 @@ package uk.co.zodiac2000.subscriptionmanager.domain.subscriptionresource;
 import java.net.URI;
 import org.testng.Assert;
 import org.testng.annotations.Test;
-import uk.co.zodiac2000.subscriptionmanager.transfer.subscriptionresource.SubscriptionResourceCommandDto;
+import uk.co.zodiac2000.subscriptionmanager.transfer.subscriptionresource.UpdateSubscriptionResourceCommandDto;
 
 /**
  * Unit tests for SubscriptionResource.
@@ -41,7 +41,7 @@ public class SubscriptionResourceTest {
     @Test
     public void testUpdateSubscriptionResource() {
         SubscriptionResource resource = new SubscriptionResource(RESOURCE_URI, RESOURCE_DESCRIPTION);
-        resource.updateSubscriptionResource(new SubscriptionResourceCommandDto(42L, "http://foo.com", "Foo"));
+        resource.updateSubscriptionResource(new UpdateSubscriptionResourceCommandDto(42L, "http://foo.com", "Foo"));
 
         Assert.assertEquals(resource.getResourceUri(), URI.create("http://foo.com"));
         Assert.assertEquals(resource.getResourceDescription(), "Foo");

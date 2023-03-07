@@ -14,7 +14,7 @@ import org.testng.annotations.Test;
 import uk.co.zodiac2000.subscriptionmanager.domain.subscriptionresource.SubscriptionResource;
 import uk.co.zodiac2000.subscriptionmanager.repository.SubscriptionResourceRepository;
 import uk.co.zodiac2000.subscriptionmanager.transfer.subscriptionresource.NewSubscriptionResourceCommandDto;
-import uk.co.zodiac2000.subscriptionmanager.transfer.subscriptionresource.SubscriptionResourceCommandDto;
+import uk.co.zodiac2000.subscriptionmanager.transfer.subscriptionresource.UpdateSubscriptionResourceCommandDto;
 import uk.co.zodiac2000.subscriptionmanager.transfer.subscriptionresource.SubscriptionResourceResponseDto;
 
 /**
@@ -110,8 +110,8 @@ public class SubscriptionResourceServiceTestITCase extends AbstractTransactional
      */
     @Test
     public void testUpdateSubscriptionResource() {
-        SubscriptionResourceCommandDto commandDto
-                = new SubscriptionResourceCommandDto(100000004L, "urn:zodiac2000.co.uk:info", "Information");
+        UpdateSubscriptionResourceCommandDto commandDto
+                = new UpdateSubscriptionResourceCommandDto(100000004L, "urn:zodiac2000.co.uk:info", "Information");
         Optional<SubscriptionResourceResponseDto> responseDto = this.service.updateSubscriptionResource(commandDto);
         this.subscriptionResourceRepository.flush();
 
@@ -134,8 +134,8 @@ public class SubscriptionResourceServiceTestITCase extends AbstractTransactional
      */
     @Test
     public void testUpdateSubscriptionResourceNotFound() {
-        SubscriptionResourceCommandDto commandDto
-                = new SubscriptionResourceCommandDto(99944L, "urn:zodiac2000.co.uk:info", "Information");
+        UpdateSubscriptionResourceCommandDto commandDto
+                = new UpdateSubscriptionResourceCommandDto(99944L, "urn:zodiac2000.co.uk:info", "Information");
         Optional<SubscriptionResourceResponseDto> responseDto = this.service.updateSubscriptionResource(commandDto);
         this.subscriptionResourceRepository.flush();
 

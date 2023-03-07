@@ -4,9 +4,9 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 /**
- * Unit tests for SubscriptionResourceCommandDto.
+ * Unit tests for UpdateSubscriptionResourceCommandDto.
  */
-public class SubscriptionResourceCommandDtoTest {
+public class UpdateSubscriptionResourceCommandDtoTest {
 
     private static final long ID = 42L;
     private static final String RESOURCE_URI = "https://example.com";
@@ -17,8 +17,8 @@ public class SubscriptionResourceCommandDtoTest {
      */
     @Test
     public void testConstructor() {
-        SubscriptionResourceCommandDto commandDto
-                = new SubscriptionResourceCommandDto(ID, RESOURCE_URI, RESOURCE_DESCRIPTION);
+        UpdateSubscriptionResourceCommandDto commandDto
+                = new UpdateSubscriptionResourceCommandDto(ID, RESOURCE_URI, RESOURCE_DESCRIPTION);
 
         Assert.assertEquals(commandDto.getId(), ID);
         Assert.assertEquals(commandDto.getResourceUri(), RESOURCE_URI);
@@ -30,7 +30,7 @@ public class SubscriptionResourceCommandDtoTest {
      */
     @Test
     public void testZeroArgConstructor() {
-        SubscriptionResourceCommandDto commandDto = new SubscriptionResourceCommandDto();
+        UpdateSubscriptionResourceCommandDto commandDto = new UpdateSubscriptionResourceCommandDto();
 
         Assert.assertNotNull(commandDto);
     }
@@ -40,7 +40,7 @@ public class SubscriptionResourceCommandDtoTest {
      */
     @Test
     public void testSetId() {
-        SubscriptionResourceCommandDto commandDto = new SubscriptionResourceCommandDto();
+        UpdateSubscriptionResourceCommandDto commandDto = new UpdateSubscriptionResourceCommandDto();
         commandDto.setId(ID);
 
         Assert.assertEquals(commandDto.getId(), ID);

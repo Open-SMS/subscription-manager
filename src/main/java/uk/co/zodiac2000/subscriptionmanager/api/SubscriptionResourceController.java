@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import uk.co.zodiac2000.subscriptionmanager.service.SubscriptionResourceService;
 import uk.co.zodiac2000.subscriptionmanager.transfer.subscriptionresource.NewSubscriptionResourceCommandDto;
-import uk.co.zodiac2000.subscriptionmanager.transfer.subscriptionresource.SubscriptionResourceCommandDto;
+import uk.co.zodiac2000.subscriptionmanager.transfer.subscriptionresource.UpdateSubscriptionResourceCommandDto;
 import uk.co.zodiac2000.subscriptionmanager.transfer.subscriptionresource.SubscriptionResourceResponseDto;
 
 /**
@@ -59,7 +59,7 @@ public class SubscriptionResourceController {
      * Updates the subscription resource identified by {@code id}.Returns a response document containing the updated
      * subscription resource.
      * @param id the subscription resource identifier
-     * @param commandDto a SubscriptionResourceCommandDto representing the new state of the subscription resource
+     * @param commandDto a UpdateSubscriptionResourceCommandDto representing the new state of the subscription resource
      * @param errors data binding and validation errors
      * @return the updated subscription resource
      * @throws org.springframework.validation.BindException if a validation failure occurs
@@ -67,7 +67,7 @@ public class SubscriptionResourceController {
     @PutMapping("/{id}")
     public ResponseEntity<SubscriptionResourceResponseDto> updateSubscriptionResource(
             @PathVariable("id") final long id,
-            @RequestBody final SubscriptionResourceCommandDto commandDto,
+            @RequestBody final UpdateSubscriptionResourceCommandDto commandDto,
             final BindingResult errors) throws BindException {
         commandDto.setId(id);
         this.validator.validate(commandDto, errors);
