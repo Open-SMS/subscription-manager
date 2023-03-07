@@ -2,6 +2,7 @@ package uk.co.zodiac2000.subscriptionmanager.transfer.subscriptioncontent;
 
 import java.io.Serializable;
 import java.util.List;
+import javax.validation.GroupSequence;
 import javax.validation.Valid;
 import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotEmpty;
@@ -10,25 +11,28 @@ import javax.validation.constraints.Size;
 import static uk.co.zodiac2000.subscriptionmanager.ApplicationConstants.MAX_LENGTH_CONTENT_DESCRIPTION;
 import static uk.co.zodiac2000.subscriptionmanager.ApplicationConstants.MAX_LONG_DIGITS;
 import uk.co.zodiac2000.subscriptionmanager.constraint.Exists;
+import uk.co.zodiac2000.subscriptionmanager.constraint.DataFormatChecks;
+import uk.co.zodiac2000.subscriptionmanager.constraint.DataConsistencyChecks;
 
 /**
  * Command DTO representing new subscription content.
  */
+@GroupSequence({DataFormatChecks.class, DataConsistencyChecks.class, NewSubscriptionContentCommandDto.class})
 public class NewSubscriptionContentCommandDto implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @NotEmpty
-    @Size(max = MAX_LENGTH_CONTENT_DESCRIPTION)
+    @NotEmpty(groups = DataFormatChecks.class)
+    @Size(max = MAX_LENGTH_CONTENT_DESCRIPTION, groups = DataFormatChecks.class)
     private String contentDescription;
 
-    @NotEmpty
+    @NotEmpty(groups = DataFormatChecks.class)
     @Valid
     private List<ContentIdentifierCommandDto> contentIdentifiers;
 
-    @NotNull
-    @Digits(integer = MAX_LONG_DIGITS, fraction = 0)
-    @Exists(expression = "@subscriptionResourceService.isPresent(#this)")
+    @NotNull(groups = DataFormatChecks.class)
+    @Digits(integer = MAX_LONG_DIGITS, fraction = 0, groups = DataFormatChecks.class)
+    @Exists(expression = "@subscriptionResourceService.isPresent(#this)", groups = DataConsistencyChecks.class)
     private String subscriptionResourceId;
     /**
      * Zero-arg constructor to allow ObjectMapper to create this class.
