@@ -1,0 +1,9 @@
+{
+ "contentDescription":"Test content",
+ "subscriptionResourceId":"100000001",
+ "contentIdentifiers":[
+   {"contentIdentifier":"TEST-CONTENT-ITEM-ONE"},
+   {"contentIdentifier":"TEST-CONTENT-ITEM-TWO"}
+ ]
+}
+
