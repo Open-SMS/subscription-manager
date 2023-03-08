@@ -10,6 +10,7 @@ import uk.co.zodiac2000.subscriptionmanager.factory.SubscriptionContentResponseD
 import uk.co.zodiac2000.subscriptionmanager.transfer.subscriptioncontent.SubscriptionContentResponseDto;
 import uk.co.zodiac2000.subscriptionmanager.repository.SubscriptionContentRepository;
 import uk.co.zodiac2000.subscriptionmanager.transfer.subscriptioncontent.NewSubscriptionContentCommandDto;
+import uk.co.zodiac2000.subscriptionmanager.transfer.subscriptioncontent.UpdateSubscriptionContentCommandDto;
 
 /**
  * Service facade for SubscriptionContent aggregates.
@@ -59,5 +60,20 @@ public class SubscriptionContentService {
                 this.subscriptionContentFactory.newSubscriptionContentCommandDtoToSubscriptionContent(commandDto));
         return this.subscriptionContentResponseDtoFactory.subscriptionContentToResponseDto(
                 Optional.of(subscriptionContent));
+    }
+
+    /**
+     * Updates the subscription content object identified by the id field in commandDto to the state specified by
+     * the command DTO.
+     * @param commandDto command DTO representing the updated state of the subscription content
+     * @return the updated subscription content
+     */
+    @Transactional(readOnly = false)
+    public Optional<SubscriptionContentResponseDto> updateSubscriptionContent(
+            final UpdateSubscriptionContentCommandDto commandDto) {
+        Optional<SubscriptionContent> subscriptionContent
+                = this.subscriptionContentRepository.findById(commandDto.getId());
+        subscriptionContent.ifPresent(c -> c.updateSubscriptionContent(commandDto));
+        return this.subscriptionContentResponseDtoFactory.subscriptionContentToResponseDto(subscriptionContent);
     }
 }
