@@ -3,6 +3,7 @@ package uk.co.zodiac2000.subscriptionmanager.domain.subscriptioncontent;
 import java.io.Serializable;
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 import javax.persistence.CollectionTable;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
@@ -14,6 +15,7 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import static uk.co.zodiac2000.subscriptionmanager.ApplicationConstants.MAX_LENGTH_CONTENT_DESCRIPTION;
+import uk.co.zodiac2000.subscriptionmanager.transfer.subscriptioncontent.UpdateSubscriptionContentCommandDto;
 
 /**
  * Class representing the content that a subscription provides access to. The scope of subscription content is defined
@@ -87,5 +89,18 @@ public class SubscriptionContent implements Serializable {
      */
     public Long getSubscriptionResourceId() {
         return this.subscriptionResourceId;
+    }
+
+    /**
+     * Updates the content description, content identifiers and subscription resource associated with this
+     * subscription content.
+     * @param commandDto command DTO representing the updated fields
+     */
+    public void updateSubscriptionContent(final UpdateSubscriptionContentCommandDto commandDto) {
+        this.contentDescription = commandDto.getContentDescription();
+        this.subscriptionResourceId = Long.valueOf(commandDto.getSubscriptionResourceId());
+        this.contentIdentifiers = commandDto.getContentIdentifiers().stream()
+                .map(i -> new ContentIdentifier(i.getContentIdentifier()))
+                .collect(Collectors.toSet());
     }
 }

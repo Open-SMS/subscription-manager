@@ -1,8 +1,13 @@
 package uk.co.zodiac2000.subscriptionmanager.domain.subscriptioncontent;
 
+import java.util.List;
 import java.util.Set;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.*;
 import org.testng.Assert;
 import org.testng.annotations.Test;
+import uk.co.zodiac2000.subscriptionmanager.transfer.subscriptioncontent.ContentIdentifierCommandDto;
+import uk.co.zodiac2000.subscriptionmanager.transfer.subscriptioncontent.UpdateSubscriptionContentCommandDto;
 
 /**
  * Unit tests for SubscriptionContent.
@@ -15,7 +20,6 @@ public class SubscriptionContentTest {
             new ContentIdentifier(CONTENT_IDENTIFIER)
     );
     private static final Long SUBSCRIPTION_RESOURCE_ID = 42L;
-    private static final Long SUBSCRIPTION_CONTENT_ID = 87L;
 
     /**
      * Test constructor and accessors.
@@ -66,5 +70,27 @@ public class SubscriptionContentTest {
     public void testConstructorSubscriptionResourceIdNull() {
         SubscriptionContent subscriptionContent = new SubscriptionContent(SUBSCRIPTION_CONTENT_DESCRIPTION,
                 CONTENT_IDENTIFIERS, null);
+    }
+
+    /**
+     * Test updateSubscriptionContent.
+    */
+    @Test
+    public void testUpdateSubscriptionContent() {
+        UpdateSubscriptionContentCommandDto commandDto = new UpdateSubscriptionContentCommandDto(
+                87L, SUBSCRIPTION_CONTENT_DESCRIPTION,
+                List.of(new ContentIdentifierCommandDto(CONTENT_IDENTIFIER)),
+                SUBSCRIPTION_RESOURCE_ID.toString());
+        SubscriptionContent subscriptionContent = new SubscriptionContent();
+        subscriptionContent.updateSubscriptionContent(commandDto);
+
+        Assert.assertEquals(subscriptionContent.getContentDescription(), SUBSCRIPTION_CONTENT_DESCRIPTION);
+        assertThat(subscriptionContent, allOf(
+                hasProperty("contentDescription", is(SUBSCRIPTION_CONTENT_DESCRIPTION)),
+                hasProperty("contentIdentifiers", containsInAnyOrder(
+                        hasProperty("contentIdentifier", is(CONTENT_IDENTIFIER))
+                )),
+                hasProperty("subscriptionResourceId", is(SUBSCRIPTION_RESOURCE_ID))
+        ));
     }
 }
