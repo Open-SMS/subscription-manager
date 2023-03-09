@@ -56,7 +56,7 @@ public class SubscriptionResourceController {
     }
 
     /**
-     * Updates the subscription resource identified by {@code id}.Returns a response document containing the updated
+     * Updates the subscription resource identified by {@code id}. Returns a response document containing the updated
      * subscription resource.
      * @param id the subscription resource identifier
      * @param commandDto a UpdateSubscriptionResourceCommandDto representing the new state of the subscription resource
