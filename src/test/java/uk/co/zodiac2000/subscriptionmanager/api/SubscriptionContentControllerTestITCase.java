@@ -88,7 +88,7 @@ public class SubscriptionContentControllerTestITCase extends AbstractTransaction
      */
     @Test
     public void testCreateSubscriptionContent() {
-        String newSubscriptionContentJsonn = "{"
+        String newSubscriptionContentJson = "{"
                 + " \"contentDescription\":\"Test content\","
                 + " \"subscriptionResourceId\":\"100000001\","
                 + " \"contentIdentifiers\":["
@@ -99,7 +99,7 @@ public class SubscriptionContentControllerTestITCase extends AbstractTransaction
         EntityExchangeResult<byte[]> result = this.client.post().uri("/subscription-content")
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
-                .bodyValue(newSubscriptionContentJsonn)
+                .bodyValue(newSubscriptionContentJson)
                 .exchange()
                 .expectStatus().isCreated()
                 .expectHeader().contentType(MediaType.APPLICATION_JSON)
@@ -127,7 +127,7 @@ public class SubscriptionContentControllerTestITCase extends AbstractTransaction
      */
     @Test
     public void testCreateSubscriptionContentSubscriptionResourceIdNotInteger() {
-        String newSubscriptionContentJsonn = "{"
+        String newSubscriptionContentJson = "{"
                 + " \"contentDescription\":\"Test content\","
                 + " \"subscriptionResourceId\":\"foo\","
                 + " \"contentIdentifiers\":["
@@ -138,7 +138,7 @@ public class SubscriptionContentControllerTestITCase extends AbstractTransaction
         this.client.post().uri("/subscription-content")
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
-                .bodyValue(newSubscriptionContentJsonn)
+                .bodyValue(newSubscriptionContentJson)
                 .exchange()
                 .expectStatus().isBadRequest()
                 .expectBody()
@@ -160,7 +160,7 @@ public class SubscriptionContentControllerTestITCase extends AbstractTransaction
      */
     @Test
     public void testCreateSubscriptionContentSubscriptionResourceIdNotExists() {
-        String newSubscriptionContentJsonn = "{"
+        String newSubscriptionContentJson = "{"
                 + " \"contentDescription\":\"Test content\","
                 + " \"subscriptionResourceId\":\"42\","
                 + " \"contentIdentifiers\":["
@@ -171,7 +171,7 @@ public class SubscriptionContentControllerTestITCase extends AbstractTransaction
         this.client.post().uri("/subscription-content")
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
-                .bodyValue(newSubscriptionContentJsonn)
+                .bodyValue(newSubscriptionContentJson)
                 .exchange()
                 .expectStatus().isBadRequest()
                 .expectBody()
@@ -184,6 +184,143 @@ public class SubscriptionContentControllerTestITCase extends AbstractTransaction
                     Assert.assertEquals(error.getField(), "subscriptionResourceId");
                     Assert.assertEquals(error.getDefaultMessage(),
                             "{uk.co.zodiac2000.subscriptionmanager.constraint.Exists}");
+                });
+    }
+
+    /**
+     * Test updateSubscriptionContent.
+     */
+    @Test
+    public void testUpdateSubscriptionContent() {
+        String updateSubscriptionContentJson = "{"
+                + " \"contentDescription\":\"Test content\","
+                + " \"subscriptionResourceId\":\"100000001\","
+                + " \"contentIdentifiers\":["
+                + "   {\"contentIdentifier\":\"TEST-CONTENT-ITEM-ONE\"},"
+                + "   {\"contentIdentifier\":\"TEST-CONTENT-ITEM-TWO\"}"
+                + " ]"
+                + "}";
+        EntityExchangeResult<byte[]> result = this.client.put().uri("/subscription-content/100000003")
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(updateSubscriptionContentJson)
+                .exchange()
+                .expectStatus().isOk()
+                .expectHeader().contentType(MediaType.APPLICATION_JSON)
+                .expectBody().returnResult();
+        this.subscriptionContentRepository.flush();
+
+        String responseBody = new String(result.getResponseBody());
+        Integer id = JsonPath.read(responseBody, "$.id");
+        Assert.assertEquals(id, 100000003);
+
+        Optional<SubscriptionContent> subscriptionContent = this.subscriptionContentRepository.findById(100000003L);
+        Assert.assertTrue(subscriptionContent.isPresent());
+        assertThat(subscriptionContent.get(), allOf(
+                hasProperty("contentDescription", is("Test content")),
+                hasProperty("subscriptionResourceId", is(100000001L)),
+                hasProperty("contentIdentifiers", containsInAnyOrder(
+                        hasProperty("contentIdentifier", is("TEST-CONTENT-ITEM-ONE")),
+                        hasProperty("contentIdentifier", is("TEST-CONTENT-ITEM-TWO"))
+                ))
+        ));
+    }
+
+    /**
+     * Test updateSubscriptionContent when the subscription resource referenced by subscriptionResourceId does not
+     * exist in the system.
+     */
+    @Test
+    public void testUpdateSubscriptionContentUnknownSubscriptionResource() {
+        String updateSubscriptionContentJson = "{"
+                + " \"contentDescription\":\"Test content\","
+                + " \"subscriptionResourceId\":\"123\","
+                + " \"contentIdentifiers\":["
+                + "   {\"contentIdentifier\":\"TEST-CONTENT-ITEM-ONE\"},"
+                + "   {\"contentIdentifier\":\"TEST-CONTENT-ITEM-TWO\"}"
+                + " ]"
+                + "}";
+        this.client.put().uri("/subscription-content/100000001")
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(updateSubscriptionContentJson)
+                .exchange()
+                .expectStatus().isBadRequest()
+                .expectBody()
+                .consumeWith(res -> {
+                    BindException ex = (BindException) ((MvcResult) res.getMockServerResult()).getResolvedException();
+                    Assert.assertNotNull(ex);
+                    Assert.assertEquals(ex.getErrorCount(), 1);
+                    FieldError error = ex.getFieldError();
+                    Assert.assertNotNull(error);
+                    Assert.assertEquals(error.getField(), "subscriptionResourceId");
+                    Assert.assertEquals(error.getDefaultMessage(),
+                            "{uk.co.zodiac2000.subscriptionmanager.constraint.Exists}");
+                });
+    }
+
+    /**
+     * Test updateSubscriptionContent when subscriptionResourceId is not an integer.
+     */
+    @Test
+    public void testUpdateSubscriptionContentSubscriptionResourceIdNotInteger() {
+        String updateSubscriptionContentJson = "{"
+                + " \"contentDescription\":\"Test content\","
+                + " \"subscriptionResourceId\":\"foo\","
+                + " \"contentIdentifiers\":["
+                + "   {\"contentIdentifier\":\"TEST-CONTENT-ITEM-ONE\"},"
+                + "   {\"contentIdentifier\":\"TEST-CONTENT-ITEM-TWO\"}"
+                + " ]"
+                + "}";
+        this.client.put().uri("/subscription-content/100000001")
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(updateSubscriptionContentJson)
+                .exchange()
+                .expectStatus().isBadRequest()
+                .expectBody()
+                .consumeWith(res -> {
+                    BindException ex = (BindException) ((MvcResult) res.getMockServerResult()).getResolvedException();
+                    Assert.assertNotNull(ex);
+                    Assert.assertEquals(ex.getErrorCount(), 1);
+                    FieldError error = ex.getFieldError();
+                    Assert.assertNotNull(error);
+                    Assert.assertEquals(error.getField(), "subscriptionResourceId");
+                    Assert.assertEquals(error.getDefaultMessage(),
+                            "numeric value out of bounds (<18 digits>.<0 digits> expected)");
+                });
+    }
+
+
+    /**
+     * Test updateSubscriptionContent when one of the contentIdentifier elements is an empty string.
+     */
+    @Test
+    public void testUpdateSubscriptionContentContentIdentifierEmpty() {
+        String updateSubscriptionContentJson = "{"
+                + " \"contentDescription\":\"Test content\","
+                + " \"subscriptionResourceId\":\"100000004\","
+                + " \"contentIdentifiers\":["
+                + "   {\"contentIdentifier\":\"\"},"
+                + "   {\"contentIdentifier\":\"TEST-CONTENT-ITEM-TWO\"}"
+                + " ]"
+                + "}";
+        this.client.put().uri("/subscription-content/100000001")
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(updateSubscriptionContentJson)
+                .exchange()
+                .expectStatus().isBadRequest()
+                .expectBody()
+                .consumeWith(res -> {
+                    BindException ex = (BindException) ((MvcResult) res.getMockServerResult()).getResolvedException();
+                    Assert.assertNotNull(ex);
+                    Assert.assertEquals(ex.getErrorCount(), 1);
+                    FieldError error = ex.getFieldError();
+                    Assert.assertNotNull(error);
+                    Assert.assertEquals(error.getField(), "contentIdentifiers[0].contentIdentifier");
+                    Assert.assertEquals(error.getDefaultMessage(),
+                            "must not be empty");
                 });
     }
 }
