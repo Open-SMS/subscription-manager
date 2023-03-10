@@ -2,6 +2,7 @@ package uk.co.zodiac2000.subscriptionmanager.domain.subscriptionresource;
 
 import java.io.Serializable;
 import java.net.URI;
+import java.util.Objects;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -46,8 +47,8 @@ public class SubscriptionResource implements Serializable {
      * @param resourceDescription the resource description
      */
     public SubscriptionResource(final URI resourceUri, final String resourceDescription) {
-        this.resourceUri = resourceUri;
-        this.resourceDescription = resourceDescription;
+        this.resourceUri = Objects.requireNonNull(resourceUri);
+        this.resourceDescription = Objects.requireNonNull(resourceDescription);
     }
 
     /**

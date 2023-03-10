@@ -46,4 +46,20 @@ public class SubscriptionResourceTest {
         Assert.assertEquals(resource.getResourceUri(), URI.create("http://foo.com"));
         Assert.assertEquals(resource.getResourceDescription(), "Foo");
     }
+
+    /**
+     * Test constructor when resourceUri is null.
+     */
+    @Test(expectedExceptions = {NullPointerException.class})
+    public void testConstructorResourceUriNull() {
+        SubscriptionResource resource = new SubscriptionResource(null, RESOURCE_DESCRIPTION);
+    }
+
+    /**
+     * Test constructor when resourceDescription is null.
+     */
+    @Test(expectedExceptions = {NullPointerException.class})
+    public void testConstructorResourceDescriptionNull() {
+        SubscriptionResource resource = new SubscriptionResource(RESOURCE_URI, null);
+    }
 }
