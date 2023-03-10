@@ -27,9 +27,9 @@ public class SubscriptionContent implements Serializable {
     private static final long serialVersionUID = 31321L;
 
     @Id
-    @SequenceGenerator(name = "content_identifier_id_gen", sequenceName = "content_identifier_id_seq",
+    @SequenceGenerator(name = "subscription_content_id_gen", sequenceName = "subscription_content_id_seq",
             allocationSize = 1)
-    @GeneratedValue(generator = "content_identifier_id_gen")
+    @GeneratedValue(generator = "subscription_content_id_gen")
     private Long id;
 
     @NotEmpty
