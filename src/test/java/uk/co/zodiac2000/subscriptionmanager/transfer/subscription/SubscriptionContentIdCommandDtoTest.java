@@ -6,7 +6,7 @@ import org.testng.annotations.Test;
 /**
  * Unit tests for SubscriptionContentIdCommandDto.
  */
-public class SubscriptionContentIdentifierCommandDtoTest {
+public class SubscriptionContentIdCommandDtoTest {
 
     private static final String SUBSCRIPTION_CONTENT_ID = "198";
 
