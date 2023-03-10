@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SubscriptionContentIdCommandDto.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Subscription Manager</a> &gt; <a href="index.source.html" class="el_package">uk.co.zodiac2000.subscriptionmanager.transfer.subscription</a> &gt; <span class="el_source">SubscriptionContentIdCommandDto.java</span></div><h1>SubscriptionContentIdCommandDto.java</h1><pre class="source lang-java linenums">package uk.co.zodiac2000.subscriptionmanager.transfer.subscription;
+
+import java.io.Serializable;
+import javax.validation.GroupSequence;
+import javax.validation.constraints.Digits;
+import javax.validation.constraints.NotNull;
+import uk.co.zodiac2000.subscriptionmanager.ApplicationConstants;
+import uk.co.zodiac2000.subscriptionmanager.constraint.DataConsistencyChecks;
+import uk.co.zodiac2000.subscriptionmanager.constraint.DataFormatChecks;
+import uk.co.zodiac2000.subscriptionmanager.constraint.Exists;
+
+/**
+ * Command DTO representing subscription content to be associated with a subscription.
+ */
+@GroupSequence({DataFormatChecks.class, DataConsistencyChecks.class, SubscriptionContentIdCommandDto.class})
+public class SubscriptionContentIdCommandDto implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
+    @NotNull(groups = DataFormatChecks.class)
+    @Digits(integer = ApplicationConstants.MAX_LONG_DIGITS, fraction = 0, groups = DataFormatChecks.class)
+    @Exists(expression = &quot;@subscriptionContentService.isPresent(#this)&quot;, groups = DataConsistencyChecks.class)
+    private String subscriptionContentId;
+
+    /**
+     * Zero-arg constructor to allow ObjectMapper to create this class.
+     */
+<span class="fc" id="L28">    public SubscriptionContentIdCommandDto() { }</span>
+
+    /**
+     * Constructs a new SubscriptionContentIdCommandDto using the supplied argument.
+     * @param subscriptionContentId the identifier of the subscription content that this subscription
+     * provides access to
+     */
+<span class="fc" id="L35">    public SubscriptionContentIdCommandDto(final String subscriptionContentId) {</span>
+<span class="fc" id="L36">        this.subscriptionContentId = subscriptionContentId;</span>
+<span class="fc" id="L37">    }</span>
+
+    /**
+     * @return the identifier of the subscription content that this subscription provides access to
+     */
+    public String getSubscriptionContentId() {
+<span class="fc" id="L43">        return this.subscriptionContentId;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

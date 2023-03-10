@@ -3,12 +3,17 @@ uk.co.zodiac2000.subscriptionmanager.api
 uk.co.zodiac2000.subscriptionmanager.configuration
 uk.co.zodiac2000.subscriptionmanager.constraint
 uk.co.zodiac2000.subscriptionmanager.constraint.validator
+uk.co.zodiac2000.subscriptionmanager.converter
 uk.co.zodiac2000.subscriptionmanager.domain.oidcclaims
 uk.co.zodiac2000.subscriptionmanager.domain.subscriber
 uk.co.zodiac2000.subscriptionmanager.domain.subscription
+uk.co.zodiac2000.subscriptionmanager.domain.subscriptioncontent
+uk.co.zodiac2000.subscriptionmanager.domain.subscriptionresource
 uk.co.zodiac2000.subscriptionmanager.factory
 uk.co.zodiac2000.subscriptionmanager.repository
 uk.co.zodiac2000.subscriptionmanager.service
 uk.co.zodiac2000.subscriptionmanager.specification
 uk.co.zodiac2000.subscriptionmanager.transfer.subscriber
 uk.co.zodiac2000.subscriptionmanager.transfer.subscription
+uk.co.zodiac2000.subscriptionmanager.transfer.subscriptioncontent
+uk.co.zodiac2000.subscriptionmanager.transfer.subscriptionresource

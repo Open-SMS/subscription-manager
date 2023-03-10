@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SubscriptionResource.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Subscription Manager</a> &gt; <a href="index.source.html" class="el_package">uk.co.zodiac2000.subscriptionmanager.domain.subscriptionresource</a> &gt; <span class="el_source">SubscriptionResource.java</span></div><h1>SubscriptionResource.java</h1><pre class="source lang-java linenums">package uk.co.zodiac2000.subscriptionmanager.domain.subscriptionresource;
+
+import java.io.Serializable;
+import java.net.URI;
+import java.util.Objects;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+import org.hibernate.validator.constraints.Length;
+import static uk.co.zodiac2000.subscriptionmanager.ApplicationConstants.MAX_RESOURCE_DESCRIPTION_LENGTH;
+import uk.co.zodiac2000.subscriptionmanager.transfer.subscriptionresource.UpdateSubscriptionResourceCommandDto;
+
+/**
+ * Class representing a subscribeable resource, for example a website that provides content available to subscribers.
+ * The resource is uniquely identified by {@code resourceUri}. This may be a URL identifying a website or part of a
+ * website, or any other URI that is used to identify a resource in an authorization request.
+ */
+@Entity
+public class SubscriptionResource implements Serializable {
+
+    private static final long serialVersionUID = 21412L;
+
+    @Id
+    @SequenceGenerator(name = &quot;subscription_resource_id_gen&quot;, sequenceName = &quot;subscription_resource_id_seq&quot;,
+            allocationSize = 1)
+    @GeneratedValue(generator = &quot;subscription_resource_id_gen&quot;)
+    private Long id;
+
+    @NotNull
+    private URI resourceUri;
+
+    @NotEmpty
+    @Length(max = MAX_RESOURCE_DESCRIPTION_LENGTH)
+    private String resourceDescription;
+
+    /**
+     * Zero-arg constructor for JPA.
+     */
+<span class="fc" id="L42">    public SubscriptionResource() { }</span>
+
+    /**
+     * Constructs a new SubscriptionResource using the supplied arguments.
+     * @param resourceUri the resource URI
+     * @param resourceDescription the resource description
+     */
+<span class="fc" id="L49">    public SubscriptionResource(final URI resourceUri, final String resourceDescription) {</span>
+<span class="fc" id="L50">        this.resourceUri = Objects.requireNonNull(resourceUri);</span>
+<span class="fc" id="L51">        this.resourceDescription = Objects.requireNonNull(resourceDescription);</span>
+<span class="fc" id="L52">    }</span>
+
+    /**
+     * @return the resource id
+     */
+    public Long getId() {
+<span class="fc" id="L58">        return this.id;</span>
+    }
+
+    /**
+     * @return the resource URI
+     */
+    public URI getResourceUri() {
+<span class="fc" id="L65">        return this.resourceUri;</span>
+    }
+
+    /**
+     * @return the resource description
+     */
+    public String getResourceDescription() {
+<span class="fc" id="L72">        return this.resourceDescription;</span>
+    }
+
+    /**
+     * Updates the resourceUri and resourceDescription properties of this subscription resource.
+     * @param commandDto command DTO representing the updated fields
+     */
+    public void updateSubscriptionResource(final UpdateSubscriptionResourceCommandDto commandDto) {
+<span class="fc" id="L80">        this.resourceUri = URI.create(commandDto.getResourceUri());</span>
+<span class="fc" id="L81">        this.resourceDescription = commandDto.getResourceDescription();</span>
+<span class="fc" id="L82">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

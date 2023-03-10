@@ -9,7 +9,7 @@ import uk.co.zodiac2000.subscriptionmanager.factory.SubscriptionFactory;
 import uk.co.zodiac2000.subscriptionmanager.factory.SubscriptionResponseDtoFactory;
 import uk.co.zodiac2000.subscriptionmanager.repository.SubscriptionRepository;
 import uk.co.zodiac2000.subscriptionmanager.transfer.subscription.NewSubscriptionCommandDto;
-import uk.co.zodiac2000.subscriptionmanager.transfer.subscription.SubscriptionContentIdentifierCommandDto;
+import uk.co.zodiac2000.subscriptionmanager.transfer.subscription.SubscriptionContentIdCommandDto;
 import uk.co.zodiac2000.subscriptionmanager.transfer.subscription.SubscriptionDatesCommandDto;
 import uk.co.zodiac2000.subscriptionmanager.transfer.subscription.SubscriptionResponseDto;
 
@@ -80,18 +80,18 @@ import uk.co.zodiac2000.subscriptionmanager.transfer.subscription.SubscriptionRe
     }
 
     /**
-     * Updates the content identifier associated with the Subscription identified by id. Returns a response DTO
+     * Updates the subscription content id for the Subscription identified by id. Returns a response DTO
      * representing the updated subscription. If the subscription doesn't exist then an empty optional is returned and
      * no change is made to the state of the system.
      * @param id the subscription identifier
-     * @param commandDto command DTO representing the updated content identifier
+     * @param commandDto command DTO representing the updated subscription content id
      * @return a SubscriptionResponseDto
      */
     @Transactional(readOnly = false)
-    public Optional&lt;SubscriptionResponseDto&gt; updateSubscriptionContentIdentifier(final long id,
-            final SubscriptionContentIdentifierCommandDto commandDto) {
+    public Optional&lt;SubscriptionResponseDto&gt; updateSubscriptionContentId(final long id,
+            final SubscriptionContentIdCommandDto commandDto) {
 <span class="nc" id="L93">        Optional&lt;Subscription&gt; subscription = this.subscriptionRepository.findById(id);</span>
-<span class="nc" id="L94">        subscription.ifPresent(s -&gt; s.setContentIdentifier(commandDto));</span>
+<span class="nc" id="L94">        subscription.ifPresent(s -&gt; s.setSubscriptionContentId(commandDto));</span>
 <span class="nc" id="L95">        return this.subscriptionResponseDtoFactory.subscriptionToSubscriptionResponseDto(subscription);</span>
     }
 

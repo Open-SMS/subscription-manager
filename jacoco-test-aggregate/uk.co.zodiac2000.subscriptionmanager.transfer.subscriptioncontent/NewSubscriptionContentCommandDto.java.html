@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>NewSubscriptionContentCommandDto.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Subscription Manager</a> &gt; <a href="index.source.html" class="el_package">uk.co.zodiac2000.subscriptionmanager.transfer.subscriptioncontent</a> &gt; <span class="el_source">NewSubscriptionContentCommandDto.java</span></div><h1>NewSubscriptionContentCommandDto.java</h1><pre class="source lang-java linenums">package uk.co.zodiac2000.subscriptionmanager.transfer.subscriptioncontent;
+
+import java.io.Serializable;
+import java.util.List;
+import javax.validation.GroupSequence;
+import javax.validation.Valid;
+import javax.validation.constraints.Digits;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+import static uk.co.zodiac2000.subscriptionmanager.ApplicationConstants.MAX_LENGTH_CONTENT_DESCRIPTION;
+import static uk.co.zodiac2000.subscriptionmanager.ApplicationConstants.MAX_LONG_DIGITS;
+import uk.co.zodiac2000.subscriptionmanager.constraint.Exists;
+import uk.co.zodiac2000.subscriptionmanager.constraint.DataFormatChecks;
+import uk.co.zodiac2000.subscriptionmanager.constraint.DataConsistencyChecks;
+
+/**
+ * Command DTO representing new subscription content.
+ */
+@GroupSequence({DataFormatChecks.class, DataConsistencyChecks.class, NewSubscriptionContentCommandDto.class})
+public class NewSubscriptionContentCommandDto implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
+    @NotEmpty(groups = DataFormatChecks.class)
+    @Size(max = MAX_LENGTH_CONTENT_DESCRIPTION, groups = DataFormatChecks.class)
+    private String contentDescription;
+
+    @NotEmpty(groups = DataFormatChecks.class)
+    @Valid
+    private List&lt;ContentIdentifierCommandDto&gt; contentIdentifiers;
+
+    @NotNull(groups = DataFormatChecks.class)
+    @Digits(integer = MAX_LONG_DIGITS, fraction = 0, groups = DataFormatChecks.class)
+    @Exists(expression = &quot;@subscriptionResourceService.isPresent(#this)&quot;, groups = DataConsistencyChecks.class)
+    private String subscriptionResourceId;
+    /**
+     * Zero-arg constructor to allow ObjectMapper to create this class.
+     */
+<span class="fc" id="L40">    public NewSubscriptionContentCommandDto() { }</span>
+
+    /**
+     * Constructs a new NewSubscriptionContentCommandDto with the supplied arguments.
+     * @param contentDescription description of the subscription content
+     * @param contentIdentifiers the content identifiers associated with this subscription content
+     * @param subscriptionResourceId the identifier of the subscription resource this subscription content is
+     * associated with
+     */
+    public NewSubscriptionContentCommandDto(final String contentDescription,
+<span class="fc" id="L50">            final List&lt;ContentIdentifierCommandDto&gt; contentIdentifiers, final String subscriptionResourceId) {</span>
+<span class="fc" id="L51">        this.contentDescription = contentDescription;</span>
+<span class="fc" id="L52">        this.contentIdentifiers = contentIdentifiers;</span>
+<span class="fc" id="L53">        this.subscriptionResourceId = subscriptionResourceId;</span>
+<span class="fc" id="L54">    }</span>
+
+    /**
+     * @return description of the subscription content
+     */
+    public String getContentDescription() {
+<span class="fc" id="L60">        return contentDescription;</span>
+    }
+
+    /**
+     * @return the content identifiers associated with this subscription content
+     */
+    public List&lt;ContentIdentifierCommandDto&gt; getContentIdentifiers() {
+<span class="fc" id="L67">        return contentIdentifiers;</span>
+    }
+
+    /**
+     * @return the identifier of the subscription resource this subscription content is associated with
+     */
+    public String getSubscriptionResourceId() {
+<span class="fc" id="L74">        return this.subscriptionResourceId;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

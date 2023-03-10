@@ -22,7 +22,7 @@ import org.springframework.web.servlet.ModelAndView;
 import uk.co.zodiac2000.subscriptionmanager.domain.subscription.Subscription;
 import uk.co.zodiac2000.subscriptionmanager.service.SubscriptionService;
 import uk.co.zodiac2000.subscriptionmanager.transfer.subscription.NewSubscriptionCommandDto;
-import uk.co.zodiac2000.subscriptionmanager.transfer.subscription.SubscriptionContentIdentifierCommandDto;
+import uk.co.zodiac2000.subscriptionmanager.transfer.subscription.SubscriptionContentIdCommandDto;
 import uk.co.zodiac2000.subscriptionmanager.transfer.subscription.SubscriptionDatesCommandDto;
 import uk.co.zodiac2000.subscriptionmanager.transfer.subscription.SubscriptionResponseDto;
 
@@ -107,17 +107,17 @@ import uk.co.zodiac2000.subscriptionmanager.transfer.subscription.SubscriptionRe
     }
 
     /**
-     * Updates the subscription content identifier. Returns the modified subscription
+     * Updates the subscription content id. Returns the modified subscription
      * or Not Found if the subscription didn't exist.
      * @param id the subscription identifier
-     * @param commandDto command DTO representing the new content identifier
+     * @param commandDto command DTO representing the new subscription content id
      * @return the modified subscription
      */
-    @PutMapping(&quot;/{id}/content-identifier&quot;)
-    public ResponseEntity&lt;SubscriptionResponseDto&gt; updateSubscriptionContentIdentifier(
+    @PutMapping(&quot;/{id}/subscription-content-id&quot;)
+    public ResponseEntity&lt;SubscriptionResponseDto&gt; updateSubscriptionContentId(
             @PathVariable(&quot;id&quot;) final long id,
-            @RequestBody @Valid final SubscriptionContentIdentifierCommandDto commandDto) {
-<span class="nc" id="L120">        return ResponseEntity.of(this.subscriptionService.updateSubscriptionContentIdentifier(id, commandDto));</span>
+            @RequestBody @Valid final SubscriptionContentIdCommandDto commandDto) {
+<span class="nc" id="L120">        return ResponseEntity.of(this.subscriptionService.updateSubscriptionContentId(id, commandDto));</span>
     }
 
     /**

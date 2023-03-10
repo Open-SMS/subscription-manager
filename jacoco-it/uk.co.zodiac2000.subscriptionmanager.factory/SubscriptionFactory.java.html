@@ -20,7 +20,8 @@ import uk.co.zodiac2000.subscriptionmanager.transfer.subscription.NewSubscriptio
 <span class="fc" id="L20">        return new Subscription(</span>
 <span class="fc" id="L21">                commandDto.getStartDate().map(LocalDate::parse),</span>
 <span class="fc" id="L22">                commandDto.getEndDate().map(LocalDate::parse),</span>
-<span class="fc" id="L23">                commandDto.getContentIdentifier(), Long.parseLong(commandDto.getSubscriberId())</span>
+<span class="fc" id="L23">                Long.parseLong(commandDto.getSubscriptionContentId()),</span>
+<span class="fc" id="L24">                Long.parseLong(commandDto.getSubscriberId())</span>
         );
     }
 }

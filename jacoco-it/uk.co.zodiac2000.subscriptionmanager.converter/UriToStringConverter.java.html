@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>UriToStringConverter.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Subscription Manager</a> &gt; <a href="index.source.html" class="el_package">uk.co.zodiac2000.subscriptionmanager.converter</a> &gt; <span class="el_source">UriToStringConverter.java</span></div><h1>UriToStringConverter.java</h1><pre class="source lang-java linenums">package uk.co.zodiac2000.subscriptionmanager.converter;
+
+import java.net.URI;
+import javax.persistence.AttributeConverter;
+import javax.persistence.Converter;
+
+/**
+ * AttributeConverter implementation that can convert between URI and String objects. This is used to allow JPA
+ * entities to contain URI fields that are converted to VARCHARs when persisted to the database, and the reverse
+ * operation when retrieved.
+ */
+@Converter(autoApply = true)
+<span class="fc" id="L13">public class UriToStringConverter implements AttributeConverter&lt;URI, String&gt; {</span>
+
+    /**
+     * Converts a URI to a String when entities with a URI field are persisted. If {@code uri} is null then null
+     * is returned.
+     * @param uri URI to convert
+     * @return a string representation of the URI.
+     */
+    @Override
+    public String convertToDatabaseColumn(final URI uri) {
+<span class="pc bpc" id="L23" title="1 of 2 branches missed.">        if (uri == null) {</span>
+<span class="nc" id="L24">            return null;</span>
+        }
+<span class="fc" id="L26">        return uri.toString();</span>
+    }
+
+    /**
+     * Converts a String into a URI object which when entities containing a URI field are retrieved. If
+     * {@code uriString} is null or an empty string then null is returned.
+     * @param uriString string representation of the URI
+     * @return a URI
+     */
+    @Override
+    public URI convertToEntityAttribute(final String uriString) {
+<span class="pc bpc" id="L37" title="2 of 4 branches missed.">        if (uriString == null || uriString.isEmpty()) {</span>
+<span class="nc" id="L38">            return null;</span>
+        }
+<span class="fc" id="L40">        return URI.create(uriString);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

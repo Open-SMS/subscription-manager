@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SubscriptionContentResponseDtoFactory.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Subscription Manager</a> &gt; <a href="index.source.html" class="el_package">uk.co.zodiac2000.subscriptionmanager.factory</a> &gt; <span class="el_source">SubscriptionContentResponseDtoFactory.java</span></div><h1>SubscriptionContentResponseDtoFactory.java</h1><pre class="source lang-java linenums">package uk.co.zodiac2000.subscriptionmanager.factory;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import uk.co.zodiac2000.subscriptionmanager.domain.subscriptioncontent.ContentIdentifier;
+import uk.co.zodiac2000.subscriptionmanager.domain.subscriptioncontent.SubscriptionContent;
+import uk.co.zodiac2000.subscriptionmanager.service.SubscriptionResourceService;
+import uk.co.zodiac2000.subscriptionmanager.transfer.subscriptioncontent.SubscriptionContentResponseDto;
+
+/**
+ * Factory responsible for producing SubscriptionContentResponseDto objects.
+ */
+@Component
+<span class="fc" id="L18">public class SubscriptionContentResponseDtoFactory {</span>
+
+    @Autowired
+    private SubscriptionResourceService subscriptionResourceService;
+
+    /**
+     * Returns a SubscriptionContentResponseDto object with state based on the {@code subscriptionContent} argument. If
+     * the argument is empty then an empty optional is returned.
+     * @param subscriptionContent the subscription content
+     * @return a SubscriptionContentResponseDto object
+     */
+    public Optional&lt;SubscriptionContentResponseDto&gt; subscriptionContentToResponseDto(
+            final Optional&lt;SubscriptionContent&gt; subscriptionContent) {
+<span class="fc" id="L31">        return subscriptionContent</span>
+<span class="fc" id="L32">                .map(c -&gt; new SubscriptionContentResponseDto(</span>
+<span class="fc" id="L33">                        c.getId(),</span>
+<span class="fc" id="L34">                        c.getContentDescription(),</span>
+<span class="fc" id="L35">                        this.contentIdentifiersToResponseDto(c.getContentIdentifiers()),</span>
+<span class="fc" id="L36">                        this.subscriptionResourceService.getSubscriptionResource(c.getSubscriptionResourceId()).get()</span>
+                ));
+    }
+
+    /**
+     * Return a list of strings representing content identifiers based on the argument. The content identifiers
+     * are returned in lexical order.
+     * @param contentIdentifiers a set of ContentIdentifier objects
+     * @return a list of strings representing content identifiers
+     */
+    public List&lt;String&gt; contentIdentifiersToResponseDto(final Set&lt;ContentIdentifier&gt; contentIdentifiers) {
+<span class="fc" id="L47">        return contentIdentifiers.stream()</span>
+<span class="fc" id="L48">                .sorted()</span>
+<span class="fc" id="L49">                .map(c -&gt; c.getContentIdentifier())</span>
+<span class="fc" id="L50">                .collect(Collectors.toList());</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

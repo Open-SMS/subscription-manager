@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SubscriptionResourceResponseDto.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Subscription Manager</a> &gt; <a href="index.source.html" class="el_package">uk.co.zodiac2000.subscriptionmanager.transfer.subscriptionresource</a> &gt; <span class="el_source">SubscriptionResourceResponseDto.java</span></div><h1>SubscriptionResourceResponseDto.java</h1><pre class="source lang-java linenums">package uk.co.zodiac2000.subscriptionmanager.transfer.subscriptionresource;
+
+import java.io.Serializable;
+
+/**
+ * Response DTO representing a subscription resource.
+ */
+public class SubscriptionResourceResponseDto implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
+    private final long id;
+
+    private final String resourceUri;
+
+    private final String resourceDescription;
+
+    /**
+     * Constructs a new SubscriptionResourceResponseDto with the supplied arguments.
+     * @param id the subscription resource id
+     * @param resourceUri the resource URI
+     * @param resourceDescription the resource description
+     */
+<span class="fc" id="L24">    public SubscriptionResourceResponseDto(final long id, final String resourceUri, final String resourceDescription) {</span>
+<span class="fc" id="L25">        this.id = id;</span>
+<span class="fc" id="L26">        this.resourceUri = resourceUri;</span>
+<span class="fc" id="L27">        this.resourceDescription = resourceDescription;</span>
+<span class="fc" id="L28">    }</span>
+
+    /**
+     * @return the subscription resource id
+     */
+    public long getId() {
+<span class="fc" id="L34">        return this.id;</span>
+    }
+
+    /**
+     * @return the resource URI as a string
+     */
+    public String getResourceUri() {
+<span class="fc" id="L41">        return this.resourceUri;</span>
+    }
+
+    /**
+     * @return the resource description
+     */
+    public String getResourceDescription() {
+<span class="fc" id="L48">        return this.resourceDescription;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

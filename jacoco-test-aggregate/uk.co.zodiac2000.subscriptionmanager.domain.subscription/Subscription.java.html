@@ -7,9 +7,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.SequenceGenerator;
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-import uk.co.zodiac2000.subscriptionmanager.transfer.subscription.SubscriptionContentIdentifierCommandDto;
+import uk.co.zodiac2000.subscriptionmanager.transfer.subscription.SubscriptionContentIdCommandDto;
 import uk.co.zodiac2000.subscriptionmanager.transfer.subscription.SubscriptionDatesCommandDto;
 
 /**
@@ -33,8 +32,8 @@ public class Subscription implements Serializable {
 
     private boolean terminated;
 
-    @NotEmpty
-    private String contentIdentifier;
+    @NotNull
+    private Long subscriptionContentId;
 
     @NotNull
     private Long subscriberId;
@@ -42,24 +41,25 @@ public class Subscription implements Serializable {
     /**
      * Zero-arg constructor for JPA.
      */
-<span class="fc" id="L45">    public Subscription() { }</span>
+<span class="fc" id="L44">    public Subscription() { }</span>
 
     /**
      * Constructs a new Subscription using the supplied arguments. Subscriptions created by this constructor are
      * neither terminated nor suspended.
      * @param optionalStartDate the date from which this subscription is active
      * @param optionalEndDate the date until which this subscription is active
-     * @param contentIdentifier a string that describes the content that is the subject of this subscription
+     * @param subscriptionContentId the identifier of the subscription content that this subscription
+     * provides access to
      * @param subscriberId the identifier of the subscriber that is the beneficiary of this subscription
      */
     public Subscription(final Optional&lt;LocalDate&gt; optionalStartDate, final Optional&lt;LocalDate&gt; optionalEndDate,
-<span class="fc" id="L56">            final String contentIdentifier, final long subscriberId) {</span>
+<span class="fc" id="L56">            final long subscriptionContentId, final long subscriberId) {</span>
 <span class="fc bfc" id="L57" title="All 2 branches covered.">        if (!firstDateBeforeSecondDate(optionalStartDate, optionalEndDate)) {</span>
 <span class="fc" id="L58">            throw new IllegalArgumentException(&quot;startDate must be before or equal to endDate&quot;);</span>
         }
 <span class="fc" id="L60">        this.startDate = optionalStartDate.orElse(null);</span>
 <span class="fc" id="L61">        this.endDate = optionalEndDate.orElse(null);</span>
-<span class="fc" id="L62">        this.contentIdentifier = contentIdentifier;</span>
+<span class="fc" id="L62">        this.subscriptionContentId = subscriptionContentId;</span>
 <span class="fc" id="L63">        this.terminated = false;</span>
 <span class="fc" id="L64">        this.suspended = false;</span>
 <span class="fc" id="L65">        this.subscriberId = subscriberId;</span>
@@ -167,10 +167,10 @@ public class Subscription implements Serializable {
     }
 
     /**
-     * @return a string that describes the content that is the subject of this subscription
+     * @return the identifier of the subscription content that this subscription provides access to
      */
-    public String getContentIdentifier() {
-<span class="fc" id="L173">        return contentIdentifier;</span>
+    public Long getSubscriptionContentId() {
+<span class="fc" id="L173">        return subscriptionContentId;</span>
     }
 
     /**
@@ -221,11 +221,11 @@ public class Subscription implements Serializable {
     }
 
     /**
-     * Sets the content identifier associated with this subscription.
-     * @param commandDto command DTO representing the new content identifier
+     * Sets the identifier of the subscription content associated with this subscription.
+     * @param commandDto command DTO representing the new subscription content identifier
      */
-    public void setContentIdentifier(final SubscriptionContentIdentifierCommandDto commandDto) {
-<span class="fc" id="L228">        this.contentIdentifier = commandDto.getContentIdentifier();</span>
+    public void setSubscriptionContentId(final SubscriptionContentIdCommandDto commandDto) {
+<span class="fc" id="L228">        this.subscriptionContentId = Long.valueOf(commandDto.getSubscriptionContentId());</span>
 <span class="fc" id="L229">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

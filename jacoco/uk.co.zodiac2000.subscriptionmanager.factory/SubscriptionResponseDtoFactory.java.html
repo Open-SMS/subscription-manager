@@ -6,27 +6,26 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import uk.co.zodiac2000.subscriptionmanager.domain.subscription.Subscription;
+import uk.co.zodiac2000.subscriptionmanager.service.SubscriptionContentService;
 import uk.co.zodiac2000.subscriptionmanager.transfer.subscription.SubscriptionResponseDto;
 
 /**
  * Factory that produces subscription response DTOs.
  */
 @Component
-public class SubscriptionResponseDtoFactory {
-
-    private final Clock systemClock;
+<span class="fc" id="L16">public class SubscriptionResponseDtoFactory {</span>
 
     /**
-     * Constructs a new SubscriptionResponseDtoFactory with systemClock argument. This clock is used in all date-time
-     * expressions that involve the current system date-time. This is autowired by Spring using a bean available from
-     * the Spring context. In unit tests a Clock needs to be supplied, possibly a fixed implementation. Integration
-     * tests can make use of the fixed clock bean produced by test class TestClockConfiguration#fixedClock.
-     * @param systemClock the Clock to use
+     * This clock is used in all date-time expressions that involve the current system date-time. It is autowired by
+     * Spring using a bean available from the Spring context. In unit tests a Clock needs to be supplied, possibly a
+     * fixed implementation. Integration tests can make use of the fixed clock bean produced by test class
+     * TestClockConfiguration#fixedClock.
      */
     @Autowired
-<span class="fc" id="L27">    public SubscriptionResponseDtoFactory(final Clock systemClock) {</span>
-<span class="fc" id="L28">        this.systemClock = systemClock;</span>
-<span class="fc" id="L29">    }</span>
+    private Clock systemClock;
+
+    @Autowired
+    private SubscriptionContentService subscriptionContentService;
 
     /**
      * Returns a SubscriptionResponseDto object with state based on the subscription argument.Dates are expressed as
@@ -37,14 +36,16 @@ public class SubscriptionResponseDtoFactory {
      */
     public Optional&lt;SubscriptionResponseDto&gt; subscriptionToSubscriptionResponseDto(
             final Optional&lt;Subscription&gt; subscription) {
-<span class="fc" id="L40">        return subscription</span>
-<span class="fc" id="L41">                .map(s -&gt; new SubscriptionResponseDto(</span>
-<span class="fc" id="L42">                        s.getId(),</span>
-<span class="fc" id="L43">                        s.getStartDate(),</span>
-<span class="fc" id="L44">                        s.getEndDate(),</span>
-<span class="fc" id="L45">                        s.isTerminated(), s.isSuspended(), s.getContentIdentifier(), s.getSubscriberId(),</span>
-<span class="fc" id="L46">                        s.isActive(LocalDate.now(this.systemClock)),</span>
-<span class="fc" id="L47">                        s.canBeSuspended(), s.canBeTerminated(), s.canBeUnsuspended()</span>
+<span class="fc" id="L39">        return subscription</span>
+<span class="fc" id="L40">                .map(s -&gt; new SubscriptionResponseDto(</span>
+<span class="fc" id="L41">                        s.getId(),</span>
+<span class="fc" id="L42">                        s.getStartDate(),</span>
+<span class="fc" id="L43">                        s.getEndDate(),</span>
+<span class="fc" id="L44">                        s.isTerminated(), s.isSuspended(),</span>
+<span class="fc" id="L45">                        this.subscriptionContentService.getSubscriptionContent(s.getSubscriptionContentId()).get(),</span>
+<span class="fc" id="L46">                        s.getSubscriberId(),</span>
+<span class="fc" id="L47">                        s.isActive(LocalDate.now(this.systemClock)),</span>
+<span class="fc" id="L48">                        s.canBeSuspended(), s.canBeTerminated(), s.canBeUnsuspended()</span>
                 ));
     }
 }

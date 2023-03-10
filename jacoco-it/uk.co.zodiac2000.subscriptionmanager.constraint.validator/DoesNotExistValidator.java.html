@@ -71,7 +71,7 @@ import uk.co.zodiac2000.subscriptionmanager.constraint.DoesNotExist;
 <span class="fc bfc" id="L71" title="All 2 branches covered.">        boolean isValid = id.isEmpty()</span>
 <span class="fc" id="L72">                || getPropertyValue(value, this.identfierPropertyName)</span>
 <span class="fc" id="L73">                        .map(v -&gt; id.get().equals(v))</span>
-<span class="pc bpc" id="L74" title="1 of 2 branches missed.">                        .orElse(false);</span>
+<span class="fc bfc" id="L74" title="All 2 branches covered.">                        .orElse(false);</span>
 
 <span class="fc bfc" id="L76" title="All 2 branches covered.">        if (!isValid) {</span>
 <span class="fc" id="L77">            context.disableDefaultConstraintViolation();</span>

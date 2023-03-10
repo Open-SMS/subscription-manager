@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SubscriptionResourceService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Subscription Manager</a> &gt; <a href="index.source.html" class="el_package">uk.co.zodiac2000.subscriptionmanager.service</a> &gt; <span class="el_source">SubscriptionResourceService.java</span></div><h1>SubscriptionResourceService.java</h1><pre class="source lang-java linenums">package uk.co.zodiac2000.subscriptionmanager.service;
+
+import java.net.URI;
+import java.util.Optional;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import uk.co.zodiac2000.subscriptionmanager.domain.subscriptionresource.SubscriptionResource;
+import uk.co.zodiac2000.subscriptionmanager.factory.SubscriptionResourceFactory;
+import uk.co.zodiac2000.subscriptionmanager.factory.SubscriptionResourceResponseDtoFactory;
+import uk.co.zodiac2000.subscriptionmanager.repository.SubscriptionResourceRepository;
+import uk.co.zodiac2000.subscriptionmanager.transfer.subscriptionresource.NewSubscriptionResourceCommandDto;
+import uk.co.zodiac2000.subscriptionmanager.transfer.subscriptionresource.UpdateSubscriptionResourceCommandDto;
+import uk.co.zodiac2000.subscriptionmanager.transfer.subscriptionresource.SubscriptionResourceResponseDto;
+
+/**
+ * Service facade for SubscriptionResource aggregates.
+ */
+@Service
+@Transactional(readOnly = true)
+<span class="fc" id="L21">public class SubscriptionResourceService {</span>
+
+    @Autowired
+    private SubscriptionResourceRepository subscriptionResourceRepository;
+
+    @Autowired
+    private SubscriptionResourceResponseDtoFactory subscriptionResourceResponseDtoFactory;
+
+    @Autowired
+    private SubscriptionResourceFactory subscriptionResourceFactory;
+
+    /**
+     * Returns the subscription resource identified by {@code id} or an empty optional if not found.
+     * @param id the subscription resource id
+     * @return a subscription resource
+     */
+    public Optional&lt;SubscriptionResourceResponseDto&gt; getSubscriptionResource(final long id) {
+<span class="fc" id="L38">        Optional&lt;SubscriptionResource&gt; resource = this.subscriptionResourceRepository.findById(id);</span>
+<span class="fc" id="L39">        return this.subscriptionResourceResponseDtoFactory.subscriptionResourceToResponseDto(resource);</span>
+    }
+
+    /**
+     * Returns the subscription resource identified by {@code uriString} or an empty optional if not found. If
+     * the URI is not valid an IllegalArgumentException is thrown.
+     * @param uriString the URI that identifies a subscription resource represented as a string
+     * @return a subscription resource
+     */
+    public Optional&lt;Long&gt; getSubscriptionResourceIdByUri(final String uriString) {
+<span class="fc" id="L49">        URI uri = URI.create(uriString);</span>
+<span class="fc" id="L50">        return this.subscriptionResourceRepository.findByResourceUri(uri).map(SubscriptionResource::getId);</span>
+    }
+
+    /**
+     * Creates a new SubscriptionResource aggregate and persists it. Returns a response DTO representing the new
+     * subscription resource.
+     * @param commandDto command DTO representing the new subscription resource
+     * @return response DTO representing the new subscription
+     */
+    @Transactional(readOnly = false)
+    public Optional&lt;SubscriptionResourceResponseDto&gt; createSubscriptionResource(
+            final NewSubscriptionResourceCommandDto commandDto) {
+<span class="fc" id="L62">        SubscriptionResource subscriptionResource = this.subscriptionResourceRepository.save(</span>
+<span class="fc" id="L63">                this.subscriptionResourceFactory.newSubscriptionResourceCommandDtoToSubscriptionResource(commandDto)</span>
+        );
+<span class="fc" id="L65">        return this.subscriptionResourceResponseDtoFactory.subscriptionResourceToResponseDto(</span>
+<span class="fc" id="L66">                Optional.of(subscriptionResource));</span>
+    }
+
+    /**
+     * Updates the SubscriptionResource resourceUri and resourceDescription fields of the object identified by
+     * id in commandDto. The command DTO contains the updated state of the SubscriptionResource fields. The updated
+     * SubscriptionResource is returned. If the SubscriptionResource does not exist then an empty optional is
+     * returned.
+     * @param commandDto command DTO representing the updated state of the subscription resource
+     * @return the updated subscription resource
+     */
+    @Transactional(readOnly = false)
+    public Optional&lt;SubscriptionResourceResponseDto&gt; updateSubscriptionResource(
+            final UpdateSubscriptionResourceCommandDto commandDto) {
+<span class="fc" id="L80">        Optional&lt;SubscriptionResource&gt; resource = this.subscriptionResourceRepository.findById(commandDto.getId());</span>
+<span class="fc" id="L81">        resource.ifPresent(r -&gt; r.updateSubscriptionResource(commandDto));</span>
+<span class="fc" id="L82">        return this.subscriptionResourceResponseDtoFactory.subscriptionResourceToResponseDto(resource);</span>
+    }
+
+    /**
+     * Returns true if the SubscriptionResource object identified by id exists in the system.
+     * @param id the subscription resource identifier
+     * @return true if the object exists
+     */
+    public boolean isPresent(final long id) {
+<span class="fc" id="L91">        return this.subscriptionResourceRepository.existsById(id);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

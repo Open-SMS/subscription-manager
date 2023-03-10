@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ExistsValidator.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Subscription Manager</a> &gt; <a href="index.source.html" class="el_package">uk.co.zodiac2000.subscriptionmanager.constraint.validator</a> &gt; <span class="el_source">ExistsValidator.java</span></div><h1>ExistsValidator.java</h1><pre class="source lang-java linenums">package uk.co.zodiac2000.subscriptionmanager.constraint.validator;
+
+import javax.validation.ConstraintValidator;
+import javax.validation.ConstraintValidatorContext;
+import javax.validation.ValidationException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.BeanFactory;
+import org.springframework.beans.factory.BeanFactoryAware;
+import org.springframework.context.expression.BeanFactoryResolver;
+import org.springframework.expression.Expression;
+import org.springframework.expression.ExpressionParser;
+import org.springframework.expression.spel.standard.SpelExpressionParser;
+import org.springframework.expression.spel.support.StandardEvaluationContext;
+import uk.co.zodiac2000.subscriptionmanager.constraint.Exists;
+
+/**
+ * Validator used by {@link uk.co.zodiac2000.subscriptionmanager.constraint.Exists} constraint.
+ */
+<span class="fc" id="L20">public class ExistsValidator implements ConstraintValidator&lt;Exists, Object&gt;, BeanFactoryAware {</span>
+
+<span class="fc" id="L22">    private static final Logger LOG = LoggerFactory.getLogger(DoesNotExistValidator.class);</span>
+
+    private BeanFactory beanFactory;
+
+    private Expression verificationExpression;
+
+    private StandardEvaluationContext evaluationContext;
+
+
+    /**
+     * Initializes the validator.
+     * @param constraintAnnotation the constraint annotation
+     */
+    @Override
+    public void initialize(final Exists constraintAnnotation) {
+<span class="fc" id="L37">        ExpressionParser parser = new SpelExpressionParser();</span>
+<span class="fc" id="L38">        this.evaluationContext = new StandardEvaluationContext();</span>
+<span class="fc" id="L39">        this.evaluationContext.setBeanResolver(new BeanFactoryResolver(this.beanFactory));</span>
+<span class="fc" id="L40">        this.verificationExpression = parser.parseExpression(constraintAnnotation.expression());</span>
+<span class="fc" id="L41">    }</span>
+
+    /**
+     * Returns the result of evaluation of the SPeL expression if true or false. If the SPeL expression returns
+     * null then a ValidationException is thrown.
+     * @param value the value being verified
+     * @param context the validator context
+     * @return true if valid
+     */
+    @Override
+    public boolean isValid(final Object value, final ConstraintValidatorContext context) {
+<span class="fc" id="L52">        Boolean isPresent = this.verificationExpression.getValue(this.evaluationContext, value, Boolean.class);</span>
+<span class="pc bpc" id="L53" title="1 of 2 branches missed.">        if (isPresent == null) {</span>
+<span class="nc" id="L54">            throw new ValidationException(&quot;Unexpected null value returned by expression evaluation&quot;);</span>
+        }
+<span class="fc" id="L56">        return isPresent;</span>
+    }
+
+    /**
+     * Callback that supplies the owning factory to a bean instance.
+     * @param beanFactory owning BeanFactory
+     */
+    @Override
+    public void setBeanFactory(final BeanFactory beanFactory) {
+<span class="fc" id="L65">        this.beanFactory = beanFactory;</span>
+<span class="fc" id="L66">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

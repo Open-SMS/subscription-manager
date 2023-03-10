@@ -1,12 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SubscriptionResponseDto.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Subscription Manager</a> &gt; <a href="index.source.html" class="el_package">uk.co.zodiac2000.subscriptionmanager.transfer.subscription</a> &gt; <span class="el_source">SubscriptionResponseDto.java</span></div><h1>SubscriptionResponseDto.java</h1><pre class="source lang-java linenums">package uk.co.zodiac2000.subscriptionmanager.transfer.subscription;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Optional;
+import uk.co.zodiac2000.subscriptionmanager.transfer.subscriptioncontent.SubscriptionContentResponseDto;
 
 /**
  * Response DTO representing a subscription.
  */
-public class SubscriptionResponseDto {
+public class SubscriptionResponseDto implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private final Long id;
 
@@ -18,7 +22,7 @@ public class SubscriptionResponseDto {
 
     private final boolean suspended;
 
-    private final String contentIdentifier;
+    private final SubscriptionContentResponseDto subscriptionContent;
 
     private final Long subscriberId;
 
@@ -37,7 +41,7 @@ public class SubscriptionResponseDto {
      * @param endDate the subscription end date
      * @param terminated true if the subscription has been terminated
      * @param suspended true if the subscription is suspended
-     * @param contentIdentifier a string that describes the content that is the subject of the subscription
+     * @param subscriptionContent the subscription content associated with this subscription
      * @param subscriberId the identifier of the subscriber that is the beneficiary of this subscription
      * @param active true if this subscription is active
      * @param canBeSuspended true if the subscription can be suspended
@@ -46,89 +50,89 @@ public class SubscriptionResponseDto {
      */
     public SubscriptionResponseDto(final Long id, final Optional&lt;LocalDate&gt; startDate,
             final Optional&lt;LocalDate&gt; endDate, final boolean terminated, final boolean suspended,
-            final String contentIdentifier, final Long subscriberId, final boolean active,
-<span class="fc" id="L50">            final boolean canBeSuspended, final boolean canBeTerminated, final boolean canBeUnsuspended) {</span>
-<span class="fc" id="L51">        this.id = id;</span>
-<span class="fc" id="L52">        this.startDate = startDate;</span>
-<span class="fc" id="L53">        this.endDate = endDate;</span>
-<span class="fc" id="L54">        this.terminated = terminated;</span>
-<span class="fc" id="L55">        this.suspended = suspended;</span>
-<span class="fc" id="L56">        this.contentIdentifier = contentIdentifier;</span>
-<span class="fc" id="L57">        this.subscriberId = subscriberId;</span>
-<span class="fc" id="L58">        this.active = active;</span>
-<span class="fc" id="L59">        this.canBeSuspended = canBeSuspended;</span>
-<span class="fc" id="L60">        this.canBeTerminated = canBeTerminated;</span>
-<span class="fc" id="L61">        this.canBeUnsuspended = canBeUnsuspended;</span>
-<span class="fc" id="L62">    }</span>
+            final SubscriptionContentResponseDto subscriptionContent, final Long subscriberId, final boolean active,
+<span class="fc" id="L54">            final boolean canBeSuspended, final boolean canBeTerminated, final boolean canBeUnsuspended) {</span>
+<span class="fc" id="L55">        this.id = id;</span>
+<span class="fc" id="L56">        this.startDate = startDate;</span>
+<span class="fc" id="L57">        this.endDate = endDate;</span>
+<span class="fc" id="L58">        this.terminated = terminated;</span>
+<span class="fc" id="L59">        this.suspended = suspended;</span>
+<span class="fc" id="L60">        this.subscriptionContent = subscriptionContent;</span>
+<span class="fc" id="L61">        this.subscriberId = subscriberId;</span>
+<span class="fc" id="L62">        this.active = active;</span>
+<span class="fc" id="L63">        this.canBeSuspended = canBeSuspended;</span>
+<span class="fc" id="L64">        this.canBeTerminated = canBeTerminated;</span>
+<span class="fc" id="L65">        this.canBeUnsuspended = canBeUnsuspended;</span>
+<span class="fc" id="L66">    }</span>
 
     /**
      * @return the subscription identifier
      */
     public Long getId() {
-<span class="fc" id="L68">        return this.id;</span>
+<span class="fc" id="L72">        return this.id;</span>
     }
 
     /**
      * @return the subscription start date
      */
     public Optional&lt;LocalDate&gt; getStartDate() {
-<span class="fc" id="L75">        return this.startDate;</span>
+<span class="fc" id="L79">        return this.startDate;</span>
     }
 
     /**
      * @return the subscription end date
      */
     public Optional&lt;LocalDate&gt; getEndDate() {
-<span class="fc" id="L82">        return this.endDate;</span>
+<span class="fc" id="L86">        return this.endDate;</span>
     }
 
     /**
      * @return true if the subscription has been terminated
      */
     public boolean isTerminated() {
-<span class="fc" id="L89">        return this.terminated;</span>
+<span class="fc" id="L93">        return this.terminated;</span>
     }
 
     /**
      * @return true if the subscription is suspended
      */
     public boolean isSuspended() {
-<span class="fc" id="L96">        return this.suspended;</span>
+<span class="fc" id="L100">        return this.suspended;</span>
     }
 
     /**
-     * @return a string that describes the content that is the subject of the subscription
+     * @return the subscription content associated with this subscription
      */
-    public String getContentIdentifier() {
-<span class="fc" id="L103">        return this.contentIdentifier;</span>
+    public SubscriptionContentResponseDto getSubscriptionContent() {
+<span class="fc" id="L107">        return this.subscriptionContent;</span>
     }
 
     /**
      * @return the identifier of the subscriber that is the beneficiary of this subscription
      */
     public Long getSubscriberId() {
-<span class="fc" id="L110">        return this.subscriberId;</span>
+<span class="fc" id="L114">        return this.subscriberId;</span>
     }
 
     /**
      * @return true if this subscription is active
      */
     public boolean isActive() {
-<span class="fc" id="L117">        return this.active;</span>
+<span class="fc" id="L121">        return this.active;</span>
     }
 
     /**
      * @return true if the subscription can be suspended
      */
     public boolean getCanBeSuspended() {
-<span class="fc" id="L124">        return this.canBeSuspended;</span>
+<span class="fc" id="L128">        return this.canBeSuspended;</span>
     }
 
     /**
      * @return true if the subscription can be terminated
      */
     public boolean getCanBeTerminated() {
-<span class="fc" id="L131">        return this.canBeTerminated;</span>
+<span class="fc" id="L135">        return this.canBeTerminated;</span>
     }
 
 
@@ -136,7 +140,7 @@ public class SubscriptionResponseDto {
      * @return true if the subscription can be unsuspended
      */
     public boolean getCanBeUnsuspended() {
-<span class="fc" id="L139">        return this.canBeUnsuspended;</span>
+<span class="fc" id="L143">        return this.canBeUnsuspended;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>
