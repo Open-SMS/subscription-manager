@@ -10,7 +10,7 @@ import uk.co.zodiac2000.subscriptionmanager.constraint.DoesNotExist;
         propertyName = "subscriberName")
 public class SubscriberNameCommandDto {
 
-    private long id;
+    private Long id = null;
 
     @NotEmpty
     private String subscriberName;

@@ -15,6 +15,8 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.client.MockMvcWebTestClient;
+import org.springframework.validation.BindException;
+import org.springframework.validation.FieldError;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -50,6 +52,8 @@ public class SubscriptionControllerTestITCase extends AbstractTransactionalTestN
     @BeforeMethod
     public void loadTestData() {
         executeSqlScript("classpath:test_data/claim_name_test_data.sql", false);
+        executeSqlScript("classpath:test_data/subscription_resource_test_data.sql", false);
+        executeSqlScript("classpath:test_data/subscription_content_test_data.sql", false);
         executeSqlScript("classpath:test_data/subscriber_test_data.sql", false);
         executeSqlScript("classpath:test_data/subscription_test_data.sql", false);
     }
@@ -70,7 +74,14 @@ public class SubscriptionControllerTestITCase extends AbstractTransactionalTestN
                 .jsonPath("$.endDate").isEmpty()
                 .jsonPath("$.terminated").isEqualTo(false)
                 .jsonPath("$.suspended").isEqualTo(false)
-                .jsonPath("$.contentIdentifier").isEqualTo("CONTENT-2")
+                .jsonPath("$.subscriptionContent.id").isEqualTo("100000002")
+                .jsonPath("$.subscriptionContent.contentDescription").isEqualTo("Universal Reference: Music")
+                .jsonPath("$.subscriptionContent.contentIdentifiers[0]").isEqualTo("MUSIC")
+                .jsonPath("$.subscriptionContent.subscriptionResource.id").isEqualTo("100000002")
+                .jsonPath("$.subscriptionContent.subscriptionResource.resourceUri")
+                    .isEqualTo("https://universal-reference.com/music")
+                .jsonPath("$.subscriptionContent.subscriptionResource.resourceDescription")
+                    .isEqualTo("Universal Reference Music library")
                 .jsonPath("$.subscriberId").isEqualTo(100000010L)
                 .jsonPath("$.active").isEqualTo(false)
                 .jsonPath("$.canBeSuspended").isEqualTo(true)
@@ -86,7 +97,7 @@ public class SubscriptionControllerTestITCase extends AbstractTransactionalTestN
         String newSubscriptionJson = "{"
                 + "\"startDate\":\"2012-01-01\","
                 + "\"endDate\":\"2020-01-01\","
-                + "\"contentIdentifier\":\"CONTENT-X\","
+                + "\"subscriptionContentId\":\"100000004\","
                 + "\"subscriberId\":100000010"
                 + "}";
         EntityExchangeResult<byte[]> result = this.client.post().uri("/subscription")
@@ -112,8 +123,68 @@ public class SubscriptionControllerTestITCase extends AbstractTransactionalTestN
         Assert.assertEquals(subscription.get().getStartDate().get(), LocalDate.parse("2012-01-01"));
         Assert.assertTrue(subscription.get().getEndDate().isPresent());
         Assert.assertEquals(subscription.get().getEndDate().get(), LocalDate.parse("2020-01-01"));
-        Assert.assertEquals(subscription.get().getContentIdentifier(), "CONTENT-X");
+        Assert.assertEquals(subscription.get().getSubscriptionContentId(), 100000004L);
         Assert.assertEquals(subscription.get().getSubscriberId(), 100000010L);
+    }
+
+    /**
+     * Test createSubscription when the subscription content referenced in the command DTO does not exist.
+     */
+    @Test
+    public void testCreateSubscriptionUnknownSubscriptionContent() {
+        String newSubscriptionJson = "{"
+                + "\"startDate\":\"2012-01-01\","
+                + "\"endDate\":\"2020-01-01\","
+                + "\"subscriptionContentId\":\"444\","
+                + "\"subscriberId\":100000010"
+                + "}";
+        this.client.post().uri("/subscription")
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(newSubscriptionJson)
+                .exchange()
+                .expectStatus().isBadRequest()
+                .expectBody()
+                .consumeWith(res -> {
+                    BindException ex = (BindException) ((MvcResult) res.getMockServerResult()).getResolvedException();
+                    Assert.assertNotNull(ex);
+                    Assert.assertEquals(ex.getErrorCount(), 1);
+                    FieldError error = ex.getFieldError();
+                    Assert.assertNotNull(error);
+                    Assert.assertEquals(error.getField(), "subscriptionContentId");
+                    Assert.assertEquals(error.getDefaultMessage(),
+                            "{uk.co.zodiac2000.subscriptionmanager.constraint.Exists}");
+                });
+    }
+
+    /**
+     * Test createSubscription when subscriptionContentId is not an integer.
+     */
+    @Test
+    public void testCreateSubscriptionSubscriptionContentIdNotInteger() {
+        String newSubscriptionJson = "{"
+                + "\"startDate\":\"2012-01-01\","
+                + "\"endDate\":\"2020-01-01\","
+                + "\"subscriptionContentId\":\"foo\","
+                + "\"subscriberId\":100000010"
+                + "}";
+        this.client.post().uri("/subscription")
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(newSubscriptionJson)
+                .exchange()
+                .expectStatus().isBadRequest()
+                .expectBody()
+                .consumeWith(res -> {
+                    BindException ex = (BindException) ((MvcResult) res.getMockServerResult()).getResolvedException();
+                    Assert.assertNotNull(ex);
+                    Assert.assertEquals(ex.getErrorCount(), 1);
+                    FieldError error = ex.getFieldError();
+                    Assert.assertNotNull(error);
+                    Assert.assertEquals(error.getField(), "subscriptionContentId");
+                    Assert.assertEquals(error.getDefaultMessage(),
+                            "numeric value out of bounds (<18 digits>.<0 digits> expected)");
+                });
     }
 
     /**
@@ -168,11 +239,11 @@ public class SubscriptionControllerTestITCase extends AbstractTransactionalTestN
      * Test updateSubscriptionContentIdentifier.
      */
     @Test
-    public void testUpdateSubscriptionContentIdentifier() {
+    public void testUpdateSubscriptionSubscriptionContentId() {
         String updatedSubscriptionDatesJson = "{"
-                + "\"contentIdentifier\":\"CONTENT-Z\""
+                + "\"subscriptionContentId\":\"100000005\""
                 + "}";
-        EntityExchangeResult<byte[]> result = this.client.put().uri("/subscription/100000004/content-identifier")
+        EntityExchangeResult<byte[]> result = this.client.put().uri("/subscription/100000004/subscription-content-id")
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(updatedSubscriptionDatesJson)
@@ -190,7 +261,62 @@ public class SubscriptionControllerTestITCase extends AbstractTransactionalTestN
         subscription.ifPresent(s -> this.entityManager.refresh(s));
 
         Assert.assertTrue(subscription.isPresent());
-        Assert.assertEquals(subscription.get().getContentIdentifier(), "CONTENT-Z");
+        Assert.assertEquals(subscription.get().getSubscriptionContentId(), 100000005L);
+    }
+
+    /**
+     * Test updateSubscriptionContentIdentifier when subscriptionContentId does not reference subscription content
+     * known to the system.
+     */
+    @Test
+    public void testUpdateUnknownSubscriptionContentId() {
+        String updatedSubscriptionDatesJson = "{"
+                + "\"subscriptionContentId\":\"333\""
+                + "}";
+        this.client.put().uri("/subscription/100000004/subscription-content-id")
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(updatedSubscriptionDatesJson)
+                .exchange()
+                .expectStatus().isBadRequest()
+                .expectBody()
+                .consumeWith(res -> {
+                    BindException ex = (BindException) ((MvcResult) res.getMockServerResult()).getResolvedException();
+                    Assert.assertNotNull(ex);
+                    Assert.assertEquals(ex.getErrorCount(), 1);
+                    FieldError error = ex.getFieldError();
+                    Assert.assertNotNull(error);
+                    Assert.assertEquals(error.getField(), "subscriptionContentId");
+                    Assert.assertEquals(error.getDefaultMessage(),
+                            "{uk.co.zodiac2000.subscriptionmanager.constraint.Exists}");
+                });
+    }
+
+    /**
+     * Test updateSubscriptionContentIdentifier when subscriptionContentId is not an integer.
+     */
+    @Test
+    public void testUpdateSubscriptionContentIdNotInteger() {
+        String updatedSubscriptionDatesJson = "{"
+                + "\"subscriptionContentId\":\"foo\""
+                + "}";
+        this.client.put().uri("/subscription/100000004/subscription-content-id")
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(updatedSubscriptionDatesJson)
+                .exchange()
+                .expectStatus().isBadRequest()
+                .expectBody()
+                .consumeWith(res -> {
+                    BindException ex = (BindException) ((MvcResult) res.getMockServerResult()).getResolvedException();
+                    Assert.assertNotNull(ex);
+                    Assert.assertEquals(ex.getErrorCount(), 1);
+                    FieldError error = ex.getFieldError();
+                    Assert.assertNotNull(error);
+                    Assert.assertEquals(error.getField(), "subscriptionContentId");
+                    Assert.assertEquals(error.getDefaultMessage(),
+                            "numeric value out of bounds (<18 digits>.<0 digits> expected)");
+                });
     }
 
     /**

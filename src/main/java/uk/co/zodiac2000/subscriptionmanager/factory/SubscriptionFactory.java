@@ -20,7 +20,8 @@ public class SubscriptionFactory {
         return new Subscription(
                 commandDto.getStartDate().map(LocalDate::parse),
                 commandDto.getEndDate().map(LocalDate::parse),
-                commandDto.getContentIdentifier(), Long.parseLong(commandDto.getSubscriberId())
+                Long.parseLong(commandDto.getSubscriptionContentId()),
+                Long.parseLong(commandDto.getSubscriberId())
         );
     }
 }

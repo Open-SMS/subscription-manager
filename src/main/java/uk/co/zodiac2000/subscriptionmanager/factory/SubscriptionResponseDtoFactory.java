@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import uk.co.zodiac2000.subscriptionmanager.domain.subscription.Subscription;
+import uk.co.zodiac2000.subscriptionmanager.service.SubscriptionContentService;
 import uk.co.zodiac2000.subscriptionmanager.transfer.subscription.SubscriptionResponseDto;
 
 /**
@@ -14,19 +15,17 @@ import uk.co.zodiac2000.subscriptionmanager.transfer.subscription.SubscriptionRe
 @Component
 public class SubscriptionResponseDtoFactory {
 
-    private final Clock systemClock;
-
     /**
-     * Constructs a new SubscriptionResponseDtoFactory with systemClock argument. This clock is used in all date-time
-     * expressions that involve the current system date-time. This is autowired by Spring using a bean available from
-     * the Spring context. In unit tests a Clock needs to be supplied, possibly a fixed implementation. Integration
-     * tests can make use of the fixed clock bean produced by test class TestClockConfiguration#fixedClock.
-     * @param systemClock the Clock to use
+     * This clock is used in all date-time expressions that involve the current system date-time. It is autowired by
+     * Spring using a bean available from the Spring context. In unit tests a Clock needs to be supplied, possibly a
+     * fixed implementation. Integration tests can make use of the fixed clock bean produced by test class
+     * TestClockConfiguration#fixedClock.
      */
     @Autowired
-    public SubscriptionResponseDtoFactory(final Clock systemClock) {
-        this.systemClock = systemClock;
-    }
+    private Clock systemClock;
+
+    @Autowired
+    private SubscriptionContentService subscriptionContentService;
 
     /**
      * Returns a SubscriptionResponseDto object with state based on the subscription argument.Dates are expressed as
@@ -42,7 +41,9 @@ public class SubscriptionResponseDtoFactory {
                         s.getId(),
                         s.getStartDate(),
                         s.getEndDate(),
-                        s.isTerminated(), s.isSuspended(), s.getContentIdentifier(), s.getSubscriberId(),
+                        s.isTerminated(), s.isSuspended(),
+                        this.subscriptionContentService.getSubscriptionContent(s.getSubscriptionContentId()).get(),
+                        s.getSubscriberId(),
                         s.isActive(LocalDate.now(this.systemClock)),
                         s.canBeSuspended(), s.canBeTerminated(), s.canBeUnsuspended()
                 ));

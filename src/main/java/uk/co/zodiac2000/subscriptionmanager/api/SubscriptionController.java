@@ -22,7 +22,7 @@ import org.springframework.web.servlet.ModelAndView;
 import uk.co.zodiac2000.subscriptionmanager.domain.subscription.Subscription;
 import uk.co.zodiac2000.subscriptionmanager.service.SubscriptionService;
 import uk.co.zodiac2000.subscriptionmanager.transfer.subscription.NewSubscriptionCommandDto;
-import uk.co.zodiac2000.subscriptionmanager.transfer.subscription.SubscriptionContentIdentifierCommandDto;
+import uk.co.zodiac2000.subscriptionmanager.transfer.subscription.SubscriptionContentIdCommandDto;
 import uk.co.zodiac2000.subscriptionmanager.transfer.subscription.SubscriptionDatesCommandDto;
 import uk.co.zodiac2000.subscriptionmanager.transfer.subscription.SubscriptionResponseDto;
 
@@ -107,17 +107,17 @@ public class SubscriptionController {
     }
 
     /**
-     * Updates the subscription content identifier. Returns the modified subscription
+     * Updates the subscription content id. Returns the modified subscription
      * or Not Found if the subscription didn't exist.
      * @param id the subscription identifier
-     * @param commandDto command DTO representing the new content identifier
+     * @param commandDto command DTO representing the new subscription content id
      * @return the modified subscription
      */
-    @PutMapping("/{id}/content-identifier")
-    public ResponseEntity<SubscriptionResponseDto> updateSubscriptionContentIdentifier(
+    @PutMapping("/{id}/subscription-content-id")
+    public ResponseEntity<SubscriptionResponseDto> updateSubscriptionContentId(
             @PathVariable("id") final long id,
-            @RequestBody @Valid final SubscriptionContentIdentifierCommandDto commandDto) {
-        return ResponseEntity.of(this.subscriptionService.updateSubscriptionContentIdentifier(id, commandDto));
+            @RequestBody @Valid final SubscriptionContentIdCommandDto commandDto) {
+        return ResponseEntity.of(this.subscriptionService.updateSubscriptionContentId(id, commandDto));
     }
 
     /**

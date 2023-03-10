@@ -31,7 +31,23 @@ A subscription may be terminated subject to the rules for terminating subscripti
 This action suspends the subscription and prevents it being unsuspended. Terminating a subscription indicates that it
 will never become active in the future.
 
+## Subscription Resource
+
+A subscription resource defines the resource that subscriptions are associated with, for example a website or part of
+a website that provides content available to subscribers. A subscription resource is uniquely identified within the
+system by its resource URI. This may be the website URL or any other identifier. When a request is made to determine
+authorized access to content for an identified subscriber the request is made in the context of a subscription
+resource, and only subscription content identifiers associated with that subscription resource are returned.
+
+## Subscription Content
+
+Subscription content defines the content that an active subscription provides access to. Subscription content is
+exists within the context of a subscription resource, and includes one or more content identifiers that can be used
+to provide fine-grained access control to specific content within the resource. The target of a subscription within
+the system is subscription content. An active subscription indicates permission to access the content described by
+the associated subscription content.
+
 ## Content Identifier
 
-A content identifier identifies content that a resource requires the user to have an active subscription to be entitled
-to access. At present this feature is not fully developed so is just an attribute of subscription.
+Subscription content includes one or more content identifiers which allow fine-grained access control to specific
+content within a subscription resource.

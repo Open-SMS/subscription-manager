@@ -14,6 +14,7 @@
                 <item name="Software Design Outline" href="design_details/design_outline.html"/>
                 <item name="Subscriber Identification" href="design_details/subscriber_identification.html"/>
                 <item name="Subscription Suspension Rules" href="design_details/suspension_rules.html"/>
+                <item name="Subscription Content" href="design_details/subscription_content.html"/>
             </item>
             <item name="Software Development" href="software_development/index.html" />
         </menu>

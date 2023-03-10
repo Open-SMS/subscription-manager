@@ -5,7 +5,7 @@ import java.util.Optional;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.testng.Assert;
 import org.testng.annotations.Test;
-import uk.co.zodiac2000.subscriptionmanager.transfer.subscription.SubscriptionContentIdentifierCommandDto;
+import uk.co.zodiac2000.subscriptionmanager.transfer.subscription.SubscriptionContentIdCommandDto;
 import uk.co.zodiac2000.subscriptionmanager.transfer.subscription.SubscriptionDatesCommandDto;
 
 /**
@@ -16,7 +16,7 @@ public class SubscriptionTest {
     private static final Long ID = 42L;
     private static final Optional<LocalDate> START_DATE = Optional.of(LocalDate.of(2012, 4, 1));
     private static final Optional<LocalDate> END_DATE = Optional.of(LocalDate.of(2012, 8, 23));
-    private static final String CONTENT_IDENTIFIER = "CONTENT";
+    private static final Long SUBSCRIPTION_CONTENT_ID = 293L;
     private static final Long SUBSCRIBER_ID = 98L;
 
     /**
@@ -34,7 +34,7 @@ public class SubscriptionTest {
      */
     @Test
     public void testConstructor() {
-        Subscription subscription = new Subscription(START_DATE, END_DATE, CONTENT_IDENTIFIER, SUBSCRIBER_ID);
+        Subscription subscription = new Subscription(START_DATE, END_DATE, SUBSCRIPTION_CONTENT_ID, SUBSCRIBER_ID);
         ReflectionTestUtils.setField(subscription, "id", ID);
 
         Assert.assertEquals(subscription.getId(), ID);
@@ -42,7 +42,7 @@ public class SubscriptionTest {
         Assert.assertEquals(subscription.getEndDate(), END_DATE);
         Assert.assertFalse(subscription.isTerminated());
         Assert.assertFalse(subscription.isSuspended());
-        Assert.assertEquals(subscription.getContentIdentifier(), CONTENT_IDENTIFIER);
+        Assert.assertEquals(subscription.getSubscriptionContentId(), SUBSCRIPTION_CONTENT_ID);
         Assert.assertEquals(subscription.getSubscriberId(), SUBSCRIBER_ID);
     }
 
@@ -51,7 +51,7 @@ public class SubscriptionTest {
      */
     @Test
     public void testConstructorEndEqualsStart() {
-        Subscription subscription = new Subscription(START_DATE, START_DATE, CONTENT_IDENTIFIER, SUBSCRIBER_ID);
+        Subscription subscription = new Subscription(START_DATE, START_DATE, SUBSCRIPTION_CONTENT_ID, SUBSCRIBER_ID);
 
         Assert.assertEquals(subscription.getStartDate(), START_DATE);
         Assert.assertEquals(subscription.getEndDate(), START_DATE);
@@ -62,7 +62,7 @@ public class SubscriptionTest {
      */
     @Test(expectedExceptions = {IllegalArgumentException.class})
     public void testConstructorEndBeforeStart() {
-        Subscription subscription = new Subscription(END_DATE, START_DATE, CONTENT_IDENTIFIER, SUBSCRIBER_ID);
+        Subscription subscription = new Subscription(END_DATE, START_DATE, SUBSCRIPTION_CONTENT_ID, SUBSCRIBER_ID);
     }
 
     /**
@@ -70,7 +70,7 @@ public class SubscriptionTest {
      */
     @Test
     public void testTerminate() {
-        Subscription subscription = new Subscription(START_DATE, END_DATE, CONTENT_IDENTIFIER, SUBSCRIBER_ID);
+        Subscription subscription = new Subscription(START_DATE, END_DATE, SUBSCRIPTION_CONTENT_ID, SUBSCRIBER_ID);
         subscription.terminate();
 
         Assert.assertTrue(subscription.isTerminated());
@@ -83,7 +83,7 @@ public class SubscriptionTest {
      */
     @Test
     public void testTerminateAlreadyTerminated() {
-        Subscription subscription = new Subscription(START_DATE, END_DATE, CONTENT_IDENTIFIER, SUBSCRIBER_ID);
+        Subscription subscription = new Subscription(START_DATE, END_DATE, SUBSCRIPTION_CONTENT_ID, SUBSCRIBER_ID);
         ReflectionTestUtils.setField(subscription, "suspended", true);
         ReflectionTestUtils.setField(subscription, "terminated", true);
 
@@ -105,7 +105,7 @@ public class SubscriptionTest {
      */
     @Test
     public void testTerminateAlreadySuspended() {
-        Subscription subscription = new Subscription(START_DATE, END_DATE, CONTENT_IDENTIFIER, SUBSCRIBER_ID);
+        Subscription subscription = new Subscription(START_DATE, END_DATE, SUBSCRIPTION_CONTENT_ID, SUBSCRIBER_ID);
         ReflectionTestUtils.setField(subscription, "suspended", true);
 
         subscription.terminate();
@@ -119,7 +119,7 @@ public class SubscriptionTest {
      */
     @Test
     public void testSuspend() {
-        Subscription subscription = new Subscription(START_DATE, END_DATE, CONTENT_IDENTIFIER, SUBSCRIBER_ID);
+        Subscription subscription = new Subscription(START_DATE, END_DATE, SUBSCRIPTION_CONTENT_ID, SUBSCRIBER_ID);
 
         subscription.suspend();
 
@@ -132,7 +132,7 @@ public class SubscriptionTest {
      */
     @Test
     public void testSuspendAlreadySuspended() {
-        Subscription subscription = new Subscription(START_DATE, END_DATE, CONTENT_IDENTIFIER, SUBSCRIBER_ID);
+        Subscription subscription = new Subscription(START_DATE, END_DATE, SUBSCRIPTION_CONTENT_ID, SUBSCRIBER_ID);
         ReflectionTestUtils.setField(subscription, "suspended", true);
 
         try {
@@ -152,7 +152,7 @@ public class SubscriptionTest {
      */
     @Test
     public void testUnsuspend() {
-        Subscription subscription = new Subscription(START_DATE, END_DATE, CONTENT_IDENTIFIER, SUBSCRIBER_ID);
+        Subscription subscription = new Subscription(START_DATE, END_DATE, SUBSCRIPTION_CONTENT_ID, SUBSCRIBER_ID);
         ReflectionTestUtils.setField(subscription, "suspended", true);
 
         subscription.unsuspend();
@@ -166,7 +166,7 @@ public class SubscriptionTest {
      */
     @Test
     public void testUnsuspendTerminated() {
-        Subscription subscription = new Subscription(START_DATE, END_DATE, CONTENT_IDENTIFIER, SUBSCRIBER_ID);
+        Subscription subscription = new Subscription(START_DATE, END_DATE, SUBSCRIPTION_CONTENT_ID, SUBSCRIBER_ID);
         ReflectionTestUtils.setField(subscription, "suspended", true);
         ReflectionTestUtils.setField(subscription, "terminated", true);
 
@@ -187,7 +187,7 @@ public class SubscriptionTest {
      */
     @Test
     public void testUnsuspendNotSuspended() {
-        Subscription subscription = new Subscription(START_DATE, END_DATE, CONTENT_IDENTIFIER, SUBSCRIBER_ID);
+        Subscription subscription = new Subscription(START_DATE, END_DATE, SUBSCRIPTION_CONTENT_ID, SUBSCRIBER_ID);
 
         try {
             subscription.unsuspend();
@@ -206,7 +206,7 @@ public class SubscriptionTest {
      */
     @Test
     public void testIsActiveSuspended() {
-        Subscription subscription = new Subscription(START_DATE, END_DATE, CONTENT_IDENTIFIER, SUBSCRIBER_ID);
+        Subscription subscription = new Subscription(START_DATE, END_DATE, SUBSCRIPTION_CONTENT_ID, SUBSCRIBER_ID);
         ReflectionTestUtils.setField(subscription, "suspended", true);
 
         Assert.assertFalse(subscription.isActive(START_DATE.get().plusDays(1)));
@@ -217,7 +217,7 @@ public class SubscriptionTest {
      */
     @Test
     public void testCanBeTerminated() {
-        Subscription subscription = new Subscription(START_DATE, END_DATE, CONTENT_IDENTIFIER, SUBSCRIBER_ID);
+        Subscription subscription = new Subscription(START_DATE, END_DATE, SUBSCRIPTION_CONTENT_ID, SUBSCRIBER_ID);
         ReflectionTestUtils.setField(subscription, "suspended", true);
         ReflectionTestUtils.setField(subscription, "terminated", true);
 
@@ -229,7 +229,7 @@ public class SubscriptionTest {
      */
     @Test
     public void testCanBeTerminatedNotTerminated() {
-        Subscription subscription = new Subscription(START_DATE, END_DATE, CONTENT_IDENTIFIER, SUBSCRIBER_ID);
+        Subscription subscription = new Subscription(START_DATE, END_DATE, SUBSCRIPTION_CONTENT_ID, SUBSCRIBER_ID);
         ReflectionTestUtils.setField(subscription, "suspended", true);
 
         Assert.assertTrue(subscription.canBeTerminated());
@@ -240,7 +240,7 @@ public class SubscriptionTest {
      */
     @Test
     public void testCanBeSuspended() {
-        Subscription subscription = new Subscription(START_DATE, END_DATE, CONTENT_IDENTIFIER, SUBSCRIBER_ID);
+        Subscription subscription = new Subscription(START_DATE, END_DATE, SUBSCRIPTION_CONTENT_ID, SUBSCRIBER_ID);
 
         Assert.assertTrue(subscription.canBeSuspended());
     }
@@ -250,7 +250,7 @@ public class SubscriptionTest {
      */
     @Test
     public void testCanBeSuspendedIsSuspended() {
-        Subscription subscription = new Subscription(START_DATE, END_DATE, CONTENT_IDENTIFIER, SUBSCRIBER_ID);
+        Subscription subscription = new Subscription(START_DATE, END_DATE, SUBSCRIPTION_CONTENT_ID, SUBSCRIBER_ID);
         ReflectionTestUtils.setField(subscription, "suspended", true);
 
         Assert.assertFalse(subscription.canBeSuspended());
@@ -261,7 +261,7 @@ public class SubscriptionTest {
      */
     @Test
     public void testCanBeUnsuspended() {
-        Subscription subscription = new Subscription(START_DATE, END_DATE, CONTENT_IDENTIFIER, SUBSCRIBER_ID);
+        Subscription subscription = new Subscription(START_DATE, END_DATE, SUBSCRIPTION_CONTENT_ID, SUBSCRIBER_ID);
         ReflectionTestUtils.setField(subscription, "suspended", true);
 
         Assert.assertTrue(subscription.canBeUnsuspended());
@@ -272,7 +272,7 @@ public class SubscriptionTest {
      */
     @Test
     public void testCanBeUnsuspendedTerminated() {
-        Subscription subscription = new Subscription(START_DATE, END_DATE, CONTENT_IDENTIFIER, SUBSCRIBER_ID);
+        Subscription subscription = new Subscription(START_DATE, END_DATE, SUBSCRIPTION_CONTENT_ID, SUBSCRIBER_ID);
         ReflectionTestUtils.setField(subscription, "suspended", true);
         ReflectionTestUtils.setField(subscription, "terminated", true);
 
@@ -284,7 +284,7 @@ public class SubscriptionTest {
      */
     @Test
     public void testCanBeUnsuspendedNotSuspended() {
-        Subscription subscription = new Subscription(START_DATE, END_DATE, CONTENT_IDENTIFIER, SUBSCRIBER_ID);
+        Subscription subscription = new Subscription(START_DATE, END_DATE, SUBSCRIPTION_CONTENT_ID, SUBSCRIBER_ID);
 
         Assert.assertFalse(subscription.canBeUnsuspended());
     }
@@ -294,7 +294,7 @@ public class SubscriptionTest {
      */
     @Test
     public void testIsActiveBeforeStart() {
-        Subscription subscription = new Subscription(START_DATE, END_DATE, CONTENT_IDENTIFIER, SUBSCRIBER_ID);
+        Subscription subscription = new Subscription(START_DATE, END_DATE, SUBSCRIPTION_CONTENT_ID, SUBSCRIBER_ID);
 
         Assert.assertFalse(subscription.isActive(START_DATE.get().minusDays(1)));
     }
@@ -304,7 +304,7 @@ public class SubscriptionTest {
      */
     @Test
     public void testIsActiveBeforeAtStart() {
-        Subscription subscription = new Subscription(START_DATE, END_DATE, CONTENT_IDENTIFIER, SUBSCRIBER_ID);
+        Subscription subscription = new Subscription(START_DATE, END_DATE, SUBSCRIPTION_CONTENT_ID, SUBSCRIBER_ID);
 
         Assert.assertTrue(subscription.isActive(START_DATE.get()));
     }
@@ -314,7 +314,7 @@ public class SubscriptionTest {
      */
     @Test
     public void testIsActive() {
-        Subscription subscription = new Subscription(START_DATE, END_DATE, CONTENT_IDENTIFIER, SUBSCRIBER_ID);
+        Subscription subscription = new Subscription(START_DATE, END_DATE, SUBSCRIPTION_CONTENT_ID, SUBSCRIBER_ID);
 
         Assert.assertTrue(subscription.isActive(START_DATE.get().plusDays(1)));
     }
@@ -324,7 +324,7 @@ public class SubscriptionTest {
      */
     @Test
     public void testIsActiveBeforeAtEnd() {
-        Subscription subscription = new Subscription(START_DATE, END_DATE, CONTENT_IDENTIFIER, SUBSCRIBER_ID);
+        Subscription subscription = new Subscription(START_DATE, END_DATE, SUBSCRIPTION_CONTENT_ID, SUBSCRIBER_ID);
 
         Assert.assertTrue(subscription.isActive(END_DATE.get()));
     }
@@ -334,7 +334,7 @@ public class SubscriptionTest {
      */
     @Test
     public void testIsActiveAfterEnd() {
-        Subscription subscription = new Subscription(START_DATE, END_DATE, CONTENT_IDENTIFIER, SUBSCRIBER_ID);
+        Subscription subscription = new Subscription(START_DATE, END_DATE, SUBSCRIPTION_CONTENT_ID, SUBSCRIBER_ID);
 
         Assert.assertFalse(subscription.isActive(END_DATE.get().plusDays(1)));
     }
@@ -344,7 +344,8 @@ public class SubscriptionTest {
      */
     @Test
     public void testIsActiveEmptyStart() {
-        Subscription subscription = new Subscription(Optional.empty(), END_DATE, CONTENT_IDENTIFIER, SUBSCRIBER_ID);
+        Subscription subscription = new Subscription(Optional.empty(), END_DATE, SUBSCRIPTION_CONTENT_ID,
+                SUBSCRIBER_ID);
 
         Assert.assertTrue(subscription.isActive(END_DATE.get().minusYears(5)));
     }
@@ -354,7 +355,8 @@ public class SubscriptionTest {
      */
     @Test
     public void testIsActiveEmptyEnd() {
-        Subscription subscription = new Subscription(START_DATE, Optional.empty(), CONTENT_IDENTIFIER, SUBSCRIBER_ID);
+        Subscription subscription = new Subscription(START_DATE, Optional.empty(), SUBSCRIPTION_CONTENT_ID,
+                SUBSCRIBER_ID);
 
         Assert.assertTrue(subscription.isActive(START_DATE.get().plusYears(5)));
     }
@@ -364,7 +366,7 @@ public class SubscriptionTest {
      */
     @Test
     public void setDatesEmpty() {
-        Subscription subscription = new Subscription(START_DATE, END_DATE, CONTENT_IDENTIFIER, SUBSCRIBER_ID);
+        Subscription subscription = new Subscription(START_DATE, END_DATE, SUBSCRIPTION_CONTENT_ID, SUBSCRIBER_ID);
         subscription.setDates(new SubscriptionDatesCommandDto(Optional.empty(), Optional.empty()));
 
         Assert.assertTrue(subscription.getStartDate().isEmpty());
@@ -376,7 +378,7 @@ public class SubscriptionTest {
      */
     @Test
     public void setDatesUpdated() {
-        Subscription subscription = new Subscription(START_DATE, END_DATE, CONTENT_IDENTIFIER, SUBSCRIBER_ID);
+        Subscription subscription = new Subscription(START_DATE, END_DATE, SUBSCRIPTION_CONTENT_ID, SUBSCRIBER_ID);
         subscription.setDates(new SubscriptionDatesCommandDto(Optional.of("2012-04-21"), Optional.of("2012-12-31")));
 
         Assert.assertEquals(subscription.getStartDate(), Optional.of(LocalDate.parse("2012-04-21")));
@@ -388,18 +390,18 @@ public class SubscriptionTest {
      */
     @Test(expectedExceptions = {IllegalArgumentException.class})
     public void setDatesUpdatedInvalid() {
-        Subscription subscription = new Subscription(START_DATE, END_DATE, CONTENT_IDENTIFIER, SUBSCRIBER_ID);
+        Subscription subscription = new Subscription(START_DATE, END_DATE, SUBSCRIPTION_CONTENT_ID, SUBSCRIBER_ID);
         subscription.setDates(new SubscriptionDatesCommandDto(Optional.of("2013-04-21"), Optional.of("2012-12-31")));
     }
 
     /**
-     * Test setContentIdentifier.
+     * Test setSubscriptionContentId.
      */
     @Test
     public void testSetContentIdentifier() {
-        Subscription subscription = new Subscription(START_DATE, END_DATE, CONTENT_IDENTIFIER, SUBSCRIBER_ID);
-        subscription.setContentIdentifier(new SubscriptionContentIdentifierCommandDto("CONTENT-X"));
+        Subscription subscription = new Subscription(START_DATE, END_DATE, SUBSCRIPTION_CONTENT_ID, SUBSCRIBER_ID);
+        subscription.setSubscriptionContentId(new SubscriptionContentIdCommandDto("874"));
 
-        Assert.assertEquals(subscription.getContentIdentifier(), "CONTENT-X");
+        Assert.assertEquals(subscription.getSubscriptionContentId(), 874L);
     }
 }

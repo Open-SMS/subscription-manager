@@ -16,7 +16,7 @@ public class SubscriptionFactoryTest {
     private static final String END_DATE_STRING = "2022-02-03";
     private static final Optional<LocalDate> START_DATE = Optional.of(LocalDate.parse(START_DATE_STRING));
     private static final Optional<LocalDate> END_DATE = Optional.of(LocalDate.parse(END_DATE_STRING));
-    private static final String CONTENT_IDENTIFIER = "CONTENT";
+    private static final String SUBSCRIPTION_CONTENT_ID = "293";
     private static final String SUBSCRIBER_ID = "142";
 
     private final SubscriptionFactory factory = new SubscriptionFactory();
@@ -27,12 +27,12 @@ public class SubscriptionFactoryTest {
     @Test
     public void testSubscriptionCommandDtoToSubscription() {
         NewSubscriptionCommandDto commandDto = new NewSubscriptionCommandDto(
-                Optional.of(START_DATE_STRING), Optional.of(END_DATE_STRING), CONTENT_IDENTIFIER, SUBSCRIBER_ID);
+                Optional.of(START_DATE_STRING), Optional.of(END_DATE_STRING), SUBSCRIPTION_CONTENT_ID, SUBSCRIBER_ID);
         Subscription subscription = this.factory.subscriptionCommandDtoToSubscription(commandDto);
 
        Assert.assertEquals(subscription.getStartDate(), START_DATE);
         Assert.assertEquals(subscription.getEndDate(), END_DATE);
-        Assert.assertEquals(subscription.getContentIdentifier(), CONTENT_IDENTIFIER);
+        Assert.assertEquals(subscription.getSubscriptionContentId(), Long.valueOf(SUBSCRIPTION_CONTENT_ID));
         Assert.assertEquals(subscription.getSubscriberId(), Long.valueOf(SUBSCRIBER_ID));
     }
 
@@ -42,7 +42,7 @@ public class SubscriptionFactoryTest {
     @Test
     public void testSubscriptionCommandDtoToSubscriptionEmptyStartAndEnd() {
         NewSubscriptionCommandDto commandDto = new NewSubscriptionCommandDto(Optional.empty(), Optional.empty(),
-                CONTENT_IDENTIFIER, SUBSCRIBER_ID);
+                SUBSCRIPTION_CONTENT_ID, SUBSCRIBER_ID);
         Subscription subscription = this.factory.subscriptionCommandDtoToSubscription(commandDto);
 
         Assert.assertTrue(subscription.getStartDate().isEmpty());

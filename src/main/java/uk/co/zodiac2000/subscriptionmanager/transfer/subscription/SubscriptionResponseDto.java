@@ -1,12 +1,16 @@
 package uk.co.zodiac2000.subscriptionmanager.transfer.subscription;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Optional;
+import uk.co.zodiac2000.subscriptionmanager.transfer.subscriptioncontent.SubscriptionContentResponseDto;
 
 /**
  * Response DTO representing a subscription.
  */
-public class SubscriptionResponseDto {
+public class SubscriptionResponseDto implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private final Long id;
 
@@ -18,7 +22,7 @@ public class SubscriptionResponseDto {
 
     private final boolean suspended;
 
-    private final String contentIdentifier;
+    private final SubscriptionContentResponseDto subscriptionContent;
 
     private final Long subscriberId;
 
@@ -37,7 +41,7 @@ public class SubscriptionResponseDto {
      * @param endDate the subscription end date
      * @param terminated true if the subscription has been terminated
      * @param suspended true if the subscription is suspended
-     * @param contentIdentifier a string that describes the content that is the subject of the subscription
+     * @param subscriptionContent the subscription content associated with this subscription
      * @param subscriberId the identifier of the subscriber that is the beneficiary of this subscription
      * @param active true if this subscription is active
      * @param canBeSuspended true if the subscription can be suspended
@@ -46,14 +50,14 @@ public class SubscriptionResponseDto {
      */
     public SubscriptionResponseDto(final Long id, final Optional<LocalDate> startDate,
             final Optional<LocalDate> endDate, final boolean terminated, final boolean suspended,
-            final String contentIdentifier, final Long subscriberId, final boolean active,
+            final SubscriptionContentResponseDto subscriptionContent, final Long subscriberId, final boolean active,
             final boolean canBeSuspended, final boolean canBeTerminated, final boolean canBeUnsuspended) {
         this.id = id;
         this.startDate = startDate;
         this.endDate = endDate;
         this.terminated = terminated;
         this.suspended = suspended;
-        this.contentIdentifier = contentIdentifier;
+        this.subscriptionContent = subscriptionContent;
         this.subscriberId = subscriberId;
         this.active = active;
         this.canBeSuspended = canBeSuspended;
@@ -97,10 +101,10 @@ public class SubscriptionResponseDto {
     }
 
     /**
-     * @return a string that describes the content that is the subject of the subscription
+     * @return the subscription content associated with this subscription
      */
-    public String getContentIdentifier() {
-        return this.contentIdentifier;
+    public SubscriptionContentResponseDto getSubscriptionContent() {
+        return this.subscriptionContent;
     }
 
     /**
